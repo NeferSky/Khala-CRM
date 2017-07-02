@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<TfrxReport Version="5.4.6" DotMatrixReport="False" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="4095" PreviewOptions.Zoom="1" PrintOptions.Printer="По умолчанию" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="42913,6723540972" ReportOptions.Description.Text="" ReportOptions.LastChange="42913,7286876505" ScriptLanguage="PascalScript" ScriptText.Text="begin&#13;&#10;&#13;&#10;end.">
+  <Datasets>
+    <item DataSet="ADOQuery1" DataSetName="ADOQuery1"/>
+  </Datasets>
+  <TfrxDataPage Name="Data" Height="1000" Left="0" Top="0" Width="1000">
+    <TfrxADOQuery Name="ADOQuery1" UserName="ADOQuery1" CloseDataSource="True" FieldAliases.Text="" BCDToCurrency="False" IgnoreDupParams="False" SQL.Text="SELECT top 100 acc.ID as 'acc.id', &#13;&#10;	  acc.Name as 'acc.Name', &#13;&#10;	  acct.Name as 'acct.Name', &#13;&#10;	  con.Name as 'con.Name', &#13;&#10;	  ocon.Name as 'ocon.Name', &#13;&#10;	  ccon.Name as 'ccon.Name', &#13;&#10;	  acc.CreatedOn as 'acc.CreatedOn', &#13;&#10;	  mcon.Name as 'mcon.Name', &#13;&#10;	  acc.ModifiedOn as 'acc.ModifiedOn', &#13;&#10;	  acc.OfficialAccountName as 'acc.OfficialAccountName', &#13;&#10;	  city.Name as 'city.Name', &#13;&#10;	  reg.PostAutonom as 'reg.PostAutonom', &#13;&#10;	  acc.Inn as 'acc.Inn', &#13;&#10;	  acc.Kpp as 'acc.Kpp', &#13;&#10;	  ac.Name as 'ac.Name', &#13;&#10;	  reg.Name as 'reg.Name', &#13;&#10;	  acc.PostAddress as 'acc.PostAddress', &#13;&#10;	  acc.LegalAddress as 'acc.LegalAddress', &#13;&#10;	  acc.Note as 'acc.Note', &#13;&#10;	  acc.CallNote as 'acc.CallNote', &#13;&#10;	  acc.ClientsValueID as 'acc.ClientsValueID', &#13;&#10;	  city.TimeDifference as 'city.TimeDifference' &#13;&#10;    FROM tbl_Account acc &#13;&#10;    LEFT JOIN tbl_Contact con &#13;&#10;	 ON con.ID = acc.PrimaryContactID &#13;&#10;    LEFT JOIN tbl_Contact ocon &#13;&#10;    	ON ocon.ID = acc.OwnerID &#13;&#10;    LEFT JOIN tbl_Contact ccon &#13;&#10;    	ON ccon.ID = acc.CreatedByID &#13;&#10;    LEFT JOIN tbl_Contact mcon &#13;&#10;    	ON mcon.ID = acc.ModifiedByID &#13;&#10;    LEFT JOIN tbl_City city &#13;&#10;    	ON city.ID = acc.CityID &#13;&#10;    LEFT JOIN tbl_AccountType acct &#13;&#10;    	ON acct.ID = acc.AccountTypeID &#13;&#10;    LEFT JOIN tbl_AccountCategory ac &#13;&#10;    	ON ac.ID = acc.AccountCategoryID &#13;&#10;    LEFT JOIN tbl_Region reg &#13;&#10;    	ON reg.ID = city.RegionID &#13;&#10;  " CommandTimeout="30" LockType="ltReadOnly" PropData="05704C65667403E8000470546F70039C000A506172616D65746572730100"/>
+  </TfrxDataPage>
+  <TfrxReportPage Name="Page1" PaperWidth="210" PaperHeight="297" PaperSize="9" LeftMargin="10" RightMargin="10" TopMargin="10" BottomMargin="10" ColumnWidth="0" ColumnPositions.Text="" HGuides.Text="" VGuides.Text="">
+    <TfrxReportTitle Name="ReportTitle1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Height="37,7953" Left="0" Top="18,89765" Width="718,1107">
+      <TfrxMemoView Name="Date" Left="551,81138" Top="0" Width="79,37013" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" HAlign="haRight" ParentFont="False" Text="[Date]"/>
+      <TfrxMemoView Name="Time" Left="634,96104" Top="0" Width="79,37013" Height="18,89765" Text="[Time]"/>
+      <TfrxMemoView Name="Memo9" Left="188,9765" Top="0" Width="340,1577" Height="37,7953" Font.Charset="1" Font.Color="0" Font.Height="-21" Font.Name="Arial" Font.Style="1" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="Таблица контрагентов"/>
+    </TfrxReportTitle>
+    <TfrxPageFooter Name="PageFooter1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Height="18,89765" Left="0" Top="381,73253" Width="718,1107">
+      <TfrxMemoView Name="Page" Left="453,5436" Top="0" Width="260,78757" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" HAlign="haRight" ParentFont="False" Text="Страница [Page#] из [TotalPages#]">
+        <Formats>
+          <item/>
+          <item/>
+        </Formats>
+      </TfrxMemoView>
+    </TfrxPageFooter>
+    <TfrxMasterData Name="MasterData1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Height="204,09462" Left="0" Top="117,16543" Width="718,1107" ColumnWidth="0" ColumnGap="0" DataSet="ADOQuery1" DataSetName="ADOQuery1" RowCount="0">
+      <TfrxShapeView Name="Shape1" Left="0" Top="0" Width="718,1107" Height="200,31509"/>
+      <TfrxMemoView Name="ADOQuery1accName" Left="3,77953" Top="0" Width="710,55164" Height="37,7953" DataSet="ADOQuery1" DataSetName="ADOQuery1" Font.Charset="1" Font.Color="0" Font.Height="-16" Font.Name="Arial" Font.Style="0" ParentFont="False" VAlign="vaBottom" Text="[ADOQuery1.&#34;acc.Name&#34;]"/>
+      <TfrxMemoView Name="ADOQuery1acctName" Left="83,14966" Top="120,94496" Width="272,12616" Height="18,89765" DataSet="ADOQuery1" DataSetName="ADOQuery1" Text="[ADOQuery1.&#34;acct.Name&#34;]"/>
+      <TfrxMemoView Name="ADOQuery1conName" Left="427,08689" Top="37,7953" Width="287,24428" Height="37,7953" DataSet="ADOQuery1" DataSetName="ADOQuery1" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" ParentFont="False" VAlign="vaCenter" Text="[ADOQuery1.&#34;con.Name&#34;]"/>
+      <TfrxMemoView Name="ADOQuery1oconName" Left="3,77953" Top="177,63791" Width="695,43352" Height="18,89765" DataSet="ADOQuery1" DataSetName="ADOQuery1" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" HAlign="haRight" ParentFont="False" Text="Ответственный: [ADOQuery1.&#34;ocon.Name&#34;]"/>
+      <TfrxMemoView Name="ADOQuery1cityName" Left="83,14966" Top="98,26778" Width="272,12616" Height="18,89765" DataSet="ADOQuery1" DataSetName="ADOQuery1" Text="[ADOQuery1.&#34;city.Name&#34;], часовой пояс: [ADOQuery1.&#34;city.TimeDifference&#34;]">
+        <Formats>
+          <item/>
+          <item/>
+        </Formats>
+      </TfrxMemoView>
+      <TfrxMemoView Name="ADOQuery1accInn" Left="3,77953" Top="37,7953" Width="162,51979" Height="37,7953" DataSet="ADOQuery1" DataSetName="ADOQuery1" Font.Charset="1" Font.Color="0" Font.Height="-16" Font.Name="Arial" Font.Style="1" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="ИНН: [ADOQuery1.&#34;acc.Inn&#34;]"/>
+      <TfrxMemoView Name="ADOQuery1accKpp" Left="170,07885" Top="37,7953" Width="136,06308" Height="37,7953" DataSet="ADOQuery1" DataSetName="ADOQuery1" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="1" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="КПП: [ADOQuery1.&#34;acc.Kpp&#34;]"/>
+      <TfrxMemoView Name="ADOQuery1regName" Left="83,14966" Top="75,5906" Width="272,12616" Height="18,89765" DataSet="ADOQuery1" DataSetName="ADOQuery1" Text="[ADOQuery1.&#34;reg.Name&#34;]"/>
+      <TfrxMemoView Name="ADOQuery1acName" Left="83,14966" Top="143,62214" Width="272,12616" Height="34,01577" DataSet="ADOQuery1" DataSetName="ADOQuery1" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" ParentFont="False" VAlign="vaCenter" Text="[ADOQuery1.&#34;ac.Name&#34;]"/>
+      <TfrxMemoView Name="ADOQuery1accPostAddress" Left="461,10266" Top="128,50402" Width="253,22851" Height="49,13389" DataSet="ADOQuery1" DataSetName="ADOQuery1" Text="[ADOQuery1.&#34;acc.PostAddress&#34;]"/>
+      <TfrxMemoView Name="ADOQuery1accLegalAddress" Left="461,10266" Top="75,5906" Width="253,22851" Height="49,13389" DataSet="ADOQuery1" DataSetName="ADOQuery1" Text="[ADOQuery1.&#34;acc.LegalAddress&#34;]"/>
+      <TfrxMemoView Name="Memo1" Left="3,77953" Top="75,5906" Width="75,5906" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="4" HAlign="haRight" ParentFont="False" Text="Регион:"/>
+      <TfrxMemoView Name="Memo2" Left="3,77953" Top="98,26778" Width="75,5906" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="4" HAlign="haRight" ParentFont="False" Text="Город:"/>
+      <TfrxMemoView Name="Memo3" Left="362,83488" Top="75,5906" Width="94,48825" Height="49,13389" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="4" HAlign="haRight" ParentFont="False" Text="Юридический адрес:"/>
+      <TfrxMemoView Name="Memo4" Left="362,83488" Top="128,50402" Width="94,48825" Height="49,13389" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="4" HAlign="haRight" ParentFont="False" Text="Почтовый адрес:"/>
+      <TfrxMemoView Name="Memo5" Left="3,77953" Top="120,94496" Width="75,5906" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="4" HAlign="haRight" ParentFont="False" Text="Тип:"/>
+      <TfrxMemoView Name="Memo6" Left="3,77953" Top="143,62214" Width="75,5906" Height="34,01577" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="4" HAlign="haRight" ParentFont="False" Text="Форма собств-ти:"/>
+      <TfrxMemoView Name="Memo8" Left="309,92146" Top="37,7953" Width="113,3859" Height="37,7953" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" HAlign="haRight" ParentFont="False" VAlign="vaCenter" Text="Контактное лицо:"/>
+      <TfrxLineView Name="Line1" Left="359,05535" Top="75,5906" Width="0" Height="102,04731" Color="0" Frame.Typ="1"/>
+    </TfrxMasterData>
+  </TfrxReportPage>
+</TfrxReport>
