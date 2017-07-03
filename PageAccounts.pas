@@ -12,6 +12,7 @@ uses
 type
   TfrmPageAccounts = class(TfrmBasePage)
     tsAccounts: TTabSheet;
+    tsAccountContacts: TTabSheet;
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
@@ -19,7 +20,7 @@ type
     { Public declarations }
   end;
 
-procedure CreatePageAccounts(AOwner: TComponent);
+procedure CreatePageAccounts(AOwner: TComponent; AParent: TWinControl);
 
 var
   frmPageAccounts: TfrmPageAccounts;
@@ -31,13 +32,12 @@ uses
 
 {$R *.dfm}
 
-procedure CreatePageAccounts(AOwner: TComponent);
+//---------------------------------------------------------------------------
+
+procedure CreatePageAccounts(AOwner: TComponent; AParent: TWinControl);
 begin
   if frmPageAccounts = nil then
-  begin
-    frmPageAccounts := TfrmPageAccounts.Create(AOwner);
-    frmPageAccounts.Parent := (AOwner as TWinControl);
-  end;
+    frmPageAccounts := TfrmPageAccounts.ACreate(AOwner, AParent);
 end;
 
 //---------------------------------------------------------------------------
@@ -47,8 +47,8 @@ begin
   inherited;
 
   Align := alClient;
-  CreateAccounts(pcMaster.Pages[pcMaster.ActivePageIndex], True);
-  CreateAccountContacts(pcDetails.Pages[pcDetails.ActivePageIndex]);
+  DetailsList.Add(CreateAccounts(Self, pcMaster.Pages[pcMaster.ActivePageIndex], True));
+  DetailsList.Add(CreateAccountContacts(Self, pcDetails.Pages[pcDetails.ActivePageIndex], False));
 end;
 
 end.

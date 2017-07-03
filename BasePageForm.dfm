@@ -15,6 +15,7 @@ object frmBasePage: TfrmBasePage
   OldCreateOrder = False
   Visible = True
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object splLeft: TSplitter
@@ -128,6 +129,7 @@ object frmBasePage: TfrmBasePage
       Height = 252
       Align = alBottom
       TabOrder = 0
+      OnChange = pcDetailsChange
     end
     object pcMaster: TPageControl
       Left = 0

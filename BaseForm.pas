@@ -119,15 +119,20 @@ type
     procedure PrepareReport;
     procedure PrintReport;
     procedure ExportReport;
+    procedure SetMasterID(const Value: String);
+    function GetMasterID: String;
   protected
     { Protected declarations }
     property SQLText: String read GetSQLText write SetSQLText;
   public
     { Public declarations }
-    constructor ACreate(AOwner: TComponent; IsMaster: Boolean);
+    constructor ACreate(AOwner: TComponent; AParent: TWinControl;
+      IsMaster: Boolean = False);
     procedure RebuildQuery;
     function GetDraggedFromGridColumn: String;
-  published
+    procedure Connect;
+    procedure Disconnect;
+    property MasterID: String read GetMasterID write SetMasterID;
     property Parent;
   end;
 
@@ -378,6 +383,13 @@ end;
 
 //---------------------------------------------------------------------------
 
+procedure TfrmBaseForm.SetMasterID(const Value: String);
+begin
+  SQLBuilder.MasterID := Value;
+end;
+
+//---------------------------------------------------------------------------
+
 // ѕеремещение колонок грида или получение нового пол€ из списка доступных полей
 // „асть 1 - драг
 procedure TfrmBaseForm.grdDataDragOver(Sender, Source: TObject; X,
@@ -523,12 +535,17 @@ end;
 
 //---------------------------------------------------------------------------
 
+procedure TfrmBaseForm.Disconnect;
+begin
+//
+end;
+
+//---------------------------------------------------------------------------
+
 procedure TfrmBaseForm.dsDataAfterScroll(DataSet: TDataSet);
 begin
-//  Owner здесь не form, а tabsheet!!!
-
-//  if FIsMaster then
-//    (Owner as TfrmBasePage).MasterProc(dsData.FieldByName('ID').AsString);
+  if FIsMaster then
+    (Owner as TfrmBasePage).MasterProc(dsData.FieldByName('ID').AsString);
 end;
 
 //---------------------------------------------------------------------------
@@ -542,6 +559,13 @@ begin
     Result := FfrmColumnsList.DraggedColumn.Text;
     FfrmColumnsList.RemoveDraggedColumn;
   end;
+end;
+
+//---------------------------------------------------------------------------
+
+function TfrmBaseForm.GetMasterID: String;
+begin
+  Result := SQLBuilder.MasterID;
 end;
 
 //---------------------------------------------------------------------------
@@ -607,10 +631,19 @@ end;
 
 //---------------------------------------------------------------------------
 
-constructor TfrmBaseForm.ACreate(AOwner: TComponent; IsMaster: Boolean);
+constructor TfrmBaseForm.ACreate(AOwner: TComponent; AParent: TWinControl;
+  IsMaster: Boolean = False);
 begin
   inherited Create(AOwner);
+  Parent := AParent;
   FIsMaster := IsMaster;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.Connect;
+begin
+//
 end;
 
 //---------------------------------------------------------------------------

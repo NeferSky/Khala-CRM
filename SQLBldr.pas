@@ -22,6 +22,7 @@ type
     FOrderPart: String; // order by ...
     FSortPart: String; // asc/desc
     FOffsetPart: Integer; // rows ... to ...
+    FMasterID: String; // ID из мастер-датасета
     FDataSet: PDataSet; // Датасет на фрейме-владельце. Надо бы через pointer с ним работать, наверное
     FsqlRowCount: TIBSQL; // Местный датасет для получения кол-ва строк
     FRowCount: Integer; // Кол-во строк, возвращаемых запросом
@@ -41,11 +42,14 @@ type
     procedure SetOffsetPart(const Value: Integer);
     function GetFilterPart: String;
     procedure SetFilterPart(const Value: String);
+    function GetMasterID: String;
+    procedure SetMasterID(const Value: String);
   public
     constructor Create(AOwner: TComponent);
     destructor Destroy; override;
     function BuildQuery(NeedExecute: Boolean = True): String;
     function GetSQLQuery: String;
+    property MasterID: String read GetMasterID write SetMasterID;
     property DataSet: PDataSet read GetDataSet write SetDataSet;
     property SelectPart: String read GetSelectPart write SetSelectPart;
     property WherePart: String read GetWherePart write SetWherePart;
@@ -153,6 +157,8 @@ begin
 
   try
     FDataSet^.SelectSQL.Text := QueryText;
+    if FMasterID <> '' then
+      FDataSet^.ParamByName('MASTER_ID').AsString := FMasterID;
     FDataSet^.Open;
     FDataSet^.FetchAll;
   except
@@ -200,11 +206,18 @@ end;
 
 //---------------------------------------------------------------------------
 
+function TSQLBuilder.GetMasterID: String;
+begin
+  Result := FMasterID;
+end;
+
+//---------------------------------------------------------------------------
+
 function TSQLBuilder.GetOffsetPart: Integer;
 begin
   Result := FOffsetPart;
 end;
-      
+
 //---------------------------------------------------------------------------
 
 function TSQLBuilder.GetOrderPart: String;
@@ -225,7 +238,7 @@ function TSQLBuilder.GetSortPart: String;
 begin
   Result := FSortPart;
 end;
-   
+
 //---------------------------------------------------------------------------
 
 function TSQLBuilder.GetSQLQuery: String;
@@ -258,6 +271,14 @@ procedure TSQLBuilder.SetFilterPart(const Value: String);
 begin
   if FFilterPart <> Value then
     FFilterPart := Value;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TSQLBuilder.SetMasterID(const Value: String);
+begin
+  if FMasterID <> Value then
+    FMasterID := Value;
 end;
 
 //---------------------------------------------------------------------------

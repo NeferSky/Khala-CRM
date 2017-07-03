@@ -82,7 +82,7 @@ begin
   case pcRibbon.ActivePageIndex of
   2:
   begin
-    CreatePageAccounts(pcRibbon.Pages[pcRibbon.ActivePageIndex]);
+    CreatePageAccounts(Self, pcRibbon.Pages[pcRibbon.ActivePageIndex]);
   end;
   end;
 end;

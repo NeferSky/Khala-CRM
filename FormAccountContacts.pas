@@ -36,7 +36,8 @@ type
     { Public declarations }
   end;
 
-procedure CreateAccountContacts(AOwner: TComponent; IsMaster: Boolean = False);
+function CreateAccountContacts(AOwner: TComponent; AParent: TWinControl;
+  IsMaster: Boolean): TfrmBaseForm;
 
 const
   SQL_GET_ACCOUNT_CONTACTS = 'SELECT * FROM ACCOUNT_CONTACT_SEL(:MASTER_ID) ';
@@ -51,12 +52,15 @@ uses
 
 {$R *.dfm}
 
-procedure CreateAccountContacts(AOwner: TComponent; IsMaster: Boolean = False);
+//---------------------------------------------------------------------------
+
+function CreateAccountContacts(AOwner: TComponent; AParent: TWinControl;
+  IsMaster: Boolean): TfrmBaseForm;
 begin
-  frmAccountContacts := TfrmAccountContacts.ACreate(AOwner, IsMaster);
-  frmAccountContacts.Parent := (AOwner as TWinControl);
+  frmAccountContacts := TfrmAccountContacts.ACreate(AOwner, AParent, IsMaster);
   frmAccountContacts.SQLText := SQL_GET_ACCOUNT_CONTACTS;
   frmAccountContacts.RebuildQuery;
+  Result := frmAccountContacts;
 end;
 
 end.

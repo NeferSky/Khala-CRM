@@ -20,10 +20,15 @@ type
     pcDetails: TPageControl;
     pcMaster: TPageControl;
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure pcDetailsChange(Sender: TObject);
   private
     { Private declarations }
+  protected
+    DetailsList: TList;
   public
     { Public declarations }
+    constructor ACreate(AOwner: TComponent; AParent: TWinControl);
     procedure MasterProc(ID: String);
   published
     property Parent;
@@ -35,9 +40,18 @@ var
 implementation
 
 uses
-  Kh_Utils, Dialogs;
+  Kh_Utils, BaseForm, Dialogs;
 
 {$R *.dfm}
+
+//---------------------------------------------------------------------------
+
+constructor TfrmBasePage.ACreate(AOwner: TComponent; AParent: TWinControl);
+begin
+  inherited Create(AOwner);
+  DetailsList := TList.Create;
+  Parent := AParent;
+end;
 
 //---------------------------------------------------------------------------
 
@@ -53,9 +67,34 @@ end;
 
 //---------------------------------------------------------------------------
 
-procedure TfrmBasePage.MasterProc(ID: String);
+procedure TfrmBasePage.FormDestroy(Sender: TObject);
 begin
-  ShowMessage(ID);
+  DetailsList.Free;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBasePage.MasterProc(ID: String);
+var
+  I: Integer;
+begin
+  for I := 0 to DetailsList.Count - 1 do
+  begin
+    TfrmBaseForm(DetailsList[I]).MasterID := ID;
+    TfrmBaseForm(DetailsList[I]).RebuildQuery;
+  end;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBasePage.pcDetailsChange(Sender: TObject);
+var
+  I: Integer;
+begin
+  for I := 0 to DetailsList.Count - 1 do
+    TfrmBaseForm(DetailsList[I]).Disconnect;
+
+  TfrmBaseForm(DetailsList.Items[pcDetails.ActivePageIndex]).Connect;
 end;
 
 end.

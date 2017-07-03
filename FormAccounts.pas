@@ -42,7 +42,8 @@ type
     { Public declarations }
   end;
 
-procedure CreateAccounts(AOwner: TComponent; IsMaster: Boolean = False);
+function CreateAccounts(AOwner: TComponent; AParent: TWinControl;
+  IsMaster: Boolean): TfrmBaseForm;
 
 const
   SQL_GET_ACCOUNTS = 'SELECT * FROM ACCOUNT_SEL ';
@@ -57,12 +58,15 @@ uses
 
 {$R *.dfm}
 
-procedure CreateAccounts(AOwner: TComponent; IsMaster: Boolean = False);
+//---------------------------------------------------------------------------
+
+function CreateAccounts(AOwner: TComponent; AParent: TWinControl;
+  IsMaster: Boolean): TfrmBaseForm;
 begin
-  frmAccounts := TfrmAccounts.ACreate(AOwner, IsMaster);
-  frmAccounts.Parent := (AOwner as TWinControl);
+  frmAccounts := TfrmAccounts.ACreate(AOwner, AParent, IsMaster);
   frmAccounts.SQLText := SQL_GET_ACCOUNTS;
   frmAccounts.RebuildQuery;
+  Result := frmAccounts;
 end;
 
 end.
