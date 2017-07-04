@@ -3,18 +3,17 @@ unit Kh_Consts;
 interface
 
 uses
-  Graphics;
+  Messages;
 
 const
   // Digits
   RECS_ON_PAGE: Integer = 50;
 
-  // Colors
-  CL_ORANGE: TColor = $B3DAFF;
-  CL_GRAY: TColor = $EFEFEF;
-  CL_GRID_TITLE: TColor = $4F4F4F;
-  CL_TEXT: TColor = clWindowText;
-  CL_ORANGE_TEXT: TColor = $0083FF;
+  // Registry path
+  S_REG_SETTINGS_KEY: String = 'Software\NeferSky\Khala';
+
+  // Message
+  KH_RESET_THEME = WM_USER + 123;
 
 implementation
 

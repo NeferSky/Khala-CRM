@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 335
-  Top = 251
+  Left = 352
+  Top = 282
   Caption = 'CRM Khala'
   ClientHeight = 601
   ClientWidth = 854
@@ -40,19 +40,11 @@ object frmMain: TfrmMain
     object tsAdmin: TTabSheet
       Caption = 'tsAdmin'
       TabVisible = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
     object tsTasks: TTabSheet
       Caption = 'tsTasks'
       ImageIndex = 1
       TabVisible = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
     object tsPageAccounts: TTabSheet
       Caption = #1050#1086#1085#1090#1088#1072#1075#1077#1085#1090#1099
@@ -64,159 +56,48 @@ object frmMain: TfrmMain
       ImageIndex = 2
       ParentFont = False
     end
-    object tsContacts: TTabSheet
-      Caption = 'tsContacts'
+    object TabSheet2: TTabSheet
+      Caption = 'TabSheet2'
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
-      object Splitter1: TSplitter
-        Left = 161
-        Top = 0
-        Height = 552
-        ExplicitLeft = 8
-      end
-      object Panel1: TPanel
-        Left = 0
-        Top = 0
-        Width = 161
-        Height = 552
-        Align = alLeft
-        TabOrder = 0
-        object Splitter2: TSplitter
-          Left = 1
-          Top = 291
-          Width = 159
-          Height = 3
-          Cursor = crVSplit
-          Align = alBottom
-          ExplicitTop = 1
-          ExplicitWidth = 518
-        end
-        object Panel2: TPanel
-          Left = 1
-          Top = 294
-          Width = 159
-          Height = 257
-          Align = alBottom
-          BevelOuter = bvNone
-          TabOrder = 0
-        end
-        object Panel3: TPanel
-          Left = 1
-          Top = 1
-          Width = 159
-          Height = 32
-          Align = alTop
-          TabOrder = 1
-          object Label1: TLabel
-            Left = 8
-            Top = 8
-            Width = 66
-            Height = 17
-            Alignment = taCenter
-            AutoSize = False
-            Caption = #1044#1077#1081#1089#1090#1074#1080#1103#9660
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -11
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object Label2: TLabel
-            Left = 80
-            Top = 8
-            Width = 64
-            Height = 17
-            Alignment = taCenter
-            AutoSize = False
-            Caption = #1054#1090#1095#1077#1090#1099#9660
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -11
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-        end
-      end
-      object Panel4: TPanel
-        Left = 164
-        Top = 0
-        Width = 682
-        Height = 552
-        Align = alClient
-        BevelOuter = bvNone
-        TabOrder = 1
-        object Splitter3: TSplitter
-          Left = 0
-          Top = 297
-          Width = 682
-          Height = 3
-          Cursor = crVSplit
-          Align = alBottom
-          ExplicitLeft = 1
-          ExplicitTop = 1
-          ExplicitWidth = 311
-        end
-        object PageControl1: TPageControl
-          Left = 0
-          Top = 300
-          Width = 682
-          Height = 252
-          Align = alBottom
-          TabOrder = 0
-        end
-        object PageControl2: TPageControl
-          Left = 0
-          Top = 0
-          Width = 682
-          Height = 297
-          Align = alClient
-          TabOrder = 1
-        end
-      end
     end
     object TabSheet3: TTabSheet
       Caption = 'TabSheet3'
       ImageIndex = 6
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
     object TabSheet4: TTabSheet
       Caption = 'TabSheet4'
       ImageIndex = 7
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
     object TabSheet5: TTabSheet
       Caption = 'TabSheet5'
       ImageIndex = 8
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
     object TabSheet6: TTabSheet
       Caption = 'TabSheet6'
       ImageIndex = 9
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
+  end
+  object ComboBox1: TComboBox
+    Left = 701
+    Top = 8
+    Width = 145
+    Height = 21
+    TabOrder = 1
+    Text = 'ComboBox1'
+    OnChange = ComboBox1Change
+    Items.Strings = (
+      #1047#1080#1084#1072
+      #1051#1077#1090#1086
+      #1056#1086#1079#1072
+      #1060#1080#1072#1083#1082#1072
+      #1055#1091#1089#1090#1099#1085#1103
+      #1054#1082#1077#1072#1085)
   end
   object ilRibbon: TImageList
     Left = 16
     Top = 56
     Bitmap = {
-      494C01010D0018006C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010D001800780010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

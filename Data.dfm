@@ -2,12 +2,12 @@ object dmData: TdmData
   OldCreateOrder = False
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
-  Left = 386
-  Top = 334
+  Left = 1626
+  Top = 374
   Height = 309
   Width = 302
   object IBDatabase: TIBDatabase
-    DatabaseName = '127.0.0.1/3050:C:\Users\axl\Downloads\KhalaCRM.fdb'
+    DatabaseName = '127.0.0.1/3050:E:\Work\Firebird\KhalaCRM.fdb'
     Params.Strings = (
       'user_name=sysdba'
       'password=9225894'

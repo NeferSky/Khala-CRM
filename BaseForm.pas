@@ -10,7 +10,7 @@ uses
   Data.DB,
   IBX.IBCustomDataSet, IBX.IBSQL,
   frxClass, frxDBSet, frxExportXLS,
-  NsDBGrid, SQLBldr, FieldList, FastFilter, Data;
+  NsDBGrid, SQLBldr, FieldList, FastFilter, Data, Kh_Consts;
 
 type
   TMasterProc = procedure(ID: String);
@@ -82,6 +82,8 @@ type
     procedure btnEditClick(Sender: TObject);
     procedure btnDelClick(Sender: TObject);
     procedure dsDataAfterScroll(DataSet: TDataSet);
+    procedure grdDataMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   private
     { Private declarations }
     SQLBuilder: TSQLBuilder; // Повелитель запросов
@@ -96,8 +98,8 @@ type
     FfrmColumnsList: TfrmColumnsList; // Окно со списком полей
     FSQLText: String; // Запрос, результат которого выводится в грид
     FFastFiltered: Boolean; // Признак применения быстрого фильтра
-//    FReportFileName: String; // Имя файла основного отчета
     FIsMaster: Boolean; // Форма является "главной" для другой формы
+    FMouseWheelScrolling: Boolean; // Выполняется скроллинг мышей, флаг "не обновлять зависимые датасеты"
     //--
     procedure SetFastFilter(ColumnName, FieldName, ColumnValue: String);
     procedure SetGridColumns;
@@ -121,9 +123,11 @@ type
     procedure ExportReport;
     procedure SetMasterID(const Value: String);
     function GetMasterID: String;
+    procedure ResetTheme(var Msg: TMessage); message KH_RESET_THEME;
   protected
     { Protected declarations }
-    property SQLText: String read GetSQLText write SetSQLText;
+    class function CreateForm(AOwner: TComponent; AParent: TWinControl;
+      IsMaster: Boolean): TfrmBaseForm; virtual;
   public
     { Public declarations }
     constructor ACreate(AOwner: TComponent; AParent: TWinControl;
@@ -132,6 +136,9 @@ type
     function GetDraggedFromGridColumn: String;
     procedure Connect;
     procedure Disconnect;
+    procedure MoveFirst;
+    //--
+    property SQLText: String read GetSQLText write SetSQLText;
     property MasterID: String read GetMasterID write SetMasterID;
     property Parent;
   end;
@@ -143,9 +150,18 @@ implementation
 
 uses
   System.UITypes, System.Types,
-  BasePageForm, Main, Kh_Utils, Kh_Consts;
+  BasePageForm, Main, Kh_Utils, UIThemes;
 
 {$R *.dfm}
+
+{ TfrmBaseForm }
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.MoveFirst;
+begin
+  if dsData.Active then
+    dsData.First;
+end;
 
 //---------------------------------------------------------------------------
 
@@ -219,15 +235,21 @@ end;
 // Пересоздание и запуск SQL-запроса, получение кол-ва возвращаемых им строк
 procedure TfrmBaseForm.RebuildQuery;
 begin
-  Self.Cursor := crSQLWait;
-  Application.ProcessMessages;
-
   SQLBuilder.SelectPart := FSQLText;
   SQLBuilder.OffsetPart := FCurrentPage;
   SQLBuilder.BuildQuery(True);
   FRowCount := SQLBuilder.RowCount;
+end;
 
-  Self.Cursor := crDefault;
+//---------------------------------------------------------------------------
+
+// Применение цветов темы
+procedure TfrmBaseForm.ResetTheme(var Msg: TMessage);
+begin
+  Self.Color := KhalaTheme.PanelFilterColor;
+  pnlButtons.Color := KhalaTheme.PanelButtonsColor;
+  grdData.GradientStartColor := KhalaTheme.GridGradientStartColor;
+  grdData.GradientEndColor := KhalaTheme.GridGradientEndColor;
 end;
 
 //---------------------------------------------------------------------------
@@ -495,6 +517,15 @@ end;
 
 //---------------------------------------------------------------------------
 
+// Скроллинг мышей не должен вызывать передергивание датасета, как было в Delphi 7
+procedure TfrmBaseForm.grdDataMouseWheel(Sender: TObject; Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+begin
+  FMouseWheelScrolling := True;
+end;
+
+//---------------------------------------------------------------------------
+
 // Добавление одной колонки в грид
 procedure TfrmBaseForm.CreateNewGridColumn(FieldName: String);
 var
@@ -537,15 +568,18 @@ end;
 
 procedure TfrmBaseForm.Disconnect;
 begin
-//
+  dsData.Close;
 end;
 
 //---------------------------------------------------------------------------
 
 procedure TfrmBaseForm.dsDataAfterScroll(DataSet: TDataSet);
 begin
-  if FIsMaster then
+  if FIsMaster and (not FMouseWheelScrolling) then
     (Owner as TfrmBasePage).MasterProc(dsData.FieldByName('ID').AsString);
+
+  // Сбрасывается флаг скроллинга, неважно, был он или не был
+  FMouseWheelScrolling := False;
 end;
 
 //---------------------------------------------------------------------------
@@ -643,7 +677,7 @@ end;
 
 procedure TfrmBaseForm.Connect;
 begin
-//
+  RebuildQuery;
 end;
 
 //---------------------------------------------------------------------------
@@ -655,6 +689,14 @@ begin
     FfrmColumnsList := TfrmColumnsList.Create(AOwner);
 
   FfrmColumnsList.Associate := grdData;
+end;
+
+//---------------------------------------------------------------------------
+
+class function TfrmBaseForm.CreateForm(AOwner: TComponent; AParent: TWinControl;
+  IsMaster: Boolean): TfrmBaseForm;
+begin
+// virtual
 end;
 
 //---------------------------------------------------------------------------
@@ -1062,10 +1104,14 @@ var
 begin
   // Отрисовка оранжевого выделения строки
   with TNsCustomDBGrid(Sender) do
+  begin
     if DataLink.ActiveRecord = Row - 1 then
-      Canvas.Brush.Color := CL_ORANGE
+      Canvas.Brush.Color := KhalaTheme.SelectedRowColor
     else
       Canvas.Brush.Color := clWhite;
+
+    Canvas.Font.Color := clBlack;
+  end;
 
   // Отступы справа-слева внутри ячейки
   // Сначала закрашивается вся ячейка фоновым цветом...

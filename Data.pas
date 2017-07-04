@@ -39,7 +39,6 @@ uses
 procedure TdmData.DataModuleCreate(Sender: TObject);
 begin
   FConfigPath := GetAppPath + '\DBParams.cfg';
-  FConfigPath := 'C:\DBParams.cfg';
   ReadParams;
   IBDatabase.Open;
 end;
@@ -49,7 +48,7 @@ end;
 procedure TdmData.DataModuleDestroy(Sender: TObject);
 begin
   IBDatabase.Close;
-  //WriteParams;
+//  WriteParams;
 end;
 
 //---------------------------------------------------------------------------

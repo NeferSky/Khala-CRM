@@ -40,33 +40,25 @@ type
     { Private declarations }
   public
     { Public declarations }
+    class function CreateForm(AOwner: TComponent; AParent: TWinControl;
+      IsMaster: Boolean): TfrmBaseForm; override;
   end;
-
-function CreateAccounts(AOwner: TComponent; AParent: TWinControl;
-  IsMaster: Boolean): TfrmBaseForm;
 
 const
   SQL_GET_ACCOUNTS = 'SELECT * FROM ACCOUNT_SEL ';
 
-var
-  frmAccounts: TfrmAccounts;
-
 implementation
-
-uses
-  PageAccounts;
 
 {$R *.dfm}
 
-//---------------------------------------------------------------------------
+{ TfrmAccounts }
 
-function CreateAccounts(AOwner: TComponent; AParent: TWinControl;
+class function TfrmAccounts.CreateForm(AOwner: TComponent; AParent: TWinControl;
   IsMaster: Boolean): TfrmBaseForm;
 begin
-  frmAccounts := TfrmAccounts.ACreate(AOwner, AParent, IsMaster);
-  frmAccounts.SQLText := SQL_GET_ACCOUNTS;
-  frmAccounts.RebuildQuery;
-  Result := frmAccounts;
+  Result := TfrmAccounts.ACreate(AOwner, AParent, IsMaster);
+  Result.SQLText := SQL_GET_ACCOUNTS;
+  Result.RebuildQuery;
 end;
 
 end.

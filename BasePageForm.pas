@@ -3,8 +3,10 @@ unit BasePageForm;
 interface
 
 uses
-  System.Classes,
-  Vcl.Controls, Vcl.Forms, Vcl.ComCtrls, Vcl.StdCtrls, Vcl.ExtCtrls;
+  Messages, System.Classes,
+  Generics.Collections,
+  Vcl.Controls, Vcl.Forms, Vcl.ComCtrls, Vcl.StdCtrls, Vcl.ExtCtrls,
+  BaseForm, Kh_Consts;
 
 type
   TfrmBasePage = class(TForm)
@@ -19,13 +21,19 @@ type
     splDetails: TSplitter;
     pcDetails: TPageControl;
     pcMaster: TPageControl;
+    TabSheet1: TTabSheet;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure pcDetailsChange(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
+    procedure ResetTheme(var Msg: TMessage); message KH_RESET_THEME;
   protected
-    DetailsList: TList;
+    DetailsList: TList<TfrmBaseForm>;
+    MasterForm: TfrmBaseForm;
+    class function GetPage(AOwner: TComponent;
+      AParent: TWinControl): TfrmBasePage; virtual;
   public
     { Public declarations }
     constructor ACreate(AOwner: TComponent; AParent: TWinControl);
@@ -40,17 +48,26 @@ var
 implementation
 
 uses
-  Kh_Utils, BaseForm, Dialogs;
+  Kh_Utils, Dialogs, UIThemes;
 
 {$R *.dfm}
 
+{ TfrmBasePage }
 //---------------------------------------------------------------------------
 
 constructor TfrmBasePage.ACreate(AOwner: TComponent; AParent: TWinControl);
 begin
   inherited Create(AOwner);
-  DetailsList := TList.Create;
+  DetailsList := TList<TfrmBaseForm>.Create;
   Parent := AParent;
+end;
+
+//---------------------------------------------------------------------------
+
+class function TfrmBasePage.GetPage(AOwner: TComponent;
+  AParent: TWinControl): TfrmBasePage;
+begin
+  // virtual;
 end;
 
 //---------------------------------------------------------------------------
@@ -74,27 +91,65 @@ end;
 
 //---------------------------------------------------------------------------
 
+// ѕрименение цветов темы
+procedure TfrmBasePage.FormShow(Sender: TObject);
+begin
+  Self.Color := KhalaTheme.PanelFilterColor;
+  pnlFilterArea.Color := KhalaTheme.PanelButtonsColor;
+end;
+
+//---------------------------------------------------------------------------
+
+// ¬ызываетс€ мастер-датасетом страницы при передвижении по запис€м
 procedure TfrmBasePage.MasterProc(ID: String);
 var
   I: Integer;
+  NeedUpdate: Boolean;
+  SlaveExistsVoobscheOrNot: Boolean;
+
 begin
-  for I := 0 to DetailsList.Count - 1 do
+  if ID = '' then
   begin
-    TfrmBaseForm(DetailsList[I]).MasterID := ID;
-    TfrmBaseForm(DetailsList[I]).RebuildQuery;
+    for I := 0 to DetailsList.Count - 1 do
+      DetailsList[I].Disconnect;
+  end
+  else
+  begin
+    // ѕри создании страницы это упасет нас от бед
+    SlaveExistsVoobscheOrNot := (pcDetails.ActivePageIndex <= DetailsList.Count - 1)
+      and (DetailsList[pcDetails.ActivePageIndex] <> nil);
+
+    // Ќужно ли передергивать запрос на активной вкладке
+    if SlaveExistsVoobscheOrNot then
+      NeedUpdate := DetailsList[pcDetails.ActivePageIndex].MasterID <> ID;
+
+    // Ќовый параметр - всем
+    for I := 0 to DetailsList.Count - 1 do
+      DetailsList[I].MasterID := ID;
+
+    // ѕередергивание датасета на активной вкладке, если нужно
+    if SlaveExistsVoobscheOrNot and NeedUpdate then
+      DetailsList[pcDetails.ActivePageIndex].RebuildQuery;
   end;
 end;
 
 //---------------------------------------------------------------------------
 
+// ќтключение датасетов на вкладках, кроме той, что открыта сейчас (дл€ экономии,
+// чтобы не передергивать по 5-10 датасетов на одно перемещение по строкам)
 procedure TfrmBasePage.pcDetailsChange(Sender: TObject);
 var
   I: Integer;
 begin
   for I := 0 to DetailsList.Count - 1 do
-    TfrmBaseForm(DetailsList[I]).Disconnect;
+    DetailsList[I].Disconnect;
 
-  TfrmBaseForm(DetailsList.Items[pcDetails.ActivePageIndex]).Connect;
+  DetailsList.Items[pcDetails.ActivePageIndex].Connect;
+end;
+
+procedure TfrmBasePage.ResetTheme(var Msg: TMessage);
+begin
+
 end;
 
 end.

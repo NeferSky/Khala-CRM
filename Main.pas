@@ -5,10 +5,10 @@ interface
 uses
   Winapi.Windows, Winapi.Messages,
   System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  Data, Vcl.StdCtrls, Vcl.ExtCtrls, System.ImageList,
-  Vcl.ImgList, Vcl.ComCtrls,
-  Registry;
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
+  Vcl.ExtCtrls, System.ImageList, Vcl.ImgList, Vcl.ComCtrls,
+  Registry,
+  Data, UIThemes, Kh_Consts;
 
 type
   TfrmMain = class(TForm)
@@ -16,31 +16,23 @@ type
     tsAdmin: TTabSheet;
     tsTasks: TTabSheet;
     tsPageAccounts: TTabSheet;
-    tsContacts: TTabSheet;
+    TabSheet2: TTabSheet;
     ilRibbon: TImageList;
-    Splitter1: TSplitter;
-    Panel1: TPanel;
-    Splitter2: TSplitter;
-    Panel2: TPanel;
-    Panel3: TPanel;
-    Label1: TLabel;
-    Label2: TLabel;
-    Panel4: TPanel;
-    Splitter3: TSplitter;
-    PageControl1: TPageControl;
-    PageControl2: TPageControl;
     TabSheet3: TTabSheet;
     TabSheet4: TTabSheet;
     TabSheet5: TTabSheet;
     TabSheet6: TTabSheet;
+    ComboBox1: TComboBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure pcRibbonChange(Sender: TObject);
+    procedure ComboBox1Change(Sender: TObject);
   private
     { Private declarations }
     FUserID: String;
     procedure ReadIni;
     procedure WriteIni;
+    procedure ResetTheme(var Msg: TMessage); message KH_RESET_THEME;
   public
     { Public declarations }
     property UserID: String read FUserID;
@@ -58,8 +50,16 @@ uses
 
 //---------------------------------------------------------------------------
 
+procedure TfrmMain.ComboBox1Change(Sender: TObject);
+begin
+  ChooseTheme(ComboBox1.ItemIndex);
+end;
+
+//---------------------------------------------------------------------------
+
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
+  InitThemesManager;
   ReadIni;
   pcRibbon.OnMouseEnter := TUtils.ControlMouseEnter;
   pcRibbon.OnMouseLeave := TUtils.ControlMouseLeave;
@@ -73,6 +73,7 @@ end;
 procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
   WriteIni;
+  DeInitThemesManager;
 end;
 
 //---------------------------------------------------------------------------
@@ -82,7 +83,7 @@ begin
   case pcRibbon.ActivePageIndex of
   2:
   begin
-    CreatePageAccounts(Self, pcRibbon.Pages[pcRibbon.ActivePageIndex]);
+    TfrmPageAccounts.GetPage(Self, pcRibbon.Pages[pcRibbon.ActivePageIndex]);
   end;
   end;
 end;
@@ -95,7 +96,7 @@ begin
   begin
     try
       RootKey := HKEY_CURRENT_USER;
-      OpenKeyReadOnly('Software\NeferSky\Khala');
+      OpenKeyReadOnly(S_REG_SETTINGS_KEY);
       if ValueExists('frmMainTop') then frmMain.Top := ReadInteger('frmMainTop');
       if ValueExists('frmMainLeft') then frmMain.Left := ReadInteger('frmMainLeft');
       if ValueExists('frmMainWidth') then frmMain.Width := ReadInteger('frmMainWidth');
@@ -110,13 +111,20 @@ end;
 
 //---------------------------------------------------------------------------
 
+procedure TfrmMain.ResetTheme(var Msg: TMessage);
+begin
+  Self.Color := KhalaTheme.PanelFilterColor;
+end;
+
+//---------------------------------------------------------------------------
+
 procedure TfrmMain.WriteIni;
 begin
   with TRegistry.Create do
   begin
     try
       RootKey := HKEY_CURRENT_USER;
-      OpenKey('Software\NeferSky\Khala', True);
+      OpenKey(S_REG_SETTINGS_KEY, True);
       WriteInteger('frmMainTop', frmMain.Top);
       WriteInteger('frmMainLeft', frmMain.Left);
       WriteInteger('frmMainWidth', frmMain.Width);

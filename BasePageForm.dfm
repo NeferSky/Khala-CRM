@@ -1,6 +1,6 @@
 object frmBasePage: TfrmBasePage
-  Left = 327
-  Top = 230
+  Left = 1347
+  Top = 294
   Align = alClient
   BorderStyle = bsNone
   Caption = 'frmBasePage'
@@ -16,6 +16,7 @@ object frmBasePage: TfrmBasePage
   Visible = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object splLeft: TSplitter
@@ -32,8 +33,7 @@ object frmBasePage: TfrmBasePage
     Width = 161
     Height = 601
     Align = alLeft
-    Color = clSkyBlue
-    ParentBackground = False
+    ParentColor = True
     TabOrder = 0
     object splFilter: TSplitter
       Left = 1
@@ -64,8 +64,7 @@ object frmBasePage: TfrmBasePage
       Width = 159
       Height = 32
       Align = alTop
-      Color = clSkyBlue
-      ParentBackground = False
+      ParentColor = True
       TabOrder = 1
       object lblActions: TLabel
         Left = 8
@@ -74,7 +73,7 @@ object frmBasePage: TfrmBasePage
         Height = 17
         Alignment = taCenter
         AutoSize = False
-        Caption = #1044#1077#1081#1089#1090#1074#1080#1103#9660
+        Caption = #1044#1077#1081#1089#1090#1074#1080#1103' '#9660
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -89,7 +88,7 @@ object frmBasePage: TfrmBasePage
         Height = 17
         Alignment = taCenter
         AutoSize = False
-        Caption = #1054#1090#1095#1077#1090#1099#9660
+        Caption = #1054#1090#1095#1077#1090#1099' '#9660
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -106,8 +105,7 @@ object frmBasePage: TfrmBasePage
     Height = 601
     Align = alClient
     BevelOuter = bvNone
-    Color = clSkyBlue
-    ParentBackground = False
+    ParentColor = True
     TabOrder = 1
     object splDetails: TSplitter
       Left = 0
@@ -127,9 +125,13 @@ object frmBasePage: TfrmBasePage
       Top = 349
       Width = 690
       Height = 252
+      ActivePage = TabSheet1
       Align = alBottom
       TabOrder = 0
       OnChange = pcDetailsChange
+      object TabSheet1: TTabSheet
+        Caption = 'TabSheet1'
+      end
     end
     object pcMaster: TPageControl
       Left = 0

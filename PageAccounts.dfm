@@ -1,9 +1,9 @@
 inherited frmPageAccounts: TfrmPageAccounts
-  Left = 322
-  Top = 261
+  Left = 1315
+  Top = 119
   Caption = 'frmPageAccounts'
-  ExplicitLeft = 322
-  ExplicitTop = 261
+  ExplicitLeft = 1315
+  ExplicitTop = 119
   PixelsPerInch = 96
   TextHeight = 13
   inherited pnlLeft: TPanel

@@ -16,7 +16,8 @@ uses
   FormAccountContacts in 'FormAccountContacts.pas' {frmAccountContacts},
   NsCipher in '..\_Units\NsCipher.pas',
   NsConvertUtils in '..\_Units\NsConvertUtils.pas',
-  NsWinUtils in '..\_Units\NsWinUtils.pas';
+  NsWinUtils in '..\_Units\NsWinUtils.pas',
+  UIThemes in 'UIThemes.pas';
 
 {$R *.res}
 

@@ -22,7 +22,7 @@ end;
 implementation
 
 uses
-  Vcl.Graphics, Kh_Consts, Vcl.Buttons;
+  Vcl.Graphics, UIThemes, Vcl.Buttons;
 
 //---------------------------------------------------------------------------
 
@@ -35,7 +35,7 @@ begin
     FS := (Sender as TLabel).Font.Style;
     Include(FS, fsUnderline);
     (Sender as TLabel).Font.Style := FS;
-    (Sender as TLabel).Font.Color := CL_ORANGE_TEXT;
+    (Sender as TLabel).Font.Color := KhalaTheme.FontColor;
   end;
 
   if (Sender is TButton) then
@@ -43,7 +43,7 @@ begin
     FS := (Sender as TButton).Font.Style;
     Include(FS, fsUnderline);
     (Sender as TButton).Font.Style := FS;
-    (Sender as TButton).Font.Color := CL_ORANGE_TEXT;
+    (Sender as TButton).Font.Color := KhalaTheme.FontColor;
   end;
 
   if (Sender is TBitBtn) then
@@ -51,7 +51,7 @@ begin
     FS := (Sender as TBitBtn).Font.Style;
     Include(FS, fsUnderline);
     (Sender as TBitBtn).Font.Style := FS;
-    (Sender as TBitBtn).Font.Color := CL_ORANGE_TEXT;
+    (Sender as TBitBtn).Font.Color := KhalaTheme.FontColor;
   end;
 
   if (Sender is TEdit) then
@@ -59,7 +59,7 @@ begin
     FS := (Sender as TEdit).Font.Style;
     Include(FS, fsUnderline);
     (Sender as TEdit).Font.Style := FS;
-    (Sender as TEdit).Font.Color := CL_ORANGE_TEXT;
+    (Sender as TEdit).Font.Color := KhalaTheme.FontColor;
   end;
 end;
 

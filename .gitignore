@@ -2,3 +2,4 @@
 *.dcu
 __history/*
 bin/config/*
+bin/DBParams.cfg

@@ -18,9 +18,9 @@ type
     { Private declarations }
   public
     { Public declarations }
+    class function GetPage(AOwner: TComponent;
+      AParent: TWinControl): TfrmBasePage; override;
   end;
-
-procedure CreatePageAccounts(AOwner: TComponent; AParent: TWinControl);
 
 var
   frmPageAccounts: TfrmPageAccounts;
@@ -32,12 +32,16 @@ uses
 
 {$R *.dfm}
 
+{ TfrmPageAccounts }
 //---------------------------------------------------------------------------
 
-procedure CreatePageAccounts(AOwner: TComponent; AParent: TWinControl);
+class function TfrmPageAccounts.GetPage(AOwner: TComponent;
+  AParent: TWinControl): TfrmBasePage;
 begin
   if frmPageAccounts = nil then
     frmPageAccounts := TfrmPageAccounts.ACreate(AOwner, AParent);
+
+  Result := frmPageAccounts;
 end;
 
 //---------------------------------------------------------------------------
@@ -46,9 +50,13 @@ procedure TfrmPageAccounts.FormCreate(Sender: TObject);
 begin
   inherited;
 
-  Align := alClient;
-  DetailsList.Add(CreateAccounts(Self, pcMaster.Pages[pcMaster.ActivePageIndex], True));
-  DetailsList.Add(CreateAccountContacts(Self, pcDetails.Pages[pcDetails.ActivePageIndex], False));
+  MasterForm := TfrmAccounts.CreateForm(Self,
+    pcMaster.Pages[pcMaster.ActivePageIndex], True);
+
+  DetailsList.Add(TfrmAccountContacts.CreateForm(Self,
+    pcDetails.Pages[pcDetails.ActivePageIndex], False));
+
+  MasterForm.MoveFirst;
 end;
 
 end.
