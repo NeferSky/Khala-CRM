@@ -3,7 +3,8 @@ unit BasePageForm;
 interface
 
 uses
-  Messages, System.Classes,
+  Winapi.Messages, Winapi.Windows,
+  System.Classes,
   Generics.Collections,
   Vcl.Controls, Vcl.Forms, Vcl.ComCtrls, Vcl.StdCtrls, Vcl.ExtCtrls,
   BaseForm, Kh_Consts;
@@ -21,7 +22,7 @@ type
     splDetails: TSplitter;
     pcDetails: TPageControl;
     pcMaster: TPageControl;
-    TabSheet1: TTabSheet;
+    //--
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure pcDetailsChange(Sender: TObject);
@@ -32,13 +33,14 @@ type
   protected
     DetailsList: TList<TfrmBaseForm>;
     MasterForm: TfrmBaseForm;
+    //--
     class function GetPage(AOwner: TComponent;
       AParent: TWinControl): TfrmBasePage; virtual;
   public
     { Public declarations }
     constructor ACreate(AOwner: TComponent; AParent: TWinControl);
     procedure MasterProc(ID: String);
-  published
+    //--
     property Parent;
   end;
 
@@ -48,7 +50,7 @@ var
 implementation
 
 uses
-  Kh_Utils, Dialogs, UIThemes;
+  Vcl.Dialogs, Kh_Utils, UIThemes;
 
 {$R *.dfm}
 
@@ -93,9 +95,10 @@ end;
 
 // Применение цветов темы
 procedure TfrmBasePage.FormShow(Sender: TObject);
+var
+  Dummy: TMessage;
 begin
-  Self.Color := KhalaTheme.PanelFilterColor;
-  pnlFilterArea.Color := KhalaTheme.PanelButtonsColor;
+  ResetTheme(Dummy);
 end;
 
 //---------------------------------------------------------------------------
@@ -108,6 +111,8 @@ var
   SlaveExistsVoobscheOrNot: Boolean;
 
 begin
+  NeedUpdate := False;
+
   if ID = '' then
   begin
     for I := 0 to DetailsList.Count - 1 do
@@ -147,9 +152,19 @@ begin
   DetailsList.Items[pcDetails.ActivePageIndex].Connect;
 end;
 
-procedure TfrmBasePage.ResetTheme(var Msg: TMessage);
-begin
+//---------------------------------------------------------------------------
 
+// Применение цветов темы
+procedure TfrmBasePage.ResetTheme(var Msg: TMessage);
+var
+  I: Integer;
+begin
+  Color := KhalaTheme.PanelFilterColor;
+  pnlFilterArea.Color := KhalaTheme.PanelButtonsColor;
+
+  PostMessage(MasterForm.Handle, KH_RESET_THEME, 0, 0);
+  for I := 0 to DetailsList.Count - 1 do
+    PostMessage(DetailsList[I].Handle, KH_RESET_THEME, 0, 0);
 end;
 
 end.

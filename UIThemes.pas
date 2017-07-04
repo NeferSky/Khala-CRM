@@ -99,10 +99,13 @@ type
     FPanelButtonsColor: TColor;
     FSelectedRowColor: TColor;
     FFontColor: TColor;
+    function GetThemes(Index: Integer): TUITheme;
+    function GetThemesCount: Integer;
   public
     constructor Create;
     destructor Destroy; override;
     procedure SetTheme(ThemeID: Integer);
+    property ThemeID: Integer read FThemeID;
     property Name: String read FName;
     property Caption: String read FCaption;
     property GridGradientStartColor: TColor read FGridGradientStartColor;
@@ -111,6 +114,8 @@ type
     property PanelButtonsColor: TColor read FPanelButtonsColor;
     property SelectedRowColor: TColor read FSelectedRowColor;
     property FontColor: TColor read FFontColor;
+    property ThemesCount: Integer read GetThemesCount;
+    property Themes[Index: Integer]: TUITheme read GetThemes; default;
   end;
 
 procedure InitThemesManager;
@@ -123,7 +128,7 @@ var
 implementation
 
 uses
-  Windows, Registry;
+  Winapi.Windows, Registry, Main;
 
 procedure InitThemesManager;
 begin
@@ -172,7 +177,7 @@ begin
     FFontColor := clWindowText;
   end;
 
-  PostMessage(0, KH_RESET_THEME, 0, 0);
+  PostMessage(frmMain.Handle, KH_RESET_THEME, 0, 0);
 end;
 
 //---------------------------------------------------------------------------
@@ -210,6 +215,20 @@ begin
   end;
 
   inherited Destroy;
+end;
+
+//---------------------------------------------------------------------------
+
+function TKhalaTheme.GetThemes(Index: Integer): TUITheme;
+begin
+  Result := ThemesArray[Index];
+end;
+
+//---------------------------------------------------------------------------
+
+function TKhalaTheme.GetThemesCount: Integer;
+begin
+  Result := Length(ThemesArray);
 end;
 
 end.

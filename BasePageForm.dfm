@@ -1,5 +1,5 @@
 object frmBasePage: TfrmBasePage
-  Left = 1347
+  Left = 354
   Top = 294
   Align = alClient
   BorderStyle = bsNone
@@ -125,13 +125,9 @@ object frmBasePage: TfrmBasePage
       Top = 349
       Width = 690
       Height = 252
-      ActivePage = TabSheet1
       Align = alBottom
       TabOrder = 0
       OnChange = pcDetailsChange
-      object TabSheet1: TTabSheet
-        Caption = 'TabSheet1'
-      end
     end
     object pcMaster: TPageControl
       Left = 0

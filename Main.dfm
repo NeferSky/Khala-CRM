@@ -10,9 +10,11 @@ object frmMain: TfrmMain
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  Menu = mnuMain
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object pcRibbon: TPageControl
@@ -39,12 +41,10 @@ object frmMain: TfrmMain
     OnChange = pcRibbonChange
     object tsAdmin: TTabSheet
       Caption = 'tsAdmin'
-      TabVisible = False
     end
     object tsTasks: TTabSheet
       Caption = 'tsTasks'
       ImageIndex = 1
-      TabVisible = False
     end
     object tsPageAccounts: TTabSheet
       Caption = #1050#1086#1085#1090#1088#1072#1075#1077#1085#1090#1099
@@ -77,27 +77,11 @@ object frmMain: TfrmMain
       ImageIndex = 9
     end
   end
-  object ComboBox1: TComboBox
-    Left = 701
-    Top = 8
-    Width = 145
-    Height = 21
-    TabOrder = 1
-    Text = 'ComboBox1'
-    OnChange = ComboBox1Change
-    Items.Strings = (
-      #1047#1080#1084#1072
-      #1051#1077#1090#1086
-      #1056#1086#1079#1072
-      #1060#1080#1072#1083#1082#1072
-      #1055#1091#1089#1090#1099#1085#1103
-      #1054#1082#1077#1072#1085)
-  end
   object ilRibbon: TImageList
     Left = 16
     Top = 56
     Bitmap = {
-      494C01010D001800780010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010D0018007C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -631,5 +615,25 @@ object frmMain: TfrmMain
       E00F8001C003E003E00F8001C003E003E00F8001C003E003E00F8001F00FFE03
       E00F8001F00FFF07E00FE3C7F00FFF0700000000000000000000000000000000
       000000000000}
+  end
+  object mnuMain: TMainMenu
+    Images = ilmnuMain
+    Left = 64
+    Top = 56
+    object mnuFile: TMenuItem
+      Caption = #1060#1072#1081#1083
+      object mnuSettings: TMenuItem
+        Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080
+        object mnuTheme: TMenuItem
+          Caption = #1058#1077#1084#1072' '#1086#1092#1086#1088#1084#1083#1077#1085#1080#1103
+          object TMenuItem
+          end
+        end
+      end
+    end
+  end
+  object ilmnuMain: TImageList
+    Left = 112
+    Top = 56
   end
 end

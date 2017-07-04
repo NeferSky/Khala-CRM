@@ -13,6 +13,7 @@ type
   TfrmPageAccounts = class(TfrmBasePage)
     tsAccounts: TTabSheet;
     tsAccountContacts: TTabSheet;
+    //--
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }

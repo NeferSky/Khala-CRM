@@ -1,5 +1,5 @@
 object frmBaseForm: TfrmBaseForm
-  Left = 1453
+  Left = 502
   Top = 176
   Align = alClient
   BorderStyle = bsNone
@@ -17,6 +17,7 @@ object frmBaseForm: TfrmBaseForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object pnlFastFilter: TPanel

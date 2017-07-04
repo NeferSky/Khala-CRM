@@ -5,7 +5,8 @@ interface
 uses
   System.SysUtils, System.Classes,
   Vcl.Dialogs,
-  Data.DB, IBX.IBDatabase, IBX.IBDatabaseInfo;
+  Data.DB,
+  IBX.IBDatabase, IBX.IBDatabaseInfo;
 
 type
   TdmData = class(TDataModule)
@@ -28,7 +29,8 @@ var
 implementation
 
 uses
-  IniFiles, NsCipher, NsWinUtils, NsConvertUtils;
+  System.IniFiles,
+  NsCipher, NsWinUtils, NsConvertUtils;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
@@ -48,7 +50,7 @@ end;
 procedure TdmData.DataModuleDestroy(Sender: TObject);
 begin
   IBDatabase.Close;
-//  WriteParams;
+  //WriteParams;
 end;
 
 //---------------------------------------------------------------------------

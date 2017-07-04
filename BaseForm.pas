@@ -84,6 +84,7 @@ type
     procedure dsDataAfterScroll(DataSet: TDataSet);
     procedure grdDataMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     SQLBuilder: TSQLBuilder; // Повелитель запросов
@@ -1092,6 +1093,16 @@ end;
   begin
     grdData.Columns[I].Width := Round(OnePiece); //Round(OnePiece * grdData.Columns[I].Field.DisplayWidth);
   end;
+end;
+
+//---------------------------------------------------------------------------
+
+// Применение цветов темы
+procedure TfrmBaseForm.FormShow(Sender: TObject);
+var
+  Dummy: TMessage;
+begin
+  ResetTheme(Dummy);
 end;
 
 //---------------------------------------------------------------------------
