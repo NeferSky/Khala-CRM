@@ -14,6 +14,7 @@ type
     PanelFilterColor: TColor;
     PanelButtonsColor: TColor;
     SelectedRowColor: TColor;
+    SelectedRowFontColor: TColor;
     FontColor: TColor;
   end;
 
@@ -23,8 +24,19 @@ const
   CL_GRAY: TColor = $00EFEFEF;
   CL_GRID_TITLE: TColor = $004F4F4F;
 
-  ThemesArray: Array[0..5] of TUITheme =
+  ThemesArray: Array[0..6] of TUITheme =
   (
+    (
+      Name: 'STANDART';
+      Caption: 'Стандарт';
+      GridGradientStartColor: clBtnFace;
+      GridGradientEndColor: clBtnFace;
+      PanelFilterColor: clBtnFace;
+      PanelButtonsColor: clBtnFace;
+      SelectedRowColor: clHighlight;
+      SelectedRowFontColor: clHighlightText;
+      FontColor: clWindowText;
+      ),
     (
       Name: 'WINTER';
       Caption: 'Зима';
@@ -33,6 +45,7 @@ const
       PanelFilterColor: $00F0CAA6;
       PanelButtonsColor: $00D1B499;
       SelectedRowColor: $00B3DAFF;
+      SelectedRowFontColor: $00000000;
       FontColor: $000083FF
       ),
     (
@@ -43,6 +56,7 @@ const
       PanelFilterColor: $00A6F0CA;
       PanelButtonsColor: $0099D1B4;
       SelectedRowColor: $00B3DAFF;
+      SelectedRowFontColor: $00000000;
       FontColor: $000083FF
       ),
     (
@@ -53,6 +67,7 @@ const
       PanelFilterColor: $00CAA6F0;
       PanelButtonsColor: $00B499D1;
       SelectedRowColor: $00FFE8CC;
+      SelectedRowFontColor: $00000000;
       FontColor: $00E8A200
       ),
     (
@@ -63,6 +78,7 @@ const
       PanelFilterColor: $00F0A6CA;
       PanelButtonsColor: $00D199B4;
       SelectedRowColor: $00B3DAFF;
+      SelectedRowFontColor: $00000000;
       FontColor: $000083FF
       ),
     (
@@ -73,6 +89,7 @@ const
       PanelFilterColor: $00A6CAF0;
       PanelButtonsColor: $0099B4D1;
       SelectedRowColor: $00FFE8CC;
+      SelectedRowFontColor: $00000000;
       FontColor: $00E8A200
       ),
     (
@@ -83,12 +100,13 @@ const
       PanelFilterColor: $00CAF0A6;
       PanelButtonsColor: $00B4D199;
       SelectedRowColor: $00B3DAFF;
+      SelectedRowFontColor: $00000000;
       FontColor: $000083FF
       )
   );
 
 type
-  TKhalaTheme = class
+  TKhalaTheme = class(TObject)
   private
     FThemeID: Integer;
     FName: String;
@@ -98,6 +116,7 @@ type
     FPanelFilterColor: TColor;
     FPanelButtonsColor: TColor;
     FSelectedRowColor: TColor;
+    FSelectedRowFontColor: TColor;
     FFontColor: TColor;
     function GetThemes(Index: Integer): TUITheme;
     function GetThemesCount: Integer;
@@ -113,6 +132,7 @@ type
     property PanelFilterColor: TColor read FPanelFilterColor;
     property PanelButtonsColor: TColor read FPanelButtonsColor;
     property SelectedRowColor: TColor read FSelectedRowColor;
+    property SelectedRowFontColor: TColor read FSelectedRowFontColor;
     property FontColor: TColor read FFontColor;
     property ThemesCount: Integer read GetThemesCount;
     property Themes[Index: Integer]: TUITheme read GetThemes; default;
@@ -163,6 +183,7 @@ begin
     FPanelFilterColor := ThemesArray[ThemeID].PanelFilterColor;
     FPanelButtonsColor := ThemesArray[ThemeID].PanelButtonsColor;
     FSelectedRowColor := ThemesArray[ThemeID].SelectedRowColor;
+    FSelectedRowFontColor := ThemesArray[ThemeID].SelectedRowFontColor;
     FFontColor := ThemesArray[ThemeID].FontColor;
   except
     ThemeID := 0;
@@ -174,6 +195,7 @@ begin
     FPanelFilterColor := clBtnFace;
     FPanelButtonsColor := clBtnFace;
     FSelectedRowColor := clHighlight;
+    FSelectedRowFontColor := clHighlightText;
     FFontColor := clWindowText;
   end;
 

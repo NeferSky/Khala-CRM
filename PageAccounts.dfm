@@ -1,9 +1,9 @@
 inherited frmPageAccounts: TfrmPageAccounts
-  Left = 289
-  Top = 198
+  Left = 1640
+  Top = 101
   Caption = 'frmPageAccounts'
-  ExplicitLeft = 289
-  ExplicitTop = 198
+  ExplicitLeft = 1640
+  ExplicitTop = 101
   PixelsPerInch = 96
   TextHeight = 13
   inherited pnlLeft: TPanel
@@ -11,9 +11,13 @@ inherited frmPageAccounts: TfrmPageAccounts
   end
   inherited pnlWorkArea: TPanel
     inherited pcDetails: TPageControl
-      ActivePage = tsAccountContacts
+      ActivePage = tsAccountGroups
       object tsAccountContacts: TTabSheet
         Caption = #1050#1086#1085#1090#1072#1082#1090#1099
+      end
+      object tsAccountGroups: TTabSheet
+        Caption = #1043#1088#1091#1087#1087#1099
+        ImageIndex = 1
       end
     end
     inherited pcMaster: TPageControl

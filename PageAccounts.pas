@@ -13,6 +13,7 @@ type
   TfrmPageAccounts = class(TfrmBasePage)
     tsAccounts: TTabSheet;
     tsAccountContacts: TTabSheet;
+    tsAccountGroups: TTabSheet;
     //--
     procedure FormCreate(Sender: TObject);
   private
@@ -29,7 +30,7 @@ var
 implementation
 
 uses
-  FormAccounts, FormAccountContacts;
+  FormAccounts, FormAccountContacts, FormAccountGroups;
 
 {$R *.dfm}
 
@@ -51,13 +52,13 @@ procedure TfrmPageAccounts.FormCreate(Sender: TObject);
 begin
   inherited;
 
-  MasterForm := TfrmAccounts.CreateForm(Self,
-    pcMaster.Pages[pcMaster.ActivePageIndex], True);
+  MasterForm := TfrmAccounts.CreateForm(Self, tsAccounts, True);
 
-  DetailsList.Add(TfrmAccountContacts.CreateForm(Self,
-    pcDetails.Pages[pcDetails.ActivePageIndex], False));
+  DetailsList.Add(TfrmAccountContacts.CreateForm(Self, tsAccountContacts, False));
+  DetailsList.Add(TfrmAccountGroups.CreateForm(Self, tsAccountGroups, False));
 
   MasterForm.MoveFirst;
+  pcDetails.ActivePageIndex := 0;
 end;
 
 end.

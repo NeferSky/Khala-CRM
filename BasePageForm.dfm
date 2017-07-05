@@ -42,8 +42,6 @@ object frmBasePage: TfrmBasePage
       Height = 3
       Cursor = crVSplit
       Align = alBottom
-      Color = clBtnFace
-      ParentColor = False
       ExplicitTop = 1
       ExplicitWidth = 518
     end
@@ -114,8 +112,6 @@ object frmBasePage: TfrmBasePage
       Height = 3
       Cursor = crVSplit
       Align = alBottom
-      Color = clBtnFace
-      ParentColor = False
       ExplicitLeft = 1
       ExplicitTop = 1
       ExplicitWidth = 311

@@ -17,7 +17,8 @@ uses
   NsCipher in '..\_Units\NsCipher.pas',
   NsConvertUtils in '..\_Units\NsConvertUtils.pas',
   NsWinUtils in '..\_Units\NsWinUtils.pas',
-  UIThemes in 'UIThemes.pas';
+  UIThemes in 'UIThemes.pas',
+  FormAccountGroups in 'FormAccountGroups.pas' {frmAccountGroups};
 
 {$R *.res}
 

@@ -157,8 +157,14 @@ begin
 
   try
     FDataSet^.SelectSQL.Text := QueryText;
-    if FMasterID <> '' then
-      FDataSet^.ParamByName('MASTER_ID').AsString := FMasterID;
+
+    if FDataSet^.Params.Count > 0 then
+    begin
+      if FMasterID = '' then
+        FMasterID := '00000000-0000-0000-0000-000000000000';
+      FDataSet^.ParamByName('MASTER_ID').AsString  := FMasterID;
+    end;
+
     FDataSet^.Open;
     FDataSet^.FetchAll;
   except

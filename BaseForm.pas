@@ -1117,11 +1117,15 @@ begin
   with TNsCustomDBGrid(Sender) do
   begin
     if DataLink.ActiveRecord = Row - 1 then
-      Canvas.Brush.Color := KhalaTheme.SelectedRowColor
+    begin
+      Canvas.Brush.Color := KhalaTheme.SelectedRowColor;
+      Canvas.Font.Color := KhalaTheme.SelectedRowFontColor;
+    end
     else
+    begin
       Canvas.Brush.Color := clWhite;
-
-    Canvas.Font.Color := clBlack;
+      Canvas.Font.Color := clBlack;
+    end;
   end;
 
   // ќтступы справа-слева внутри €чейки
