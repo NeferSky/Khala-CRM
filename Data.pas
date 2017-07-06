@@ -6,12 +6,17 @@ uses
   System.SysUtils, System.Classes,
   Vcl.Dialogs,
   Data.DB,
-  IBX.IBDatabase, IBX.IBDatabaseInfo;
+  IBX.IBDatabase, IBX.IBDatabaseInfo,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf,
+  FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async,
+  FireDAC.Phys, FireDAC.Phys.FB, FireDAC.Phys.FBDef, FireDAC.Comp.Client;
 
 type
   TdmData = class(TDataModule)
     IBDatabase: TIBDatabase;
     IBTransaction: TIBTransaction;
+    FDConnection: TFDConnection;
+    FDTransaction: TFDTransaction;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private
@@ -42,14 +47,16 @@ procedure TdmData.DataModuleCreate(Sender: TObject);
 begin
   FConfigPath := GetAppPath + '\DBParams.cfg';
   ReadParams;
-  IBDatabase.Open;
+  //IBDatabase.Open;
+  FDConnection.Open;
 end;
 
 //---------------------------------------------------------------------------
 
 procedure TdmData.DataModuleDestroy(Sender: TObject);
 begin
-  IBDatabase.Close;
+  //IBDatabase.Close;
+  FDConnection.Close;
   //WriteParams;
 end;
 

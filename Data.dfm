@@ -23,4 +23,20 @@ object dmData: TdmData
     Left = 32
     Top = 72
   end
+  object FDConnection: TFDConnection
+    Params.Strings = (
+      'DriverID=FB'
+      'Database=E:\Work\Firebird\KHALACRM.FDB'
+      'Password=9225894'
+      'User_Name=sysdba')
+    LoginPrompt = False
+    Transaction = FDTransaction
+    Left = 120
+    Top = 16
+  end
+  object FDTransaction: TFDTransaction
+    Connection = FDConnection
+    Left = 120
+    Top = 72
+  end
 end

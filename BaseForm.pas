@@ -10,7 +10,11 @@ uses
   Data.DB,
   IBX.IBCustomDataSet, IBX.IBSQL,
   frxClass, frxDBSet, frxExportXLS,
-  NsDBGrid, SQLBldr, FieldList, FastFilter, Data, Kh_Consts;
+  NsDBGrid, SQLBldr, FieldList, FastFilter, Data, Kh_Consts, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
+  FireDAC.Comp.Client, FireDAC.Comp.DataSet, FireDAC.UI.Intf,
+  FireDAC.VCLUI.Wait, FireDAC.Comp.UI;
 
 type
   TMasterProc = procedure(ID: String);
@@ -43,14 +47,17 @@ type
     frData: TfrxReport;
     pmnuData: TPopupMenu;
     mnuCreateTicket: TMenuItem;
-    sqlGetReport: TIBSQL;
-    sqlInsertServiceDesk: TIBSQL;
-    dsData: TIBDataSet;
+    sqlGetReport2: TIBSQL;
+    sqlInsertServiceDesk2: TIBSQL;
+    dsData2: TIBDataSet;
     mnuAdd: TMenuItem;
     mnuCopy: TMenuItem;
     mnuEdit: TMenuItem;
     mnuDel: TMenuItem;
     mnuSeparator: TMenuItem;
+    fdData: TFDQuery;
+    comInsertServiceDesk: TFDCommand;
+    qryGetReport: TFDQuery;
     //--
     procedure lblFastFilterClick(Sender: TObject);
     procedure btnCloseFastFilterClick(Sender: TObject);
@@ -81,7 +88,7 @@ type
     procedure btnCopyClick(Sender: TObject);
     procedure btnEditClick(Sender: TObject);
     procedure btnDelClick(Sender: TObject);
-    procedure dsDataAfterScroll(DataSet: TDataSet);
+    procedure dsData2AfterScroll(DataSet: TDataSet);
     procedure grdDataMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure FormShow(Sender: TObject);
@@ -160,8 +167,8 @@ uses
 
 procedure TfrmBaseForm.MoveFirst;
 begin
-  if dsData.Active then
-    dsData.First;
+  if fdData.Active then
+    fdData.First;
 end;
 
 //---------------------------------------------------------------------------
@@ -173,7 +180,7 @@ const
     '(:CREATED_BY_ID, :OWNER_ID, :TABLE_NAME, :RECORD_ID)';
 
 begin
-  sqlGetReport.SQL.Text := S_SQL_GET_REPORT;
+  qryGetReport.SQL.Text := S_SQL_GET_REPORT;
 
   frExportXLS.FileName := Self.Caption;
   btnCloseFastFilter.Visible := False;
@@ -188,7 +195,7 @@ begin
   FFirstOpen := True;
 
   SQLBuilder := TSQLBuilder.Create(Self);
-  SQLBuilder.DataSet := @dsData;
+  SQLBuilder.DataSet := @fdData;
   SQLBuilder.SelectPart := '';
   SQLBuilder.OffsetPart := FCurrentPage;
   SQLBuilder.OrderPart := FOrderByCol;
@@ -282,7 +289,7 @@ const
   DX = 8;
 
 begin
-  with GetFastFilter(TDataSet(dsData)) do // жёстокое и беспощадное приведение типа
+  with GetFastFilter(TDataSet(fdData)) do // жёстокое и беспощадное приведение типа
   begin
     FieldName := FSelectedField;
 
@@ -384,18 +391,18 @@ begin
   K := 0;
 
   // 10 первых подходящих или все
-  while (I < 10) and (K < dsData.Fields.Count) do
+  while (I < 10) and (K < fdData.Fields.Count) do
   begin
     // определенного типа
-    case dsData.Fields.Fields[K].DataType of
+    case fdData.Fields.Fields[K].DataType of
       ftString, ftSmallint, ftInteger, ftWord, ftBoolean, ftFloat, ftCurrency,
       ftDate, ftTime, ftDateTime, ftWideString, ftLargeint, ftTimeStamp,
       ftLongWord, ftShortint, ftByte, ftExtended:
       begin
         // только видимые
-        if dsData.Fields.Fields[K].Visible then
+        if fdData.Fields.Fields[K].Visible then
         begin
-          CreateNewGridColumn(dsData.Fields.Fields[K].FieldName);
+          CreateNewGridColumn(fdData.Fields.Fields[K].FieldName);
           Inc(I);
         end;
       end;
@@ -481,10 +488,10 @@ begin
   if IsNewFieldMoving then
   begin
     ColumnName := GetDraggedToGridColumn;
-    for I := 0 to dsData.FieldCount - 1 do
-      if dsData.Fields[I].DisplayName = ColumnName then
+    for I := 0 to fdData.FieldCount - 1 do
+      if fdData.Fields[I].DisplayName = ColumnName then
       begin
-        CreateNewGridColumn(dsData.Fields[I].FieldName);
+        CreateNewGridColumn(fdData.Fields[I].FieldName);
         Self.Resize;
       end;
   end;
@@ -534,8 +541,8 @@ var
 
 begin
   Column := grdData.Columns.Add;
-  Column.Field := dsData.Fields.FieldByName(FieldName);
-  Column.Title.Caption := dsData.Fields.FieldByName(FieldName).DisplayName; // Да я чертов гений!
+  Column.Field := fdData.Fields.FieldByName(FieldName);
+  Column.Title.Caption := fdData.Fields.FieldByName(FieldName).DisplayName; // Да я чертов гений!
   Column.Title.Font.Style := Column.Title.Font.Style + [fsBold];
   Column.Title.Font.Color := CL_GRID_TITLE;
   Column.Font.Color := CL_TEXT;
@@ -569,15 +576,15 @@ end;
 
 procedure TfrmBaseForm.Disconnect;
 begin
-  dsData.Close;
+  fdData.Close;
 end;
 
 //---------------------------------------------------------------------------
 
-procedure TfrmBaseForm.dsDataAfterScroll(DataSet: TDataSet);
+procedure TfrmBaseForm.dsData2AfterScroll(DataSet: TDataSet);
 begin
   if FIsMaster and (not FMouseWheelScrolling) then
-    (Owner as TfrmBasePage).MasterProc(dsData.FieldByName('ID').AsString);
+    (Owner as TfrmBasePage).MasterProc(fdData.FieldByName('ID').AsString);
 
   // Сбрасывается флаг скроллинга, неважно, был он или не был
   FMouseWheelScrolling := False;
@@ -639,10 +646,10 @@ begin
   // Создание-заполнение списка всех возможных колонок
   AvailableColumns := TStringList.Create;
   AvailableColumns.Clear;
-  for I := 0 to dsData.FieldCount - 1 do
+  for I := 0 to fdData.FieldCount - 1 do
     // берем только видимые
-    if dsData.Fields[I].Visible then
-      AvailableColumns.Add(dsData.Fields[I].DisplayName);
+    if fdData.Fields[I].Visible then
+      AvailableColumns.Add(fdData.Fields[I].DisplayName);
 
   // Смотрим, какие колонки уже есть на гриде
   for I := grdData.Columns.Count - 1 downto 0 do
@@ -744,13 +751,13 @@ begin
   if (ssCtrl in Shift) and (Key = KEY_ARROW_RIGHT) then
     MoveNextPage;
 
-  if ((Key = KEY_ARROW_DOWN) or (Key = KEY_PAGE_DOWN)) and dsData.Eof then
+  if ((Key = KEY_ARROW_DOWN) or (Key = KEY_PAGE_DOWN)) and fdData.Eof then
     MoveNextPage;
 
   if (ssCtrl in Shift) and (Key = KEY_ARROW_LEFT) then
     MovePrevPage;
 
-  if ((Key = KEY_ARROW_UP) or (Key = KEY_PAGE_UP)) and dsData.Bof then
+  if ((Key = KEY_ARROW_UP) or (Key = KEY_PAGE_UP)) and fdData.Bof then
     MovePrevPage;
 end;
 
@@ -855,10 +862,10 @@ var
 begin
   RepStream := TStream.Create;
   try
-    sqlGetReport.ParamByName('FORM_NAME').Value := Self.Name;
-    sqlGetReport.ExecQuery;
-    TBlobField(sqlGetReport.FieldByName('ReportFile')).SaveToStream(RepStream);
-    sqlGetReport.Close;
+    qryGetReport.ParamByName('FORM_NAME').Value := Self.Name;
+    qryGetReport.Open;
+    TBlobField(qryGetReport.FieldByName('ReportFile')).SaveToStream(RepStream);
+    qryGetReport.Close;
 
     frData.LoadFromStream(RepStream);
     frData.PrepareReport;
@@ -926,14 +933,14 @@ end;
 procedure TfrmBaseForm.mnuCreateTicketClick(Sender: TObject);
 begin
   //ShowServiceDeskTicketForm;
-  sqlInsertServiceDesk.ParamByName('CREATED_BY_ID').AsString := frmMain.UserID;
-  sqlInsertServiceDesk.ParamByName('TICKET_NUM').AsInteger := 1;
-  sqlInsertServiceDesk.ParamByName('OWNER_ID').AsString := frmMain.UserID;
-  sqlInsertServiceDesk.ParamByName('TABLE_NAME').AsString := Self.Name;
-  sqlInsertServiceDesk.ParamByName('RECORD_ID').AsString := '''' + dsData.FieldByName('ID').AsString + '''';
-//  sqlInsertServiceDesk.ParamByName('DESCRIPTION').AsString := frmTaskDescription.TaskDescription;
-  sqlInsertServiceDesk.ExecQuery;
-  sqlInsertServiceDesk.Close;
+  comInsertServiceDesk.ParamByName('CREATED_BY_ID').AsString := frmMain.UserID;
+  comInsertServiceDesk.ParamByName('TICKET_NUM').AsInteger := 1;
+  comInsertServiceDesk.ParamByName('OWNER_ID').AsString := frmMain.UserID;
+  comInsertServiceDesk.ParamByName('TABLE_NAME').AsString := Self.Name;
+  comInsertServiceDesk.ParamByName('RECORD_ID').AsString := '''' + fdData.FieldByName('ID').AsString + '''';
+//  comInsertServiceDesk.ParamByName('DESCRIPTION').AsString := frmTaskDescription.TaskDescription;
+  comInsertServiceDesk.Execute;
+  comInsertServiceDesk.Close;
 end;
 
 //---------------------------------------------------------------------------
@@ -973,9 +980,9 @@ var
   Active: Boolean;
 
 begin
-  btnAdd.Enabled := dsData.Active;
+  btnAdd.Enabled := fdData.Active;
 
-  Active := (dsData.Active) and (dsData.RecordCount > 0);
+  Active := (fdData.Active) and (fdData.RecordCount > 0);
   btnCopy.Enabled := Active;
   btnEdit.Enabled := Active;
   btnDel.Enabled := Active;

@@ -1,9 +1,9 @@
 object frmMain: TfrmMain
-  Left = 352
-  Top = 282
+  Left = 1322
+  Top = 244
   Caption = 'CRM Khala'
-  ClientHeight = 601
-  ClientWidth = 854
+  ClientHeight = 586
+  ClientWidth = 844
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,8 +20,8 @@ object frmMain: TfrmMain
   object pcRibbon: TPageControl
     Left = 0
     Top = 0
-    Width = 854
-    Height = 601
+    Width = 844
+    Height = 567
     ActivePage = tsPageAccounts
     Align = alClient
     DoubleBuffered = False
@@ -39,20 +39,18 @@ object frmMain: TfrmMain
     TabHeight = 39
     TabOrder = 0
     OnChange = pcRibbonChange
+    ExplicitWidth = 854
+    ExplicitHeight = 601
     object tsAdmin: TTabSheet
       Caption = 'tsAdmin'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
+      ExplicitWidth = 846
+      ExplicitHeight = 494
     end
     object tsTasks: TTabSheet
       Caption = 'tsTasks'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
+      ExplicitWidth = 846
+      ExplicitHeight = 494
     end
     object tsPageAccounts: TTabSheet
       Caption = #1050#1086#1085#1090#1088#1072#1075#1077#1085#1090#1099
@@ -63,53 +61,86 @@ object frmMain: TfrmMain
       Font.Style = []
       ImageIndex = 2
       ParentFont = False
+      ExplicitWidth = 846
+      ExplicitHeight = 552
     end
     object TabSheet2: TTabSheet
       Caption = 'TabSheet2'
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
+      ExplicitWidth = 846
+      ExplicitHeight = 494
     end
     object TabSheet3: TTabSheet
       Caption = 'TabSheet3'
       ImageIndex = 6
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
+      ExplicitWidth = 846
+      ExplicitHeight = 494
     end
     object TabSheet4: TTabSheet
       Caption = 'TabSheet4'
       ImageIndex = 7
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
+      ExplicitWidth = 846
+      ExplicitHeight = 494
     end
     object TabSheet5: TTabSheet
       Caption = 'TabSheet5'
       ImageIndex = 8
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
+      ExplicitWidth = 846
+      ExplicitHeight = 494
     end
     object TabSheet6: TTabSheet
       Caption = 'TabSheet6'
       ImageIndex = 9
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
+      ExplicitWidth = 846
+      ExplicitHeight = 494
     end
+  end
+  object sbStatus: TStatusBar
+    Left = 0
+    Top = 567
+    Width = 844
+    Height = 19
+    Panels = <
+      item
+        Style = psOwnerDraw
+        Width = 20
+      end
+      item
+        Style = psOwnerDraw
+        Text = #1055#1086#1083#1100#1079#1086#1074#1072#1090#1077#1083#1100': '#1056#1072#1089#1087#1091#1090#1080#1085' '#1057#1077#1088#1075#1077#1081' '#1055#1072#1074#1083#1086#1074#1080#1095
+        Width = 390
+      end
+      item
+        Style = psOwnerDraw
+        Text = #1058#1091#1090' '#1095#1090#1086'-'#1085#1080#1073#1091#1076#1100' '#1077#1097#1077
+        Width = 290
+      end
+      item
+        Alignment = taRightJustify
+        BiDiMode = bdRightToLeft
+        ParentBiDiMode = False
+        Style = psOwnerDraw
+        Text = #1044#1072#1090#1072':'
+        Width = 120
+      end
+      item
+        Alignment = taRightJustify
+        BiDiMode = bdRightToLeft
+        ParentBiDiMode = False
+        Style = psOwnerDraw
+        Text = #1042#1088#1077#1084#1103':'
+        Width = 120
+      end>
+    OnDrawPanel = sbStatusDrawPanel
+    OnResize = sbStatusResize
+    ExplicitTop = 582
+    ExplicitWidth = 854
   end
   object ilRibbon: TImageList
     Left = 16
     Top = 56
     Bitmap = {
-      494C01010D001800800010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010D001800840010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -662,6 +693,12 @@ object frmMain: TfrmMain
   end
   object ilmnuMain: TImageList
     Left = 112
+    Top = 56
+  end
+  object tmrTimer: TTimer
+    Interval = 10000
+    OnTimer = tmrTimerTimer
+    Left = 160
     Top = 56
   end
 end

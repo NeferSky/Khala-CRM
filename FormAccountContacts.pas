@@ -10,26 +10,29 @@ uses
   Data.DB,
   IBX.IBCustomDataSet, IBX.IBSQL,
   frxClass, frxDBSet, frxExportXLS,
-  BaseForm, NsDBGrid;
+  BaseForm, NsDBGrid, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.Client,
+  FireDAC.Comp.DataSet, FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Comp.UI;
 
 type
   TfrmAccountContacts = class(TfrmBaseForm)
-    dsDataID: TIBStringField;
-    dsDataCONTACT_NAME: TIBStringField;
-    dsDataJOB_TITLE: TIBStringField;
-    dsDataJOB_NAME: TIBStringField;
-    dsDataCOMM_TYPE1: TIBStringField;
-    dsDataCOMM1: TIBStringField;
-    dsDataCOMM_TYPE2: TIBStringField;
-    dsDataCOMM2: TIBStringField;
-    dsDataCOMM_TYPE3: TIBStringField;
-    dsDataCOMM3: TIBStringField;
-    dsDataCOMM_TYPE4: TIBStringField;
-    dsDataCOMM4: TIBStringField;
-    dsDataCOMM_TYPE5: TIBStringField;
-    dsDataCOMM5: TIBStringField;
-    dsDataCOMM_TYPE6: TIBStringField;
-    dsDataCOMM6: TIBStringField;
+    fdDataID: TStringField;
+    fdDataCONTACT_NAME: TStringField;
+    fdDataJOB_TITLE: TStringField;
+    fdDataJOB_NAME: TStringField;
+    fdDataCOMM_TYPE1: TStringField;
+    fdDataCOMM1: TStringField;
+    fdDataCOMM_TYPE2: TStringField;
+    fdDataCOMM2: TStringField;
+    fdDataCOMM_TYPE3: TStringField;
+    fdDataCOMM3: TStringField;
+    fdDataCOMM_TYPE4: TStringField;
+    fdDataCOMM4: TStringField;
+    fdDataCOMM_TYPE5: TStringField;
+    fdDataCOMM5: TStringField;
+    fdDataCOMM_TYPE6: TStringField;
+    fdDataCOMM6: TStringField;
   private
     { Private declarations }
   public
@@ -44,11 +47,10 @@ const
 implementation
 
 {$R *.dfm}
-
 { TfrmAccountContacts }
 
-class function TfrmAccountContacts.CreateForm(AOwner: TComponent; AParent: TWinControl;
-  IsMaster: Boolean): TfrmBaseForm;
+class function TfrmAccountContacts.CreateForm(AOwner: TComponent;
+  AParent: TWinControl; IsMaster: Boolean): TfrmBaseForm;
 begin
   Result := TfrmAccountContacts.ACreate(AOwner, AParent, IsMaster);
   Result.SQLText := SQL_GET_ACCOUNT_CONTACTS;

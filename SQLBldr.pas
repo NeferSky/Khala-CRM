@@ -3,7 +3,7 @@ unit SQLBldr;
 interface
 
 uses
-  Classes, SysUtils, DB, IBX.IBCustomDataSet, IBX.IBSQL;
+  Classes, SysUtils, DB, FireDAC.Comp.Client, IBX.IBCustomDataSet, IBX.IBSQL;
 
 type
   ERebuildQuery = class(Exception)
@@ -11,7 +11,7 @@ type
   end;
 
 type
-  PDataSet = ^TIBDataSet;
+  PDataSet = ^TFDQuery;
 
 type
   TSQLBuilder = class(TObject)
@@ -24,7 +24,7 @@ type
     FOffsetPart: Integer; // rows ... to ...
     FMasterID: String; // ID из мастер-датасета
     FDataSet: PDataSet; // Датасет на фрейме-владельце. Надо бы через pointer с ним работать, наверное
-    FsqlRowCount: TIBSQL; // Местный датасет для получения кол-ва строк
+    FqryRowCount: TFDQuery; // Местный датасет для получения кол-ва строк
     FRowCount: Integer; // Кол-во строк, возвращаемых запросом
     procedure ExecuteQuery(QueryText: String);
     procedure CalcRowCount(QueryText: String);
@@ -133,18 +133,18 @@ procedure TSQLBuilder.CalcRowCount(QueryText: String);
 begin
   FRowCount := 0;
 
-  if FsqlRowCount = nil then
+  if FqryRowCount = nil then
     Exit;
 
-  if FsqlRowCount.Open then
-    FsqlRowCount.Close;
+  if FqryRowCount.Active then
+    FqryRowCount.Close;
 
   try
-    FsqlRowCount.SQL.Text := Format('SELECT Count(*) FROM(%s)', [QueryText]);
-    FsqlRowCount.ExecQuery;
-    FRowCount := FsqlRowCount.Fields[0].AsInteger;
+    FqryRowCount.SQL.Text := Format('SELECT Count(*) FROM(%s)', [QueryText]);
+    FqryRowCount.Open;
+    FRowCount := FqryRowCount.Fields[0].AsInteger;
   finally
-    FsqlRowCount.Close;
+    FqryRowCount.Close;
   end;
 end;
 
@@ -156,7 +156,7 @@ begin
     FDataSet^.Close;
 
   try
-    FDataSet^.SelectSQL.Text := QueryText;
+    FDataSet^.SQL.Text := QueryText;
 
     if FDataSet^.Params.Count > 0 then
     begin
@@ -181,14 +181,14 @@ begin
   inherited Create;
 
   FDataSet := nil;
-  FsqlRowCount := TIBSQL.Create(AOwner);
+  FqryRowCount := TFDQuery.Create(AOwner);
 end;
 
 //---------------------------------------------------------------------------
 
 destructor TSQLBuilder.Destroy;
 begin
-  FsqlRowCount.Free;
+  FqryRowCount.Free;
   FDataSet := nil;
 
   inherited;
@@ -266,8 +266,8 @@ begin
   if FDataSet <> Value then
   begin
     FDataSet := Value;
-    FsqlRowCount.Database := Value^.Database;
-    FsqlRowCount.Transaction := Value^.Transaction;
+    FqryRowCount.Connection := Value^.Connection;
+    FqryRowCount.Transaction := Value^.Transaction;
   end;
 end;
 

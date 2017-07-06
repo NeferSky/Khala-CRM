@@ -10,32 +10,35 @@ uses
   Data.DB,
   IBX.IBCustomDataSet, IBX.IBSQL,
   frxClass, frxDBSet, frxExportXLS,
-  BaseForm, NsDBGrid;
+  BaseForm, NsDBGrid, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.Client,
+  FireDAC.Comp.DataSet;
 
 type
   TfrmAccounts = class(TfrmBaseForm)
-    dsDataID: TIBStringField;
-    dsDataACCOUNT_NAME: TIBStringField;
-    dsDataACCOUNT_TYPE_NAME: TIBStringField;
-    dsDataCONTACT_NAME: TIBStringField;
-    dsDataOWNER_NAME: TIBStringField;
-    dsDataCREATOR_NAME: TIBStringField;
-    dsDataCREATED_DATE: TDateTimeField;
-    dsDataMODIFIER_NAME: TIBStringField;
-    dsDataMODIFIED_DATE: TDateTimeField;
-    dsDataOFFICIAL_ACCOUNT_NAME: TIBStringField;
-    dsDataCITY_NAME: TIBStringField;
-    dsDataPOST_AUTONOM: TIBStringField;
-    dsDataACCOUNT_INN: TIBStringField;
-    dsDataACCOUNT_KPP: TIBStringField;
-    dsDataACCOUNT_CATEGORY_NAME: TIBStringField;
-    dsDataREGION_NAME: TIBStringField;
-    dsDataACCOUNT_POST_ADDRESS: TIBStringField;
-    dsDataACCOUNT_LEGAL_ADDRESS: TIBStringField;
-    dsDataACCOUNT_NOTE: TIBStringField;
-    dsDataACCOUNT_CALL_NOTE: TIBStringField;
-    dsDataCLIENTS_VALUE_ID: TIBStringField;
-    dsDataTIME_DIFFERENCE: TIntegerField;
+    fdDataID: TStringField;
+    fdDataACCOUNT_NAME: TStringField;
+    fdDataACCOUNT_TYPE_NAME: TStringField;
+    fdDataCONTACT_NAME: TStringField;
+    fdDataOWNER_NAME: TStringField;
+    fdDataCREATOR_NAME: TStringField;
+    fdDataCREATED_DATE: TSQLTimeStampField;
+    fdDataMODIFIER_NAME: TStringField;
+    fdDataMODIFIED_DATE: TSQLTimeStampField;
+    fdDataOFFICIAL_ACCOUNT_NAME: TStringField;
+    fdDataCITY_NAME: TStringField;
+    fdDataPOST_AUTONOM: TStringField;
+    fdDataACCOUNT_INN: TStringField;
+    fdDataACCOUNT_KPP: TStringField;
+    fdDataACCOUNT_CATEGORY_NAME: TStringField;
+    fdDataREGION_NAME: TStringField;
+    fdDataACCOUNT_POST_ADDRESS: TStringField;
+    fdDataACCOUNT_LEGAL_ADDRESS: TStringField;
+    fdDataACCOUNT_NOTE: TStringField;
+    fdDataACCOUNT_CALL_NOTE: TStringField;
+    fdDataCLIENTS_VALUE_ID: TStringField;
+    fdDataTIME_DIFFERENCE: TIntegerField;
   private
     { Private declarations }
   public

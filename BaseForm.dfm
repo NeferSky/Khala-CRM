@@ -1,6 +1,6 @@
 object frmBaseForm: TfrmBaseForm
-  Left = 502
-  Top = 176
+  Left = 487
+  Top = 156
   Align = alClient
   BorderStyle = bsNone
   Caption = 'frmBaseForm'
@@ -467,14 +467,14 @@ object frmBaseForm: TfrmBaseForm
     OnTitleClick = grdDataTitleClick
   end
   object srcData: TDataSource
-    DataSet = dsData
+    DataSet = fdData
     Left = 72
     Top = 24
   end
   object frdsData: TfrxDBDataset
     UserName = 'sa'
     CloseDataSource = False
-    DataSet = dsData
+    DataSet = fdData
     BCDToCurrency = False
     Left = 120
     Top = 24
@@ -546,28 +546,45 @@ object frmBaseForm: TfrmBaseForm
       OnClick = mnuCreateTicketClick
     end
   end
-  object sqlGetReport: TIBSQL
+  object sqlGetReport2: TIBSQL
     Database = dmData.IBDatabase
     Transaction = dmData.IBTransaction
     Left = 24
     Top = 80
   end
-  object sqlInsertServiceDesk: TIBSQL
+  object sqlInsertServiceDesk2: TIBSQL
     Database = dmData.IBDatabase
     Transaction = dmData.IBTransaction
     Left = 120
     Top = 80
   end
-  object dsData: TIBDataSet
+  object dsData2: TIBDataSet
     Database = dmData.IBDatabase
     Transaction = dmData.IBTransaction
     AfterOpen = qryDataADOAfterOpen
-    AfterScroll = dsDataAfterScroll
+    AfterScroll = dsData2AfterScroll
     BufferChunks = 1000
     CachedUpdates = False
     ParamCheck = True
     UniDirectional = False
     Left = 24
     Top = 24
+  end
+  object fdData: TFDQuery
+    AfterOpen = qryDataADOAfterOpen
+    AfterScroll = dsData2AfterScroll
+    Connection = dmData.FDConnection
+    Left = 24
+    Top = 136
+  end
+  object comInsertServiceDesk: TFDCommand
+    Connection = dmData.FDConnection
+    Left = 120
+    Top = 136
+  end
+  object qryGetReport: TFDQuery
+    Connection = dmData.FDConnection
+    Left = 24
+    Top = 192
   end
 end
