@@ -38,7 +38,7 @@ object frmFastFilter: TfrmFastFilter
     Width = 305
     Height = 21
     DropDownCount = 10
-    TabOrder = 0
+    TabOrder = 6
     TabStop = False
     Text = 'cmbColumns'
     OnChange = cmbColumnsChange
@@ -50,7 +50,7 @@ object frmFastFilter: TfrmFastFilter
     Top = 40
     Width = 305
     Height = 21
-    TabOrder = 1
+    TabOrder = 0
     Text = '0'
   end
   object btnOk: TButton
@@ -61,7 +61,7 @@ object frmFastFilter: TfrmFastFilter
     Caption = #1054#1050
     Default = True
     ModalResult = 1
-    TabOrder = 2
+    TabOrder = 1
   end
   object btnCancel: TButton
     Left = 304
@@ -71,14 +71,14 @@ object frmFastFilter: TfrmFastFilter
     Cancel = True
     Caption = #1054#1090#1084#1077#1085#1072
     ModalResult = 2
-    TabOrder = 3
+    TabOrder = 2
   end
   object udValue: TUpDown
     Left = 361
     Top = 39
     Width = 17
     Height = 21
-    TabOrder = 4
+    TabOrder = 3
   end
   object chbValue: TCheckBox
     Left = 72
@@ -86,7 +86,7 @@ object frmFastFilter: TfrmFastFilter
     Width = 97
     Height = 17
     Caption = 'chbValue'
-    TabOrder = 5
+    TabOrder = 4
     OnClick = chbValueClick
   end
   object dtValue: TDateTimePicker
@@ -96,6 +96,6 @@ object frmFastFilter: TfrmFastFilter
     Height = 21
     Date = 42891.000000000000000000
     Time = 42891.000000000000000000
-    TabOrder = 6
+    TabOrder = 5
   end
 end

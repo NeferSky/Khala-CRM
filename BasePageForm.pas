@@ -11,22 +11,22 @@ uses
 
 type
   TfrmBasePage = class(TForm)
-    splLeft: TSplitter;
     pnlLeft: TPanel;
-    splFilter: TSplitter;
-    pnlFilterArea: TPanel;
     pnlActions: TPanel;
     lblActions: TLabel;
     lblReports: TLabel;
+    splFilter: TSplitter;
+    pnlFilterArea: TPanel;
+    splLeft: TSplitter;
     pnlWorkArea: TPanel;
+    pcMaster: TPageControl;
     splDetails: TSplitter;
     pcDetails: TPageControl;
-    pcMaster: TPageControl;
     //--
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure pcDetailsChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure pcDetailsChange(Sender: TObject);
   private
     { Private declarations }
     procedure ResetTheme(var Msg: TMessage); message KH_RESET_THEME;
@@ -66,14 +66,6 @@ end;
 
 //---------------------------------------------------------------------------
 
-class function TfrmBasePage.GetPage(AOwner: TComponent;
-  AParent: TWinControl): TfrmBasePage;
-begin
-  // virtual;
-end;
-
-//---------------------------------------------------------------------------
-
 procedure TfrmBasePage.FormCreate(Sender: TObject);
 begin
   // Подсветка контролов при наведении курсора
@@ -87,14 +79,20 @@ end;
 //---------------------------------------------------------------------------
 
 procedure TfrmBasePage.FormDestroy(Sender: TObject);
+var
+  I: Integer;
 begin
+  for I := 0 to DetailsList.Count - 1 do
+    if DetailsList[I] <> nil then
+      DetailsList[I].Free;
+
   DetailsList.Free;
 end;
 
 //---------------------------------------------------------------------------
 
-// Применение цветов темы
 procedure TfrmBasePage.FormShow(Sender: TObject);
+// Применение цветов темы
 var
   Dummy: TMessage;
 begin
@@ -103,8 +101,16 @@ end;
 
 //---------------------------------------------------------------------------
 
-// Вызывается мастер-датасетом страницы при передвижении по записям
+class function TfrmBasePage.GetPage(AOwner: TComponent;
+  AParent: TWinControl): TfrmBasePage;
+begin
+  // virtual;
+end;
+
+//---------------------------------------------------------------------------
+
 procedure TfrmBasePage.MasterProc(ID: String);
+// Вызывается мастер-датасетом страницы при передвижении по записям
 var
   I: Integer;
   NeedUpdate: Boolean;
@@ -140,9 +146,9 @@ end;
 
 //---------------------------------------------------------------------------
 
+procedure TfrmBasePage.pcDetailsChange(Sender: TObject);
 // Отключение датасетов на вкладках, кроме той, что открыта сейчас (для экономии,
 // чтобы не передергивать по 5-10 датасетов на одно перемещение по строкам)
-procedure TfrmBasePage.pcDetailsChange(Sender: TObject);
 var
   I: Integer;
 begin
@@ -154,13 +160,16 @@ end;
 
 //---------------------------------------------------------------------------
 
-// Применение цветов темы
 procedure TfrmBasePage.ResetTheme(var Msg: TMessage);
+// Применение цветов темы
 var
   I: Integer;
 begin
   Color := KhalaTheme.PanelFilterColor;
   pnlFilterArea.Color := KhalaTheme.PanelButtonsColor;
+  splLeft.Color := KhalaTheme.PanelButtonsColor;
+  splFilter.Color := KhalaTheme.PanelButtonsColor;
+  splDetails.Color := KhalaTheme.PanelButtonsColor;
 
   PostMessage(MasterForm.Handle, KH_RESET_THEME, 0, 0);
   for I := 0 to DetailsList.Count - 1 do

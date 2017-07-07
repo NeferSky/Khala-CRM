@@ -1,6 +1,6 @@
 object frmBasePage: TfrmBasePage
-  Left = 354
-  Top = 294
+  Left = 2015
+  Top = 218
   Align = alClient
   BorderStyle = bsNone
   Caption = 'frmBasePage'
@@ -33,37 +33,44 @@ object frmBasePage: TfrmBasePage
     Width = 161
     Height = 601
     Align = alLeft
+    BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
     object splFilter: TSplitter
-      Left = 1
-      Top = 340
-      Width = 159
+      Left = 0
+      Top = 341
+      Width = 161
       Height = 3
       Cursor = crVSplit
       Align = alBottom
+      ExplicitLeft = 1
       ExplicitTop = 1
       ExplicitWidth = 518
     end
     object pnlFilterArea: TPanel
-      Left = 1
-      Top = 343
-      Width = 159
+      Left = 0
+      Top = 344
+      Width = 161
       Height = 257
       Align = alBottom
-      BevelOuter = bvNone
       Color = clActiveCaption
       ParentBackground = False
       TabOrder = 0
+      ExplicitLeft = 1
+      ExplicitTop = 343
+      ExplicitWidth = 159
     end
     object pnlActions: TPanel
-      Left = 1
-      Top = 1
-      Width = 159
+      Left = 0
+      Top = 0
+      Width = 161
       Height = 32
       Align = alTop
       ParentColor = True
       TabOrder = 1
+      ExplicitLeft = 1
+      ExplicitTop = 1
+      ExplicitWidth = 159
       object lblActions: TLabel
         Left = 8
         Top = 8

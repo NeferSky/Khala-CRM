@@ -2,6 +2,8 @@ unit Data;
 
 interface
 
+{ $DEFINE MAKE_PARAMS}
+
 uses
   System.SysUtils, System.Classes,
   Vcl.Dialogs,
@@ -13,15 +15,15 @@ uses
 
 type
   TdmData = class(TDataModule)
-    IBDatabase: TIBDatabase;
-    IBTransaction: TIBTransaction;
     FDConnection: TFDConnection;
     FDTransaction: TFDTransaction;
+    //--
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private
     { Private declarations }
     FConfigPath: String;
+    //--
     procedure ReadParams;
     procedure WriteParams;
   public
@@ -35,19 +37,21 @@ implementation
 
 uses
   System.IniFiles,
-  NsCipher, NsWinUtils, NsConvertUtils;
+  NsCipher, NsWinUtils, NsConvertUtils, Kh_Utils;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
 {$R *.dfm}
 
+{ TdmData }
 //---------------------------------------------------------------------------
 
 procedure TdmData.DataModuleCreate(Sender: TObject);
 begin
   FConfigPath := GetAppPath + '\DBParams.cfg';
+  {$IFNDEF MAKE_PARAMS}
   ReadParams;
-  //IBDatabase.Open;
+  {$ENDIF}
   FDConnection.Open;
 end;
 
@@ -55,9 +59,10 @@ end;
 
 procedure TdmData.DataModuleDestroy(Sender: TObject);
 begin
-  //IBDatabase.Close;
   FDConnection.Close;
-  //WriteParams;
+  {$IFDEF MAKE_PARAMS}
+  WriteParams;
+  {$ENDIF}
 end;
 
 //---------------------------------------------------------------------------
@@ -65,22 +70,18 @@ end;
 procedure TdmData.ReadParams;
 var
   Ini: TIniFile;
-  DatabaseName, ServerName, Params: String;
+  Params: String;
+
 begin
   Ini := TIniFile.Create(FConfigPath);
   try
     if Ini.SectionExists('Database') then
-    begin
-      ServerName := Ini.ReadString('Database', 'ServerName', 'DefaultServerName');
-      DatabaseName := Ini.ReadString('Database', 'DatabaseName', 'DefaultDatabaseName');
       Params := Ini.ReadString('Database', 'ConnectionString', '')
-    end;
   finally
     Ini.Free;
   end;
 
-  IBDatabase.DatabaseName := Format('%s:%s', [ServerName, DatabaseName]);
-  IBDatabase.Params.Text := TXEBICipher.Crypt(HexToStr(Params), 'En taro Adun!');
+  FDConnection.Params.Text := TXEBICipher.Crypt(HexToStr(Params), TUtils.Smile);
 end;
 
 //---------------------------------------------------------------------------
@@ -88,16 +89,13 @@ end;
 procedure TdmData.WriteParams;
 var
   Ini: TIniFile;
-  DatabaseName, ServerName, Params: String;
+  Params: String;
+
 begin
-  Params := StrToHex(TXEBICipher.Crypt(IBDatabase.Params.Text, 'En taro Adun!'));
-  ServerName := Copy(IBDatabase.DatabaseName, 1, Pos(':', IBDatabase.DatabaseName) - 1);
-  DatabaseName := Copy(IBDatabase.DatabaseName, Pos(':', IBDatabase.DatabaseName) + 1, Length(IBDatabase.DatabaseName) - Pos(':', IBDatabase.DatabaseName));
+  Params := StrToHex(TXEBICipher.Crypt(FDConnection.Params.Text, TUtils.Smile));
 
   Ini := TIniFile.Create(FConfigPath);
   try
-    Ini.WriteString('Database', 'ServerName', ServerName);
-    Ini.WriteString('Database', 'DatabaseName', DatabaseName);
     Ini.WriteString('Database', 'ConnectionString', Params);
   finally
     Ini.Free;

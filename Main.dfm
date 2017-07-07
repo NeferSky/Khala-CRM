@@ -39,18 +39,12 @@ object frmMain: TfrmMain
     TabHeight = 39
     TabOrder = 0
     OnChange = pcRibbonChange
-    ExplicitWidth = 854
-    ExplicitHeight = 601
     object tsAdmin: TTabSheet
       Caption = 'tsAdmin'
-      ExplicitWidth = 846
-      ExplicitHeight = 494
     end
     object tsTasks: TTabSheet
       Caption = 'tsTasks'
       ImageIndex = 1
-      ExplicitWidth = 846
-      ExplicitHeight = 494
     end
     object tsPageAccounts: TTabSheet
       Caption = #1050#1086#1085#1090#1088#1072#1075#1077#1085#1090#1099
@@ -61,38 +55,26 @@ object frmMain: TfrmMain
       Font.Style = []
       ImageIndex = 2
       ParentFont = False
-      ExplicitWidth = 846
-      ExplicitHeight = 552
     end
     object TabSheet2: TTabSheet
       Caption = 'TabSheet2'
       ImageIndex = 3
-      ExplicitWidth = 846
-      ExplicitHeight = 494
     end
     object TabSheet3: TTabSheet
       Caption = 'TabSheet3'
       ImageIndex = 6
-      ExplicitWidth = 846
-      ExplicitHeight = 494
     end
     object TabSheet4: TTabSheet
       Caption = 'TabSheet4'
       ImageIndex = 7
-      ExplicitWidth = 846
-      ExplicitHeight = 494
     end
     object TabSheet5: TTabSheet
       Caption = 'TabSheet5'
       ImageIndex = 8
-      ExplicitWidth = 846
-      ExplicitHeight = 494
     end
     object TabSheet6: TTabSheet
       Caption = 'TabSheet6'
       ImageIndex = 9
-      ExplicitWidth = 846
-      ExplicitHeight = 494
     end
   end
   object sbStatus: TStatusBar
@@ -133,14 +115,12 @@ object frmMain: TfrmMain
       end>
     OnDrawPanel = sbStatusDrawPanel
     OnResize = sbStatusResize
-    ExplicitTop = 582
-    ExplicitWidth = 854
   end
   object ilRibbon: TImageList
     Left = 16
     Top = 56
     Bitmap = {
-      494C01010D001800840010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010D001800880010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

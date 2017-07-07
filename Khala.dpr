@@ -18,7 +18,8 @@ uses
   NsConvertUtils in '..\_Units\NsConvertUtils.pas',
   NsWinUtils in '..\_Units\NsWinUtils.pas',
   UIThemes in 'UIThemes.pas',
-  FormAccountGroups in 'FormAccountGroups.pas' {frmAccountGroups};
+  FormAccountGroups in 'FormAccountGroups.pas' {frmAccountGroups},
+  FormLogon in 'FormLogon.pas' {frmLogon};
 
 {$R *.res}
 
@@ -26,7 +27,14 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.Title := 'Khala CRM';
+  InitThemesManager;
   Application.CreateForm(TdmData, dmData);
-  Application.CreateForm(TfrmMain, frmMain);
-  Application.Run;
+  if Logon then
+  begin
+    Application.CreateForm(TfrmMain, frmMain);
+    Application.Run;
+  end
+  else
+    dmData.Free;
+
 end.

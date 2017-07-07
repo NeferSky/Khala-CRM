@@ -1,5 +1,9 @@
 inherited frmAccountGroups: TfrmAccountGroups
+  Left = 960
+  Top = 73
   Caption = 'frmAccountGroups'
+  ExplicitLeft = 960
+  ExplicitTop = 73
   PixelsPerInch = 96
   TextHeight = 13
   inherited frData: TfrxReport

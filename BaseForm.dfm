@@ -1,6 +1,6 @@
 object frmBaseForm: TfrmBaseForm
-  Left = 487
-  Top = 156
+  Left = 1312
+  Top = 290
   Align = alClient
   BorderStyle = bsNone
   Caption = 'frmBaseForm'
@@ -26,6 +26,7 @@ object frmBaseForm: TfrmBaseForm
     Width = 679
     Height = 37
     Align = alBottom
+    BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
     DesignSize = (
@@ -312,6 +313,7 @@ object frmBaseForm: TfrmBaseForm
       Top = 6
       Width = 23
       Height = 22
+      Hint = 'First'
       Anchors = [akTop, akRight]
       Glyph.Data = {
         36030000424D3603000000000000360000002800000010000000100000000100
@@ -340,7 +342,6 @@ object frmBaseForm: TfrmBaseForm
         C9AEFFF2C58CEDB166F2C58CC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFF7DCBAF2C5
         8CC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9
         AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFF}
-      OnClick = btnFirstPageClick
       ExplicitLeft = 244
     end
     object edtPage: TEdit
@@ -374,6 +375,7 @@ object frmBaseForm: TfrmBaseForm
     Width = 679
     Height = 37
     Align = alBottom
+    BevelOuter = bvNone
     Color = clActiveCaption
     ParentBackground = False
     TabOrder = 1
@@ -546,45 +548,25 @@ object frmBaseForm: TfrmBaseForm
       OnClick = mnuCreateTicketClick
     end
   end
-  object sqlGetReport2: TIBSQL
-    Database = dmData.IBDatabase
-    Transaction = dmData.IBTransaction
-    Left = 24
-    Top = 80
-  end
-  object sqlInsertServiceDesk2: TIBSQL
-    Database = dmData.IBDatabase
-    Transaction = dmData.IBTransaction
-    Left = 120
-    Top = 80
-  end
-  object dsData2: TIBDataSet
-    Database = dmData.IBDatabase
-    Transaction = dmData.IBTransaction
-    AfterOpen = qryDataADOAfterOpen
-    AfterScroll = dsData2AfterScroll
-    BufferChunks = 1000
-    CachedUpdates = False
-    ParamCheck = True
-    UniDirectional = False
-    Left = 24
-    Top = 24
-  end
   object fdData: TFDQuery
-    AfterOpen = qryDataADOAfterOpen
-    AfterScroll = dsData2AfterScroll
+    AfterOpen = fdDataAfterOpen
+    AfterScroll = fdDataAfterScroll
     Connection = dmData.FDConnection
     Left = 24
-    Top = 136
+    Top = 24
   end
   object comInsertServiceDesk: TFDCommand
     Connection = dmData.FDConnection
     Left = 120
-    Top = 136
+    Top = 80
   end
   object qryGetReport: TFDQuery
     Connection = dmData.FDConnection
     Left = 24
-    Top = 192
+    Top = 80
+  end
+  object aclActions: TActionList
+    Left = 120
+    Top = 136
   end
 end

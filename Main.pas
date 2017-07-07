@@ -4,12 +4,13 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages,
+  System.ImageList,
   Generics.Collections,
   System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
-  Vcl.ExtCtrls, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.Menus,
+  Vcl.ExtCtrls, Vcl.ImgList, Vcl.ComCtrls, Vcl.Menus,
   Registry,
-  Data, UIThemes, Kh_Consts, BasePageForm;
+  Data, UIThemes, Kh_Consts, BasePageForm, FormLogon;
 
 type
   TfrmMain = class(TForm)
@@ -18,22 +19,25 @@ type
     tsTasks: TTabSheet;
     tsPageAccounts: TTabSheet;
     TabSheet2: TTabSheet;
-    ilRibbon: TImageList;
     TabSheet3: TTabSheet;
     TabSheet4: TTabSheet;
     TabSheet5: TTabSheet;
     TabSheet6: TTabSheet;
-    mnuMain: TMainMenu;
+    sbStatus: TStatusBar;
+    //--
+    tmrTimer: TTimer;
+    ilRibbon: TImageList;
     ilmnuMain: TImageList;
+    //--
+    mnuMain: TMainMenu;
     mnuFile: TMenuItem;
     mnuSettings: TMenuItem;
     mnuTheme: TMenuItem;
-    sbStatus: TStatusBar;
-    tmrTimer: TTimer;
+    //--
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure pcRibbonChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure pcRibbonChange(Sender: TObject);
     procedure sbStatusDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel;
       const Rect: TRect);
     procedure sbStatusResize(Sender: TObject);
@@ -42,16 +46,18 @@ type
     { Private declarations }
     FUserID: String;
     FUserName: String;
-    PagesArr: Array of TfrmBasePage;
+    PagesArr: Array of TfrmBasePage; // Массив, содержащий созданные страницы
+    //--
     procedure PrepareThemesMenu;
     procedure ReadIni;
-    procedure WriteIni;
-    procedure ShowStatusbarInfo;
     procedure ResetTheme(var Msg: TMessage); message KH_RESET_THEME;
+    procedure ShowStatusbarInfo;
     procedure ThemeMenuClick(Sender: TObject);
+    procedure WriteIni;
   public
     { Public declarations }
     property UserID: String read FUserID;
+    property UserName: String read FUserName;
   end;
 
 var
@@ -64,12 +70,13 @@ uses
 
 {$R *.dfm}
 
+{ TfrmMain }
+
 //---------------------------------------------------------------------------
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   SetLength(PagesArr, pcRibbon.PageCount);
-  InitThemesManager;
   PrepareThemesMenu;
   ReadIni;
 
@@ -90,8 +97,8 @@ end;
 
 //---------------------------------------------------------------------------
 
-// Применение цветов темы
 procedure TfrmMain.FormShow(Sender: TObject);
+// Применение цветов темы
 var
   Dummy: TMessage;
 begin
@@ -112,8 +119,8 @@ end;
 
 //---------------------------------------------------------------------------
 
-// Заполнение пунктов меню тем оформления
 procedure TfrmMain.PrepareThemesMenu;
+// Заполнение пунктов меню тем оформления
 var
   I: Integer;
   mnuItem: TMenuItem;
@@ -154,14 +161,12 @@ end;
 
 //---------------------------------------------------------------------------
 
-// Применение цветов темы
 procedure TfrmMain.ResetTheme(var Msg: TMessage);
+// Применение цветов темы
 var
   I: Integer;
 begin
   Self.Color := KhalaTheme.PanelFilterColor;
-//  sbStatus.Invalidate;
-//  sbStatus.Repaint;
 
   for I := 0 to pcRibbon.PageCount - 1 do
     if PagesArr[I] <> nil then
@@ -170,9 +175,9 @@ end;
 
 //---------------------------------------------------------------------------
 
-// Применение цветов темы
 procedure TfrmMain.sbStatusDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel;
   const Rect: TRect);
+// Применение цветов темы
 var
   RectForText: TRect;
 begin
@@ -195,8 +200,8 @@ end;
 
 //---------------------------------------------------------------------------
 
-// Постоянная информация в статусбаре
 procedure TfrmMain.ShowStatusbarInfo;
+// Постоянная информация в статусбаре
 begin
   sbStatus.Panels[1].Text := 'Пользователь: ' + FUserName;
   sbStatus.Panels[2].Text := 'Тут еще какая-нибудь фигня';
@@ -206,8 +211,8 @@ end;
 
 //---------------------------------------------------------------------------
 
-// Выбор цветовой темы в меню
 procedure TfrmMain.ThemeMenuClick(Sender: TObject);
+// Выбор цветовой темы в меню
 begin
   ChooseTheme(mnuTheme.IndexOf((Sender as TMenuItem)));
   (Sender as TMenuItem).Checked := True;
@@ -215,8 +220,8 @@ end;
 
 //---------------------------------------------------------------------------
 
-// Время в статусбаре
 procedure TfrmMain.tmrTimerTimer(Sender: TObject);
+// Время в статусбаре
 begin
   sbStatus.Panels[4].Text := 'Время: ' + FormatDateTime('t', Time);
 end;

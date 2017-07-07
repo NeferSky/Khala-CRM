@@ -4,17 +4,17 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages,
-  System.SysUtils, System.Variants, System.Classes,
+  System.SysUtils, System.Variants, System.Classes, System.Actions,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Grids, Vcl.DBGrids,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Menus,
+  Vcl.ActnList,
   Data.DB,
-  IBX.IBCustomDataSet, IBX.IBSQL,
   frxClass, frxDBSet, frxExportXLS,
-  NsDBGrid, SQLBldr, FieldList, FastFilter, Data, Kh_Consts, FireDAC.Stan.Intf,
-  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
-  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
-  FireDAC.Comp.Client, FireDAC.Comp.DataSet, FireDAC.UI.Intf,
-  FireDAC.VCLUI.Wait, FireDAC.Comp.UI;
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.Client, FireDAC.Comp.DataSet,
+  FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Comp.UI,
+  NsDBGrid, SQLBldr, FieldList, FastFilter, Data, Kh_Consts;
 
 type
   TMasterProc = procedure(ID: String);
@@ -22,76 +22,76 @@ type
 
 type
   TfrmBaseForm = class(TForm)
-    pnlFastFilter: TPanel;
-    btnCloseFastFilter: TSpeedButton;
-    lblFastFilter: TLabel;
-    btnPrint: TSpeedButton;
-    btnExport: TSpeedButton;
-    btnRefresh: TSpeedButton;
-    btnPlus: TSpeedButton;
-    btnNextPage: TSpeedButton;
-    btnPrevPage: TSpeedButton;
-    lblPage: TLabel;
-    btnFirstPage: TSpeedButton;
-    edtPage: TEdit;
-    udPage: TUpDown;
+    grdData: TNsCustomDBGrid;
     pnlButtons: TPanel;
     btnAdd: TBitBtn;
     btnCopy: TBitBtn;
     btnEdit: TBitBtn;
     btnDel: TBitBtn;
+    pnlFastFilter: TPanel;
+    btnCloseFastFilter: TSpeedButton;
+    lblFastFilter: TLabel;
+    btnFirstPage: TSpeedButton;
+    btnPrevPage: TSpeedButton;
+    lblPage: TLabel;
+    edtPage: TEdit;
+    udPage: TUpDown;
+    btnNextPage: TSpeedButton;
+    btnRefresh: TSpeedButton;
+    btnExport: TSpeedButton;
+    btnPrint: TSpeedButton;
+    btnPlus: TSpeedButton;
+    //--
+    aclActions: TActionList;
+    fdData: TFDQuery;
     srcData: TDataSource;
-    grdData: TNsCustomDBGrid;
+    qryGetReport: TFDQuery;
+    comInsertServiceDesk: TFDCommand;
     frdsData: TfrxDBDataset;
-    frExportXLS: TfrxXLSExport;
     frData: TfrxReport;
+    frExportXLS: TfrxXLSExport;
+    //--
     pmnuData: TPopupMenu;
-    mnuCreateTicket: TMenuItem;
-    sqlGetReport2: TIBSQL;
-    sqlInsertServiceDesk2: TIBSQL;
-    dsData2: TIBDataSet;
     mnuAdd: TMenuItem;
     mnuCopy: TMenuItem;
     mnuEdit: TMenuItem;
     mnuDel: TMenuItem;
     mnuSeparator: TMenuItem;
-    fdData: TFDQuery;
-    comInsertServiceDesk: TFDCommand;
-    qryGetReport: TFDQuery;
+    mnuCreateTicket: TMenuItem;
     //--
-    procedure lblFastFilterClick(Sender: TObject);
+    procedure btnAddClick(Sender: TObject);
     procedure btnCloseFastFilterClick(Sender: TObject);
-    procedure grdDataCellClick(Column: TColumn);
-    procedure btnPlusClick(Sender: TObject);
-    procedure grdDataDrawColumnCell(Sender: TObject; const Rect: TRect;
-      DataCol: Integer; Column: TColumn; State: TGridDrawState);
-    procedure qryDataADOAfterOpen(DataSet: TDataSet);
+    procedure btnCopyClick(Sender: TObject);
+    procedure btnDelClick(Sender: TObject);
+    procedure btnEditClick(Sender: TObject);
+    procedure btnExportClick(Sender: TObject);
     procedure btnFirstPageClick(Sender: TObject);
-    procedure btnPrevPageClick(Sender: TObject);
     procedure btnNextPageClick(Sender: TObject);
+    procedure btnPlusClick(Sender: TObject);
+    procedure btnPrevPageClick(Sender: TObject);
+    procedure btnPrintClick(Sender: TObject);
     procedure btnRefreshClick(Sender: TObject);
-    procedure grdDataTitleClick(Column: TColumn);
-    procedure grdDataDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
-    procedure grdDataDragDrop(Sender, Source: TObject; X, Y: Integer);
-    procedure grdDataMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure lblPageClick(Sender: TObject);
     procedure edtPageKeyPress(Sender: TObject; var Key: Char);
-    procedure FormResize(Sender: TObject);
-    procedure grdDataKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure fdDataAfterOpen(DataSet: TDataSet);
+    procedure fdDataAfterScroll(DataSet: TDataSet);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure btnPrintClick(Sender: TObject);
-    procedure btnExportClick(Sender: TObject);
-    procedure mnuCreateTicketClick(Sender: TObject);
-    procedure btnAddClick(Sender: TObject);
-    procedure btnCopyClick(Sender: TObject);
-    procedure btnEditClick(Sender: TObject);
-    procedure btnDelClick(Sender: TObject);
-    procedure dsData2AfterScroll(DataSet: TDataSet);
+    procedure FormResize(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure grdDataCellClick(Column: TColumn);
+    procedure grdDataDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure grdDataDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+    procedure grdDataDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure grdDataKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure grdDataMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure grdDataMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
-    procedure FormShow(Sender: TObject);
+    procedure grdDataTitleClick(Column: TColumn);
+    procedure lblFastFilterClick(Sender: TObject);
+    procedure lblPageClick(Sender: TObject);
+    procedure mnuCreateTicketClick(Sender: TObject);
   private
     { Private declarations }
     SQLBuilder: TSQLBuilder; // Повелитель запросов
@@ -109,29 +109,29 @@ type
     FIsMaster: Boolean; // Форма является "главной" для другой формы
     FMouseWheelScrolling: Boolean; // Выполняется скроллинг мышей, флаг "не обновлять зависимые датасеты"
     //--
-    procedure SetFastFilter(ColumnName, FieldName, ColumnValue: String);
-    procedure SetGridColumns;
-    procedure CreateNewGridColumn(FieldName: String);
     procedure CreateFieldList(AOwner: TControl);
-    procedure SetColumnsList(const AvailableColumns: TStringList);
-    procedure MoveFieldList(P: TPoint);
-    procedure ShowFieldList;
-    function GetDraggedToGridColumn: String;
+    procedure CreateNewGridColumn(FieldName: String);
     procedure EnableButtons;
-    procedure ShowPageEdit(DoShow: Boolean);
-    procedure ShowColumnsManager(Sender: TObject);
+    procedure ExportReport;
+    function GetDraggedToGridColumn: String;
+    function GetMasterID: String;
     function GetSQLText: String;
-    procedure SetSQLText(const Value: String);
+    procedure MoveFieldList(P: TPoint);
+    procedure MoveFirstPage;
     procedure MoveNextPage;
     procedure MovePrevPage;
-    procedure MoveFirstPage;
     procedure MoveToPage(PageNum: Integer);
     procedure PrepareReport;
     procedure PrintReport;
-    procedure ExportReport;
-    procedure SetMasterID(const Value: String);
-    function GetMasterID: String;
     procedure ResetTheme(var Msg: TMessage); message KH_RESET_THEME;
+    procedure SetColumnsList(const AvailableColumns: TStringList);
+    procedure SetFastFilter(ColumnName, FieldName, ColumnValue: String);
+    procedure SetGridColumns;
+    procedure SetMasterID(const Value: String);
+    procedure SetSQLText(const Value: String);
+    procedure ShowColumnsManager(Sender: TObject);
+    procedure ShowFieldList;
+    procedure ShowPageEdit(DoShow: Boolean);
   protected
     { Protected declarations }
     class function CreateForm(AOwner: TComponent; AParent: TWinControl;
@@ -140,15 +140,14 @@ type
     { Public declarations }
     constructor ACreate(AOwner: TComponent; AParent: TWinControl;
       IsMaster: Boolean = False);
-    procedure RebuildQuery;
-    function GetDraggedFromGridColumn: String;
     procedure Connect;
     procedure Disconnect;
+    function GetDraggedFromGridColumn: String;
     procedure MoveFirst;
+    procedure RebuildQuery;
     //--
-    property SQLText: String read GetSQLText write SetSQLText;
     property MasterID: String read GetMasterID write SetMasterID;
-    property Parent;
+    property SQLText: String read GetSQLText write SetSQLText;
   end;
 
 var
@@ -165,10 +164,254 @@ uses
 { TfrmBaseForm }
 //---------------------------------------------------------------------------
 
-procedure TfrmBaseForm.MoveFirst;
+constructor TfrmBaseForm.ACreate(AOwner: TComponent; AParent: TWinControl;
+  IsMaster: Boolean);
 begin
-  if fdData.Active then
-    fdData.First;
+  inherited Create(AOwner);
+  Parent := AParent;
+  FIsMaster := IsMaster;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.btnAddClick(Sender: TObject);
+begin
+
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.btnCloseFastFilterClick(Sender: TObject);
+// Непосредственно снятие быстрого фильтра
+begin
+  SQLBuilder.FilterPart := '';
+  RebuildQuery;
+
+  lblFastFilter.Caption := FSelectedColumn;
+  btnCloseFastFilter.Visible := False;
+  lblFastFilter.Left := btnCloseFastFilter.Left;
+  FFastFiltered := False;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.btnCopyClick(Sender: TObject);
+begin
+
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.btnDelClick(Sender: TObject);
+begin
+
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.btnEditClick(Sender: TObject);
+begin
+
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.btnExportClick(Sender: TObject);
+begin
+  ExportReport;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.btnFirstPageClick(Sender: TObject);
+begin
+  MoveFirstPage;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.btnNextPageClick(Sender: TObject);
+begin
+  MoveNextPage;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.btnPlusClick(Sender: TObject);
+begin
+  ShowColumnsManager(Sender);
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.btnPrevPageClick(Sender: TObject);
+begin
+  MovePrevPage;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.btnPrintClick(Sender: TObject);
+begin
+  PrintReport;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.btnRefreshClick(Sender: TObject);
+begin
+  RebuildQuery;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.Connect;
+begin
+  RebuildQuery;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.CreateFieldList(AOwner: TControl);
+// Создание формы со списком доступных полей
+begin
+  if FfrmColumnsList = nil then
+    FfrmColumnsList := TfrmColumnsList.Create(AOwner);
+
+  FfrmColumnsList.Associate := grdData;
+end;
+
+//---------------------------------------------------------------------------
+
+class function TfrmBaseForm.CreateForm(AOwner: TComponent; AParent: TWinControl;
+  IsMaster: Boolean): TfrmBaseForm;
+begin
+  // virtual
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.CreateNewGridColumn(FieldName: String);
+// Добавление одной колонки в грид
+var
+  Column: TColumn;
+
+begin
+  Column := grdData.Columns.Add;
+  Column.Field := fdData.Fields.FieldByName(FieldName);
+  Column.Title.Caption := fdData.Fields.FieldByName(FieldName).DisplayName; // Да я чертов гений!
+  Column.Title.Font.Style := Column.Title.Font.Style + [fsBold];
+  Column.Title.Font.Color := CL_GRID_TITLE;
+  Column.Font.Color := CL_TEXT;
+
+  // Вес для пересчета ширины колонки. Скорее всего, ну его нафиг.
+  case Column.Field.DataType of
+    ftString, ftWideString:
+      Column.Field.DisplayWidth := 4;
+
+    ftSmallint, ftInteger, ftWord, ftLargeint, ftLongWord, ftShortint, ftByte:
+      Column.Field.DisplayWidth := 2;
+
+    ftBoolean:
+      Column.Field.DisplayWidth := 1;
+
+    ftFloat, ftCurrency, ftExtended:
+      Column.Field.DisplayWidth := 3;
+
+    ftDate, ftDateTime, ftTimeStamp:
+      Column.Field.DisplayWidth := 3;
+
+    ftTime:
+      Column.Field.DisplayWidth := 2;
+  end;
+
+  if FieldName = 'Color' then
+    Column.Visible := False;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.Disconnect;
+begin
+  fdData.Close;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.edtPageKeyPress(Sender: TObject; var Key: Char);
+// Переход на указанную страницу или отмена
+begin
+  case Ord(Key) of
+  VK_RETURN:
+    begin
+      MoveToPage(udPage.Position);
+      ShowPageEdit(False);
+    end;
+  VK_ESCAPE:
+    ShowPageEdit(False);
+  end;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.EnableButtons;
+// Переключение активности кнопок в зависимости от состояния датасета
+var
+  Active: Boolean;
+
+begin
+  btnAdd.Enabled := fdData.Active;
+
+  Active := (fdData.Active) and (fdData.RecordCount > 0);
+  btnCopy.Enabled := Active;
+  btnEdit.Enabled := Active;
+  btnDel.Enabled := Active;
+
+  if udPage.Visible then
+    udPage.Visible := False;
+  if edtPage.Visible then
+    edtPage.Visible := False;
+  if not lblPage.Visible then
+    lblPage.Visible := True;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.ExportReport;
+begin
+  PrepareReport;
+  frData.Export(frExportXLS);
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.fdDataAfterOpen(DataSet: TDataSet);
+// Обновление всего в окне после открытия датасета
+begin
+  lblPage.Caption := 'Стр. № ' + IntToStr(FCurrentPage);
+
+  if FFirstOpen then
+  begin
+    FFirstOpen := False;
+    if FileExists('Config\' + Self.ClassName) then
+      grdData.Columns.LoadFromFile('Config\' + Self.ClassName)
+    else
+      SetGridColumns;
+    Self.Resize;
+  end;
+
+  EnableButtons;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.fdDataAfterScroll(DataSet: TDataSet);
+begin
+  if FIsMaster and (not FMouseWheelScrolling) then
+    (Owner as TfrmBasePage).MasterProc(fdData.FieldByName('ID').AsString);
+
+  // Сбрасывается флаг скроллинга, неважно, был он или не был
+  FMouseWheelScrolling := False;
 end;
 
 //---------------------------------------------------------------------------
@@ -230,8 +473,8 @@ end;
 //---------------------------------------------------------------------------
 
 procedure TfrmBaseForm.FormDestroy(Sender: TObject);
+// Сохранение настроек колонок грида. Скорее всего, ну его нафиг.
 begin
-  // Сохранение настроек колонок грида. Скорее всего, ну его нафиг.
   if not DirectoryExists('Config') then
     CreateDirectory('Config', nil);
 
@@ -240,765 +483,8 @@ end;
 
 //---------------------------------------------------------------------------
 
-// Пересоздание и запуск SQL-запроса, получение кол-ва возвращаемых им строк
-procedure TfrmBaseForm.RebuildQuery;
-begin
-  SQLBuilder.SelectPart := FSQLText;
-  SQLBuilder.OffsetPart := FCurrentPage;
-  SQLBuilder.BuildQuery(True);
-  FRowCount := SQLBuilder.RowCount;
-end;
-
-//---------------------------------------------------------------------------
-
-// Применение цветов темы
-procedure TfrmBaseForm.ResetTheme(var Msg: TMessage);
-begin
-  Self.Color := KhalaTheme.PanelFilterColor;
-  pnlButtons.Color := KhalaTheme.PanelButtonsColor;
-  grdData.GradientStartColor := KhalaTheme.GridGradientStartColor;
-  grdData.GradientEndColor := KhalaTheme.GridGradientEndColor;
-end;
-
-//---------------------------------------------------------------------------
-
-// Запоминаем кликнутую колонку для возможного использования в "быстром фильтре"
-procedure TfrmBaseForm.grdDataCellClick(Column: TColumn);
-begin
-  try
-    if not FFastFiltered then
-    begin
-      lblFastFilter.Caption := Column.Title.Caption;
-      FSelectedColumn := Column.Title.Caption;
-      FSelectedField := Column.FieldName;
-    end;
-  except
-    // Такое бывает, если ткнуть
-    // в пустое место между последней колонкой и вертикальным скролл-баром или
-    // в пустое место между последней строкой и горизонтальным скролл-баром
-    on E: EArgumentOutOfRangeException do
-      Abort;
-  end;
-end;
-
-//---------------------------------------------------------------------------
-
-// Запуск и применение быстрого фильтра
-procedure TfrmBaseForm.lblFastFilterClick(Sender: TObject);
-const
-  DX = 8;
-
-begin
-  with GetFastFilter(TDataSet(fdData)) do // жёстокое и беспощадное приведение типа
-  begin
-    FieldName := FSelectedField;
-
-    if ShowModal = mrOk then
-      SetFastFilter(FSelectedColumn, FSelectedField, ColumnValue);
-
-    DestroyFastFilter;
-  end;
-end;
-
-//---------------------------------------------------------------------------
-
-// Непосредственно применение быстрого фильтра
-procedure TfrmBaseForm.SetFastFilter(ColumnName, FieldName, ColumnValue: String);
-const
-  DX = 8;
-
-begin
-  SQLBuilder.FilterPart := FieldName + ' LIKE ''%' + ColumnValue + '%''';
-  RebuildQuery;
-
-  lblFastFilter.Caption := Format('%s   =   %s', [ColumnName, ColumnValue]);
-  lblFastFilter.Left := btnCloseFastFilter.Left + btnCloseFastFilter.Width + DX;
-  btnCloseFastFilter.Visible := True;
-  FFastFiltered := True;
-end;
-
-//---------------------------------------------------------------------------
-
-// Непосредственно снятие быстрого фильтра
-procedure TfrmBaseForm.btnCloseFastFilterClick(Sender: TObject);
-begin
-  SQLBuilder.FilterPart := '';
-  RebuildQuery;
-
-  lblFastFilter.Caption := FSelectedColumn;
-  btnCloseFastFilter.Visible := False;
-  lblFastFilter.Left := btnCloseFastFilter.Left;
-  FFastFiltered := False;
-end;
-
-//---------------------------------------------------------------------------
-
-// Сортировка
-procedure TfrmBaseForm.grdDataTitleClick(Column: TColumn);
-begin
-  // Если сортируем колонку, сортированную до этого - меняем направление сортировки
-  if FOrderByCol = Column.FieldName then
-  begin
-    if FSortType = 'ASC' then
-      FSortType := 'DESC'
-    else
-      FSortType := 'ASC';
-  end
-
-  // Если сортируем другую колонку
-  else
-  begin
-    FOrderByCol := Column.FieldName;
-    FSortType := 'ASC';
-  end;
-
-  FCurrentPage := 1;
-  SQLBuilder.OrderPart := FOrderByCol;
-  SQLBuilder.SortPart := FSortType;
-  SQLBuilder.OffsetPart := FCurrentPage;
-  RebuildQuery;
-end;
-
-//---------------------------------------------------------------------------
-
-// Обновление всего в окне после открытия датасета
-procedure TfrmBaseForm.qryDataADOAfterOpen(DataSet: TDataSet);
-begin
-  lblPage.Caption := 'Стр. № ' + IntToStr(FCurrentPage);
-
-  if FFirstOpen then
-  begin
-    FFirstOpen := False;
-    if FileExists('Config\' + Self.ClassName) then
-      grdData.Columns.LoadFromFile('Config\' + Self.ClassName)
-    else
-      SetGridColumns;
-    Self.Resize;
-  end;
-
-  EnableButtons;
-end;
-
-//---------------------------------------------------------------------------
-
-// Создание колонок грида - не более 10 с подходящими типами
-procedure TfrmBaseForm.SetGridColumns;
-var
-  I, K: Integer;
-
-begin
-  I := 0;
-  K := 0;
-
-  // 10 первых подходящих или все
-  while (I < 10) and (K < fdData.Fields.Count) do
-  begin
-    // определенного типа
-    case fdData.Fields.Fields[K].DataType of
-      ftString, ftSmallint, ftInteger, ftWord, ftBoolean, ftFloat, ftCurrency,
-      ftDate, ftTime, ftDateTime, ftWideString, ftLargeint, ftTimeStamp,
-      ftLongWord, ftShortint, ftByte, ftExtended:
-      begin
-        // только видимые
-        if fdData.Fields.Fields[K].Visible then
-        begin
-          CreateNewGridColumn(fdData.Fields.Fields[K].FieldName);
-          Inc(I);
-        end;
-      end;
-    end;
-  Inc(K);
-  end;
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.SetMasterID(const Value: String);
-begin
-  SQLBuilder.MasterID := Value;
-end;
-
-//---------------------------------------------------------------------------
-
-// Перемещение колонок грида или получение нового поля из списка доступных полей
-// Часть 1 - драг
-procedure TfrmBaseForm.grdDataDragOver(Sender, Source: TObject; X,
-  Y: Integer; State: TDragState; var Accept: Boolean);
-
-  // Если нечто перемещают из листа колонок,
-  // и лист колонок - подвластный (а как это еще называть?) данной форме
-  function IsNewFieldMoving: Boolean;
-  begin
-    if FfrmColumnsList <> nil then
-      Result := ((Source as TControl).Name = FfrmColumnsList.tvColumnsList.Name)
-        and ((Self as TControl).Name = FfrmColumnsList.Owner.Name)
-    else
-      Result := False;
-  end;
-
-  // Перемещение из грида в тот же грид - перемещение колонок
-  function IsGridColumnMoving: Boolean;
-  begin
-    Result := Sender = Source;
-  end;
-
-begin
-  Accept := IsNewFieldMoving or IsGridColumnMoving;
-end;
-
-//---------------------------------------------------------------------------
-
-// Перемещение колонок грида или получение нового поля из списка доступных полей
-// Часть 2 - дроп
-procedure TfrmBaseForm.grdDataDragDrop(Sender, Source: TObject; X,
-  Y: Integer);
-
-var
-  ColumnName: String;
-  ColumnNum: Integer;
-  I: Integer;
-
-  // Если нечто перемещают из листа колонок,
-  // и лист колонок - подвластный (а как это еще называть?) данной форме
-  function IsNewFieldMoving: Boolean;
-  begin
-    if FfrmColumnsList <> nil then
-      Result := ((Source as TControl).Name = FfrmColumnsList.tvColumnsList.Name)
-        and ((Self as TControl).Name = FfrmColumnsList.Owner.Name)
-    else
-      Result := False;
-  end;
-
-  // Перемещение из грида в тот же грид - перемещение колонок
-  function IsGridColumnMoving: Boolean;
-  begin
-    Result := Sender = Source;
-  end;
-
-begin
-  // При перемещении колонки в пределах грида - просто присвоение нового порядкового номера
-  if IsGridColumnMoving then
-  begin
-    ColumnNum := grdData.MouseCoord(X, Y).X;
-    FDraggedColumn.Index := ColumnNum;
-    Exit;
-  end;
-
-  // При перемещении новой колонки из листа - создание новой колонки
-  if IsNewFieldMoving then
-  begin
-    ColumnName := GetDraggedToGridColumn;
-    for I := 0 to fdData.FieldCount - 1 do
-      if fdData.Fields[I].DisplayName = ColumnName then
-      begin
-        CreateNewGridColumn(fdData.Fields[I].FieldName);
-        Self.Resize;
-      end;
-  end;
-
-  // На всякий случай имитация клика на первой колонке - для быстрого фильтра
-  try
-    grdDataCellClick(grdData.Columns.Items[1]);
-  except
-    ;
-  end;
-end;
-
-//---------------------------------------------------------------------------
-
-// Запоминаем колонку, которую двигаем и запускаем драггинг
-procedure TfrmBaseForm.grdDataMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  ColumnNum: Integer;
-
-begin
-  // Левой кнопкой работает штатный драг колонок,
-  // но он вызывает сортировку, для которой событие и закодировано
-  if Button = mbRight then
-  begin
-    (Sender as TControl).BeginDrag(False, 5);
-    ColumnNum := grdData.MouseCoord(X, Y).X;
-    FDraggedColumn := grdData.Columns[ColumnNum];
-  end;
-end;
-
-//---------------------------------------------------------------------------
-
-// Скроллинг мышей не должен вызывать передергивание датасета, как было в Delphi 7
-procedure TfrmBaseForm.grdDataMouseWheel(Sender: TObject; Shift: TShiftState;
-  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
-begin
-  FMouseWheelScrolling := True;
-end;
-
-//---------------------------------------------------------------------------
-
-// Добавление одной колонки в грид
-procedure TfrmBaseForm.CreateNewGridColumn(FieldName: String);
-var
-  Column: TColumn;
-
-begin
-  Column := grdData.Columns.Add;
-  Column.Field := fdData.Fields.FieldByName(FieldName);
-  Column.Title.Caption := fdData.Fields.FieldByName(FieldName).DisplayName; // Да я чертов гений!
-  Column.Title.Font.Style := Column.Title.Font.Style + [fsBold];
-  Column.Title.Font.Color := CL_GRID_TITLE;
-  Column.Font.Color := CL_TEXT;
-
-  // Вес для пересчета ширины колонки. Скорее всего, ну его нафиг.
-  case Column.Field.DataType of
-    ftString, ftWideString:
-      Column.Field.DisplayWidth := 4;
-
-    ftSmallint, ftInteger, ftWord, ftLargeint, ftLongWord, ftShortint, ftByte:
-      Column.Field.DisplayWidth := 2;
-
-    ftBoolean:
-      Column.Field.DisplayWidth := 1;
-
-    ftFloat, ftCurrency, ftExtended:
-      Column.Field.DisplayWidth := 3;
-
-    ftDate, ftDateTime, ftTimeStamp:
-      Column.Field.DisplayWidth := 3;
-
-    ftTime:
-      Column.Field.DisplayWidth := 2;
-  end;
-
-  if FieldName = 'Color' then
-    Column.Visible := False;
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.Disconnect;
-begin
-  fdData.Close;
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.dsData2AfterScroll(DataSet: TDataSet);
-begin
-  if FIsMaster and (not FMouseWheelScrolling) then
-    (Owner as TfrmBasePage).MasterProc(fdData.FieldByName('ID').AsString);
-
-  // Сбрасывается флаг скроллинга, неважно, был он или не был
-  FMouseWheelScrolling := False;
-end;
-
-//---------------------------------------------------------------------------
-
-// Получение перемещаемого поля из формы доступных полей (оно там свойство) для
-// закидывания в грид
-function TfrmBaseForm.GetDraggedToGridColumn: String;
-begin
-  if FfrmColumnsList.DraggedColumn <> nil then
-  begin
-    Result := FfrmColumnsList.DraggedColumn.Text;
-    FfrmColumnsList.RemoveDraggedColumn;
-  end;
-end;
-
-//---------------------------------------------------------------------------
-
-function TfrmBaseForm.GetMasterID: String;
-begin
-  Result := SQLBuilder.MasterID;
-end;
-
-//---------------------------------------------------------------------------
-
-// Получение перемещаемой колонки грида для закидывания в форму доступных полей
-function TfrmBaseForm.GetDraggedFromGridColumn: String;
-begin
-  if FDraggedColumn <> nil then
-  begin
-    Result := FDraggedColumn.Title.Caption;
-    grdData.Columns.Delete(FDraggedColumn.Index);
-    Self.Resize;
-  end;
-
-  // Чтобы сменить колонку быстрого фильтра
-  try
-    grdDataCellClick(grdData.Columns.Items[1]);
-  except
-    ;
-  end;
-end;
-
-//---------------------------------------------------------------------------
-
-// Инициируем и показываем форму со списком доступных полей грида
-procedure TfrmBaseForm.ShowColumnsManager(Sender: TObject);
-var
-  P: TPoint;
-  AvailableColumns: TStringList;
-  I: Integer;
-  FieldNumber: Integer;
-
-begin
-  CreateFieldList(Self);
-
-  // Создание-заполнение списка всех возможных колонок
-  AvailableColumns := TStringList.Create;
-  AvailableColumns.Clear;
-  for I := 0 to fdData.FieldCount - 1 do
-    // берем только видимые
-    if fdData.Fields[I].Visible then
-      AvailableColumns.Add(fdData.Fields[I].DisplayName);
-
-  // Смотрим, какие колонки уже есть на гриде
-  for I := grdData.Columns.Count - 1 downto 0 do
-  begin
-    FieldNumber := AvailableColumns.IndexOf(grdData.Columns[I].Title.Caption);
-    if FieldNumber > -1 then
-      AvailableColumns.Delete(FieldNumber);
-  end;
-  SetColumnsList(AvailableColumns);
-  AvailableColumns.Free;
-
-  // Левый верхний угол кнопки
-  P := Point(btnPlus.Left, btnPlus.Top);
-  // Левый верхний угол нового окна
-  P := Point(P.X - FfrmColumnsList.Width, P.Y + grdData.Height - FfrmColumnsList.Height);
-  P := ClientToScreen(P);
-  MoveFieldList(P);
-
-  ShowFieldList;
-end;
-
-//---------------------------------------------------------------------------
-
-constructor TfrmBaseForm.ACreate(AOwner: TComponent; AParent: TWinControl;
-  IsMaster: Boolean = False);
-begin
-  inherited Create(AOwner);
-  Parent := AParent;
-  FIsMaster := IsMaster;
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.Connect;
-begin
-  RebuildQuery;
-end;
-
-//---------------------------------------------------------------------------
-
-// Создание формы со списком доступных полей
-procedure TfrmBaseForm.CreateFieldList(AOwner: TControl);
-begin
-  if FfrmColumnsList = nil then
-    FfrmColumnsList := TfrmColumnsList.Create(AOwner);
-
-  FfrmColumnsList.Associate := grdData;
-end;
-
-//---------------------------------------------------------------------------
-
-class function TfrmBaseForm.CreateForm(AOwner: TComponent; AParent: TWinControl;
-  IsMaster: Boolean): TfrmBaseForm;
-begin
-// virtual
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.SetColumnsList(const AvailableColumns: TStringList);
-begin
-  if FfrmColumnsList <> nil then
-    FfrmColumnsList.ColumnsList := AvailableColumns;
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.MoveFieldList(P: TPoint);
-begin
-  if FfrmColumnsList <> nil then
-  begin
-    FfrmColumnsList.Left := P.X;
-    FfrmColumnsList.Top := P.Y;
-  end;
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.ShowFieldList;
-begin
-  if FfrmColumnsList <> nil then
-    FfrmColumnsList.Show;
-end;
-
-//---------------------------------------------------------------------------
-
-// Листание страниц грида кнопками клавиатуры
-procedure TfrmBaseForm.grdDataKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-const
-  KEY_PAGE_UP = 33;
-  KEY_PAGE_DOWN = 34;
-  KEY_ARROW_LEFT = 37;
-  KEY_ARROW_UP = 38;
-  KEY_ARROW_RIGHT = 39;
-  KEY_ARROW_DOWN = 40;
-
-begin
-  if (ssCtrl in Shift) and (Key = KEY_ARROW_RIGHT) then
-    MoveNextPage;
-
-  if ((Key = KEY_ARROW_DOWN) or (Key = KEY_PAGE_DOWN)) and fdData.Eof then
-    MoveNextPage;
-
-  if (ssCtrl in Shift) and (Key = KEY_ARROW_LEFT) then
-    MovePrevPage;
-
-  if ((Key = KEY_ARROW_UP) or (Key = KEY_PAGE_UP)) and fdData.Bof then
-    MovePrevPage;
-end;
-
-//---------------------------------------------------------------------------
-// Кнопки формы
-
-procedure TfrmBaseForm.btnExportClick(Sender: TObject);
-begin
-  ExportReport;
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.btnFirstPageClick(Sender: TObject);
-begin
-  MoveFirstPage;
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.btnNextPageClick(Sender: TObject);
-begin
-  MoveNextPage;
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.btnPlusClick(Sender: TObject);
-begin
-  ShowColumnsManager(Sender);
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.btnPrevPageClick(Sender: TObject);
-begin
-  MovePrevPage;
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.btnPrintClick(Sender: TObject);
-begin
-  PrintReport;
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.btnRefreshClick(Sender: TObject);
-begin
-  RebuildQuery;
-end;
-
-//---------------------------------------------------------------------------
-// Передвижение по страницам
-
-procedure TfrmBaseForm.MoveFirstPage;
-begin
-  if FCurrentPage > 1 then
-  begin
-    FCurrentPage := 1;
-    RebuildQuery;
-  end;
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.MoveNextPage;
-begin
-  if SQLBuilder.RowCount > (FCurrentPage * RECS_ON_PAGE) then
-  begin
-    Inc(FCurrentPage);
-    RebuildQuery;
-  end;
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.MovePrevPage;
-begin
-  if FCurrentPage > 1 then
-  begin
-    Dec(FCurrentPage);
-    RebuildQuery;
-  end;
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.MoveToPage(PageNum: Integer);
-begin
-  FCurrentPage := udPage.Position;
-  RebuildQuery;
-end;
-
-//---------------------------------------------------------------------------
-
-// Запрос из базы отчета-таблицы данного грида
-procedure TfrmBaseForm.PrepareReport;
-var
-  RepStream: TStream;
-begin
-  RepStream := TStream.Create;
-  try
-    qryGetReport.ParamByName('FORM_NAME').Value := Self.Name;
-    qryGetReport.Open;
-    TBlobField(qryGetReport.FieldByName('ReportFile')).SaveToStream(RepStream);
-    qryGetReport.Close;
-
-    frData.LoadFromStream(RepStream);
-    frData.PrepareReport;
-  except
-    ShowMessage('Ошибка при подготовке отчета');
-  end;
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.PrintReport;
-begin
-  PrepareReport;
-  frData.ShowPreparedReport;
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.ExportReport;
-begin
-  PrepareReport;
-  frData.Export(frExportXLS);
-end;
-
-//---------------------------------------------------------------------------
-
-// Инициируем поле ввода номера страницы
-procedure TfrmBaseForm.lblPageClick(Sender: TObject);
-begin
-  udPage.Position := FCurrentPage;
-  ShowPageEdit(True);
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.btnAddClick(Sender: TObject);
-begin
-
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.btnCopyClick(Sender: TObject);
-begin
-
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.btnEditClick(Sender: TObject);
-begin
-
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.btnDelClick(Sender: TObject);
-begin
-
-end;
-
-//---------------------------------------------------------------------------
-
-// Запрос от пользователя в сервис-деск касаемо выбранной строки
-procedure TfrmBaseForm.mnuCreateTicketClick(Sender: TObject);
-begin
-  //ShowServiceDeskTicketForm;
-  comInsertServiceDesk.ParamByName('CREATED_BY_ID').AsString := frmMain.UserID;
-  comInsertServiceDesk.ParamByName('TICKET_NUM').AsInteger := 1;
-  comInsertServiceDesk.ParamByName('OWNER_ID').AsString := frmMain.UserID;
-  comInsertServiceDesk.ParamByName('TABLE_NAME').AsString := Self.Name;
-  comInsertServiceDesk.ParamByName('RECORD_ID').AsString := '''' + fdData.FieldByName('ID').AsString + '''';
-//  comInsertServiceDesk.ParamByName('DESCRIPTION').AsString := frmTaskDescription.TaskDescription;
-  comInsertServiceDesk.Execute;
-  comInsertServiceDesk.Close;
-end;
-
-//---------------------------------------------------------------------------
-
-// Переход на указанную страницу или отмена
-procedure TfrmBaseForm.edtPageKeyPress(Sender: TObject; var Key: Char);
-begin
-  case Ord(Key) of
-  VK_RETURN:
-    begin
-      MoveToPage(udPage.Position);
-      ShowPageEdit(False);
-    end;
-  VK_ESCAPE:
-    ShowPageEdit(False);
-  end;
-end;
-
-//---------------------------------------------------------------------------
-
-// Показ или скрытие поля ввода номера страницы для перехода
-procedure TfrmBaseForm.ShowPageEdit(DoShow: Boolean);
-begin
-  lblPage.Visible := not DoShow;
-  edtPage.Visible := DoShow;
-  udPage.Visible := DoShow;
-
-  if DoShow then
-    edtPage.SetFocus;
-end;
-
-//---------------------------------------------------------------------------
-
-// Переключение активности кнопок в зависимости от состояния датасета
-procedure TfrmBaseForm.EnableButtons;
-var
-  Active: Boolean;
-
-begin
-  btnAdd.Enabled := fdData.Active;
-
-  Active := (fdData.Active) and (fdData.RecordCount > 0);
-  btnCopy.Enabled := Active;
-  btnEdit.Enabled := Active;
-  btnDel.Enabled := Active;
-
-  if udPage.Visible then
-    udPage.Visible := False;
-  if edtPage.Visible then
-    edtPage.Visible := False;
-  if not lblPage.Visible then
-    lblPage.Visible := True;
-end;
-
-//---------------------------------------------------------------------------
-
-// Подбор ширины колонок грида
 procedure TfrmBaseForm.FormResize(Sender: TObject);
+// Подбор ширины колонок грида
 const
   DX = 70; // Подобрано методом тыка
 
@@ -1008,6 +494,15 @@ var
   I: Integer;
 
 begin
+  AllWeights := grdData.Columns.Count;
+  OnePiece := (grdData.Width - DX) / AllWeights;
+
+  for I := 0 to grdData.Columns.Count - 1 do
+  begin
+    grdData.Columns[I].Width := Round(OnePiece); //Round(OnePiece * grdData.Columns[I].Field.DisplayWidth);
+  end;
+end;
+
 {
 //////// Автоширина из DBGridEh:
 
@@ -1091,21 +586,10 @@ begin
 end;
 }
 
-
-  AllWeights := grdData.Columns.Count;
-  OnePiece := (grdData.Width - DX) / AllWeights;
-
-
-  for I := 0 to grdData.Columns.Count - 1 do
-  begin
-    grdData.Columns[I].Width := Round(OnePiece); //Round(OnePiece * grdData.Columns[I].Field.DisplayWidth);
-  end;
-end;
-
 //---------------------------------------------------------------------------
 
-// Применение цветов темы
 procedure TfrmBaseForm.FormShow(Sender: TObject);
+// Применение цветов темы
 var
   Dummy: TMessage;
 begin
@@ -1114,9 +598,162 @@ end;
 
 //---------------------------------------------------------------------------
 
+function TfrmBaseForm.GetDraggedFromGridColumn: String;
+// Получение перемещаемой колонки грида для закидывания в форму доступных полей
+begin
+  if FDraggedColumn <> nil then
+  begin
+    Result := FDraggedColumn.Title.Caption;
+    grdData.Columns.Delete(FDraggedColumn.Index);
+    Self.Resize;
+  end;
+
+  // Чтобы сменить колонку быстрого фильтра
+  try
+    grdDataCellClick(grdData.Columns.Items[1]);
+  except
+    ;
+  end;
+end;
+
+//---------------------------------------------------------------------------
+
+function TfrmBaseForm.GetDraggedToGridColumn: String;
+// Получение перемещаемого поля из формы доступных полей (оно там свойство) для
+// закидывания в грид
+begin
+  if FfrmColumnsList.DraggedColumn <> nil then
+  begin
+    Result := FfrmColumnsList.DraggedColumn.Text;
+    FfrmColumnsList.RemoveDraggedColumn;
+  end;
+end;
+
+//---------------------------------------------------------------------------
+
+function TfrmBaseForm.GetMasterID: String;
+begin
+  Result := SQLBuilder.MasterID;
+end;
+
+//---------------------------------------------------------------------------
+
+function TfrmBaseForm.GetSQLText: String;
+begin
+  Result := FSQLText;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.grdDataCellClick(Column: TColumn);
+// Запоминаем кликнутую колонку для возможного использования в "быстром фильтре"
+begin
+  try
+    if not FFastFiltered then
+    begin
+      lblFastFilter.Caption := Column.Title.Caption;
+      FSelectedColumn := Column.Title.Caption;
+      FSelectedField := Column.FieldName;
+    end;
+  except
+    // Такое бывает, если ткнуть
+    // в пустое место между последней колонкой и вертикальным скролл-баром или
+    // в пустое место между последней строкой и горизонтальным скролл-баром
+    on E: EArgumentOutOfRangeException do
+      Abort;
+  end;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.grdDataDragDrop(Sender, Source: TObject; X, Y: Integer);
+// Перемещение колонок грида или получение нового поля из списка доступных полей
+// Часть 2 - дроп
+
+var
+  ColumnName: String;
+  ColumnNum: Integer;
+  I: Integer;
+
+  // Если нечто перемещают из листа колонок,
+  // и лист колонок - подвластный (а как это еще называть?) данной форме
+  function IsNewFieldMoving: Boolean;
+  begin
+    if FfrmColumnsList <> nil then
+      Result := ((Source as TControl).Name = FfrmColumnsList.tvColumnsList.Name)
+        and ((Self as TControl).Name = FfrmColumnsList.Owner.Name)
+    else
+      Result := False;
+  end;
+
+  // Перемещение из грида в тот же грид - перемещение колонок
+  function IsGridColumnMoving: Boolean;
+  begin
+    Result := Sender = Source;
+  end;
+
+begin
+  // При перемещении колонки в пределах грида - просто присвоение нового порядкового номера
+  if IsGridColumnMoving then
+  begin
+    ColumnNum := grdData.MouseCoord(X, Y).X;
+    FDraggedColumn.Index := ColumnNum;
+    Exit;
+  end;
+
+  // При перемещении новой колонки из листа - создание новой колонки
+  if IsNewFieldMoving then
+  begin
+    ColumnName := GetDraggedToGridColumn;
+    for I := 0 to fdData.FieldCount - 1 do
+      if fdData.Fields[I].DisplayName = ColumnName then
+      begin
+        CreateNewGridColumn(fdData.Fields[I].FieldName);
+        Self.Resize;
+      end;
+  end;
+
+  // На всякий случай имитация клика на первой колонке - для быстрого фильтра
+  try
+    grdDataCellClick(grdData.Columns.Items[1]);
+  except
+    ;
+  end;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.grdDataDragOver(Sender, Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+// Перемещение колонок грида или получение нового поля из списка доступных полей
+// Часть 1 - драг
+
+  // Если нечто перемещают из листа колонок,
+  // и лист колонок - подвластный (а как это еще называть?) данной форме
+  function IsNewFieldMoving: Boolean;
+  begin
+    if FfrmColumnsList <> nil then
+      Result := ((Source as TControl).Name = FfrmColumnsList.tvColumnsList.Name)
+        and ((Self as TControl).Name = FfrmColumnsList.Owner.Name)
+    else
+      Result := False;
+  end;
+
+  // Перемещение из грида в тот же грид - перемещение колонок
+  function IsGridColumnMoving: Boolean;
+  begin
+    Result := Sender = Source;
+  end;
+
+begin
+  Accept := IsNewFieldMoving or IsGridColumnMoving;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.grdDataDrawColumnCell(Sender: TObject; const Rect: TRect;
+  DataCol: Integer; Column: TColumn; State: TGridDrawState);
 // Отрисовка грида
-procedure TfrmBaseForm.grdDataDrawColumnCell(Sender: TObject;
-  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
 var
   R: TRect;
 begin
@@ -1149,11 +786,298 @@ begin
 end;
 
 //---------------------------------------------------------------------------
-// Методы для свойств
 
-function TfrmBaseForm.GetSQLText: String;
+procedure TfrmBaseForm.grdDataKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+// Листание страниц грида кнопками клавиатуры
 begin
-  Result := FSQLText;
+  if (ssCtrl in Shift) and (Key = vkRight) then
+    MoveNextPage;
+
+  if ((Key = vkDown) or (Key = vkNext)) and fdData.Eof then
+    MoveNextPage;
+
+  if (ssCtrl in Shift) and (Key = vkLeft) then
+    MovePrevPage;
+
+  if ((Key = vkUp) or (Key = vkPrior)) and fdData.Bof then
+    MovePrevPage;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.grdDataMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+// Запоминаем колонку, которую двигаем и запускаем драггинг
+var
+  ColumnNum: Integer;
+
+begin
+  // Левой кнопкой работает штатный драг колонок,
+  // но он вызывает сортировку, для которой событие и закодировано
+  if Button = mbRight then
+  begin
+    (Sender as TControl).BeginDrag(False, 5);
+    ColumnNum := grdData.MouseCoord(X, Y).X;
+    FDraggedColumn := grdData.Columns[ColumnNum];
+  end;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.grdDataMouseWheel(Sender: TObject; Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+// Скроллинг мышей не должен вызывать передергивание датасета, как было в Delphi 7
+begin
+  FMouseWheelScrolling := True;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.grdDataTitleClick(Column: TColumn);
+// Сортировка
+begin
+  // Если сортируем колонку, сортированную до этого - меняем направление сортировки
+  if FOrderByCol = Column.FieldName then
+  begin
+    if FSortType = 'ASC' then
+      FSortType := 'DESC'
+    else
+      FSortType := 'ASC';
+  end
+
+  // Если сортируем другую колонку
+  else
+  begin
+    FOrderByCol := Column.FieldName;
+    FSortType := 'ASC';
+  end;
+
+  FCurrentPage := 1;
+  SQLBuilder.OrderPart := FOrderByCol;
+  SQLBuilder.SortPart := FSortType;
+  SQLBuilder.OffsetPart := FCurrentPage;
+  RebuildQuery;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.lblFastFilterClick(Sender: TObject);
+// Запуск и применение быстрого фильтра
+const
+  DX = 8;
+
+begin
+  with GetFastFilter(TDataSet(fdData)) do // жёстокое и беспощадное приведение типа
+  begin
+    FieldName := FSelectedField;
+
+    if ShowModal = mrOk then
+      SetFastFilter(FSelectedColumn, FSelectedField, ColumnValue);
+
+    DestroyFastFilter;
+  end;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.lblPageClick(Sender: TObject);
+// Инициируем поле ввода номера страницы
+begin
+  udPage.Position := FCurrentPage;
+  ShowPageEdit(True);
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.mnuCreateTicketClick(Sender: TObject);
+// Запрос от пользователя в сервис-деск касаемо выбранной строки
+begin
+  //ShowServiceDeskTicketForm;
+  comInsertServiceDesk.ParamByName('CREATED_BY_ID').AsString := frmMain.UserID;
+  comInsertServiceDesk.ParamByName('TICKET_NUM').AsInteger := 1;
+  comInsertServiceDesk.ParamByName('OWNER_ID').AsString := frmMain.UserID;
+  comInsertServiceDesk.ParamByName('TABLE_NAME').AsString := Self.Name;
+  comInsertServiceDesk.ParamByName('RECORD_ID').AsString := '''' + fdData.FieldByName('ID').AsString + '''';
+//  comInsertServiceDesk.ParamByName('DESCRIPTION').AsString := frmTaskDescription.TaskDescription;
+  comInsertServiceDesk.Execute;
+  comInsertServiceDesk.Close;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.MoveFieldList(P: TPoint);
+begin
+  if FfrmColumnsList <> nil then
+  begin
+    FfrmColumnsList.Left := P.X;
+    FfrmColumnsList.Top := P.Y;
+  end;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.MoveFirst;
+begin
+  if fdData.Active then
+    fdData.First;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.MoveFirstPage;
+begin
+  if FCurrentPage > 1 then
+  begin
+    FCurrentPage := 1;
+    RebuildQuery;
+  end;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.MoveNextPage;
+begin
+  if SQLBuilder.RowCount > (FCurrentPage * RECS_ON_PAGE) then
+  begin
+    Inc(FCurrentPage);
+    RebuildQuery;
+  end;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.MovePrevPage;
+begin
+  if FCurrentPage > 1 then
+  begin
+    Dec(FCurrentPage);
+    RebuildQuery;
+  end;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.MoveToPage(PageNum: Integer);
+begin
+  FCurrentPage := udPage.Position;
+  RebuildQuery;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.PrepareReport;
+// Запрос из базы отчета-таблицы данного грида
+var
+  RepStream: TStream;
+begin
+  RepStream := TStream.Create;
+  try
+    qryGetReport.ParamByName('FORM_NAME').Value := Self.Name;
+    qryGetReport.Open;
+    TBlobField(qryGetReport.FieldByName('ReportFile')).SaveToStream(RepStream);
+    qryGetReport.Close;
+
+    frData.LoadFromStream(RepStream);
+    frData.PrepareReport;
+  except
+    ShowMessage('Ошибка при подготовке отчета');
+  end;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.PrintReport;
+begin
+  PrepareReport;
+  frData.ShowPreparedReport;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.RebuildQuery;
+// Пересоздание и запуск SQL-запроса, получение кол-ва возвращаемых им строк
+begin
+  SQLBuilder.SelectPart := FSQLText;
+  SQLBuilder.OffsetPart := FCurrentPage;
+  SQLBuilder.BuildQuery(True);
+  FRowCount := SQLBuilder.RowCount;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.ResetTheme(var Msg: TMessage);
+// Применение цветов темы
+begin
+  Self.Color := KhalaTheme.PanelFilterColor;
+  pnlButtons.Color := KhalaTheme.PanelButtonsColor;
+  grdData.GradientStartColor := KhalaTheme.GridGradientStartColor;
+  grdData.GradientEndColor := KhalaTheme.GridGradientEndColor;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.SetColumnsList(const AvailableColumns: TStringList);
+begin
+  if FfrmColumnsList <> nil then
+    FfrmColumnsList.ColumnsList := AvailableColumns;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.SetFastFilter(ColumnName, FieldName,
+  ColumnValue: String);
+// Непосредственно применение быстрого фильтра
+const
+  DX = 8;
+
+begin
+  SQLBuilder.FilterPart := FieldName + ' LIKE ''%' + ColumnValue + '%''';
+  RebuildQuery;
+
+  lblFastFilter.Caption := Format('%s   =   %s', [ColumnName, ColumnValue]);
+  lblFastFilter.Left := btnCloseFastFilter.Left + btnCloseFastFilter.Width + DX;
+  btnCloseFastFilter.Visible := True;
+  FFastFiltered := True;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.SetGridColumns;
+// Создание колонок грида - не более 10 с подходящими типами
+var
+  I, K: Integer;
+
+begin
+  I := 0;
+  K := 0;
+
+  // 10 первых подходящих или все
+  while (I < 10) and (K < fdData.Fields.Count) do
+  begin
+    // определенного типа
+    case fdData.Fields.Fields[K].DataType of
+      ftString, ftSmallint, ftInteger, ftWord, ftBoolean, ftFloat, ftCurrency,
+      ftDate, ftTime, ftDateTime, ftWideString, ftLargeint, ftTimeStamp,
+      ftLongWord, ftShortint, ftByte, ftExtended:
+      begin
+        // только видимые
+        if fdData.Fields.Fields[K].Visible then
+        begin
+          CreateNewGridColumn(fdData.Fields.Fields[K].FieldName);
+          Inc(I);
+        end;
+      end;
+    end;
+  Inc(K);
+  end;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.SetMasterID(const Value: String);
+begin
+  SQLBuilder.MasterID := Value;
 end;
 
 //---------------------------------------------------------------------------
@@ -1162,6 +1086,68 @@ procedure TfrmBaseForm.SetSQLText(const Value: String);
 begin
   if FSQLText <> Value then
     FSQLText := Value;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.ShowColumnsManager(Sender: TObject);
+// Инициируем и показываем форму со списком доступных полей грида
+var
+  P: TPoint;
+  AvailableColumns: TStringList;
+  I: Integer;
+  FieldNumber: Integer;
+
+begin
+  CreateFieldList(Self);
+
+  // Создание-заполнение списка всех возможных колонок
+  AvailableColumns := TStringList.Create;
+  AvailableColumns.Clear;
+  for I := 0 to fdData.FieldCount - 1 do
+    // берем только видимые
+    if fdData.Fields[I].Visible then
+      AvailableColumns.Add(fdData.Fields[I].DisplayName);
+
+  // Смотрим, какие колонки уже есть на гриде
+  for I := grdData.Columns.Count - 1 downto 0 do
+  begin
+    FieldNumber := AvailableColumns.IndexOf(grdData.Columns[I].Title.Caption);
+    if FieldNumber > -1 then
+      AvailableColumns.Delete(FieldNumber);
+  end;
+  SetColumnsList(AvailableColumns);
+  AvailableColumns.Free;
+
+  // Левый верхний угол кнопки
+  P := Point(btnPlus.Left, btnPlus.Top);
+  // Левый верхний угол нового окна
+  P := Point(P.X - FfrmColumnsList.Width, P.Y + grdData.Height - FfrmColumnsList.Height);
+  P := ClientToScreen(P);
+  MoveFieldList(P);
+
+  ShowFieldList;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.ShowFieldList;
+begin
+  if FfrmColumnsList <> nil then
+    FfrmColumnsList.Show;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.ShowPageEdit(DoShow: Boolean);
+// Показ или скрытие поля ввода номера страницы для перехода
+begin
+  lblPage.Visible := not DoShow;
+  edtPage.Visible := DoShow;
+  udPage.Visible := DoShow;
+
+  if DoShow then
+    edtPage.SetFocus;
 end;
 
 end.

@@ -8,26 +8,29 @@ uses
 type
   TfrmColumnsList = class(TForm)
     tvColumnsList: TTreeView;
+    //--
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure tvColumnsListStartDrag(Sender: TObject;
-      var DragObject: TDragObject);
+    procedure tvColumnsListDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure tvColumnsListDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
-    procedure tvColumnsListDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure tvColumnsListStartDrag(Sender: TObject;
+      var DragObject: TDragObject);
   private
     { Private declarations }
-    FDraggedColumn: TTreeNode;
-    FDraggedGridCol: String;
-    FAssociate: TControl;
+    FAssociate: TControl; // Ссылка на грид
+    FDraggedColumn: TTreeNode; // Колонка, которая перетаскивается из листа в грид
+    FDraggedGridCol: String; // Колонка, которая перетаскивается из грида в лист
+    //--
     function GetColumnsList: TStringList;
     procedure SetColumnsList(const Value: TStringList);
   public
     { Public declarations }
-    procedure RemoveDraggedColumn;
     procedure AddDraggedColumn;
+    procedure RemoveDraggedColumn;
+    //--
+    property Associate: TControl read FAssociate write FAssociate;
     property ColumnsList: TStringList read GetColumnsList write SetColumnsList;
     property DraggedColumn: TTreeNode read FDraggedColumn write FDraggedColumn;
-    property Associate: TControl read FAssociate write FAssociate;
   end;
 
 implementation
@@ -37,15 +40,7 @@ uses
 
 {$R *.dfm}
 
-//---------------------------------------------------------------------------
 { TfrmFieldList }
-
-// Принимаем брошенное поле, создаем из него ноду
-procedure TfrmColumnsList.AddDraggedColumn;
-begin
-  tvColumnsList.Items.Add(nil, FDraggedGridCol);
-end;
-
 //---------------------------------------------------------------------------
 
 procedure TfrmColumnsList.FormClose(Sender: TObject;
@@ -56,7 +51,39 @@ end;
 
 //---------------------------------------------------------------------------
 
-// Геттер свойства
+procedure TfrmColumnsList.tvColumnsListDragDrop(Sender, Source: TObject; X,
+  Y: Integer);
+// Принимаем перемещаемую колонку грида
+begin
+  tvColumnsList.Items.Add(nil, (Owner as TfrmBaseForm).GetDraggedFromGridColumn);
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmColumnsList.tvColumnsListDragOver(Sender, Source: TObject; X,
+  Y: Integer; State: TDragState; var Accept: Boolean);
+// Принимаем перемещаемую колонку грида
+
+  function IsGridColumnMoving: Boolean;
+  begin
+    Result := (Source as TControl) = Associate;
+  end;
+
+begin
+  Accept := IsGridColumnMoving;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmColumnsList.tvColumnsListStartDrag(Sender: TObject;
+  var DragObject: TDragObject);
+// Инициируем драггинг
+begin
+  FDraggedColumn := TTreeView(Sender).Selected;
+end;
+
+//---------------------------------------------------------------------------
+
 function TfrmColumnsList.GetColumnsList: TStringList;
 var
   I: Integer;
@@ -72,15 +99,6 @@ end;
 
 //---------------------------------------------------------------------------
 
-// Отдаем поле, передвигаемое драг-дропом
-procedure TfrmColumnsList.RemoveDraggedColumn;
-begin
-  tvColumnsList.Items.Delete(FDraggedColumn);
-end;
-
-//---------------------------------------------------------------------------
-
-// Сеттер свойства
 procedure TfrmColumnsList.SetColumnsList(const Value: TStringList);
 var
   I: Integer;
@@ -92,35 +110,18 @@ end;
 
 //---------------------------------------------------------------------------
 
-// Инициируем драггинг
-procedure TfrmColumnsList.tvColumnsListStartDrag(Sender: TObject;
-  var DragObject: TDragObject);
+procedure TfrmColumnsList.AddDraggedColumn;
+// Принимаем брошенное поле, создаем из него ноду
 begin
-  FDraggedColumn := TTreeView(Sender).Selected;
-end;
-    
-//---------------------------------------------------------------------------
-
-// Принимаем перемещаемую колонку грида
-procedure TfrmColumnsList.tvColumnsListDragOver(Sender, Source: TObject; X,
-  Y: Integer; State: TDragState; var Accept: Boolean);
-
-  function IsGridColumnMoving: Boolean;
-  begin
-    Result := (Source as TControl) = Associate;
-  end;
-
-begin
-  Accept := IsGridColumnMoving;
+  tvColumnsList.Items.Add(nil, FDraggedGridCol);
 end;
 
 //---------------------------------------------------------------------------
 
-// Принимаем перемещаемую колонку грида
-procedure TfrmColumnsList.tvColumnsListDragDrop(Sender, Source: TObject; X,
-  Y: Integer);
+procedure TfrmColumnsList.RemoveDraggedColumn;
+// Отдаем поле, передвигаемое драг-дропом
 begin
-  tvColumnsList.Items.Add(nil, (Owner as TfrmBaseForm).GetDraggedFromGridColumn);
+  tvColumnsList.Items.Delete(FDraggedColumn);
 end;
 
 end.

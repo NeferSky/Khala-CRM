@@ -118,12 +118,14 @@ type
     FSelectedRowColor: TColor;
     FSelectedRowFontColor: TColor;
     FFontColor: TColor;
+    //--
     function GetThemes(Index: Integer): TUITheme;
     function GetThemesCount: Integer;
   public
     constructor Create;
     destructor Destroy; override;
     procedure SetTheme(ThemeID: Integer);
+    //--
     property ThemeID: Integer read FThemeID;
     property Name: String read FName;
     property Caption: String read FCaption;
@@ -138,9 +140,9 @@ type
     property Themes[Index: Integer]: TUITheme read GetThemes; default;
   end;
 
-procedure InitThemesManager;
-procedure DeInitThemesManager;
 procedure ChooseTheme(ThemeID: Integer);
+procedure DeInitThemesManager;
+procedure InitThemesManager;
 
 var
   KhalaTheme: TKhalaTheme;
@@ -150,16 +152,7 @@ implementation
 uses
   Winapi.Windows, Registry, Main;
 
-procedure InitThemesManager;
-begin
-  if KhalaTheme = nil then
-    KhalaTheme := TKhalaTheme.Create;
-end;
-
-procedure DeInitThemesManager;
-begin
-  KhalaTheme.Destroy;
-end;
+//---------------------------------------------------------------------------
 
 procedure ChooseTheme(ThemeID: Integer);
 begin
@@ -168,38 +161,35 @@ begin
   KhalaTheme.SetTheme(ThemeID);
 end;
 
-{ TKhalaTheme }
+//---------------------------------------------------------------------------
+
+procedure DeInitThemesManager;
+begin
+  KhalaTheme.Destroy;
+end;
 
 //---------------------------------------------------------------------------
 
-procedure TKhalaTheme.SetTheme(ThemeID: Integer);
+procedure InitThemesManager;
 begin
-  try
-    FThemeID := ThemeID;
-    FName := ThemesArray[ThemeID].Name;
-    FCaption := ThemesArray[ThemeID].Caption;
-    FGridGradientStartColor := ThemesArray[ThemeID].GridGradientStartColor;
-    FGridGradientEndColor := ThemesArray[ThemeID].GridGradientEndColor;
-    FPanelFilterColor := ThemesArray[ThemeID].PanelFilterColor;
-    FPanelButtonsColor := ThemesArray[ThemeID].PanelButtonsColor;
-    FSelectedRowColor := ThemesArray[ThemeID].SelectedRowColor;
-    FSelectedRowFontColor := ThemesArray[ThemeID].SelectedRowFontColor;
-    FFontColor := ThemesArray[ThemeID].FontColor;
-  except
-    ThemeID := 0;
-    FThemeID := ThemeID;
-    FName := 'N/A';
-    FCaption := 'N/A';
-    FGridGradientStartColor := clBtnFace;
-    FGridGradientEndColor := clBtnFace;
-    FPanelFilterColor := clBtnFace;
-    FPanelButtonsColor := clBtnFace;
-    FSelectedRowColor := clHighlight;
-    FSelectedRowFontColor := clHighlightText;
-    FFontColor := clWindowText;
-  end;
+  if KhalaTheme = nil then
+    KhalaTheme := TKhalaTheme.Create;
+end;
 
-  PostMessage(frmMain.Handle, KH_RESET_THEME, 0, 0);
+
+{ TKhalaTheme }
+//---------------------------------------------------------------------------
+
+function TKhalaTheme.GetThemes(Index: Integer): TUITheme;
+begin
+  Result := ThemesArray[Index];
+end;
+
+//---------------------------------------------------------------------------
+
+function TKhalaTheme.GetThemesCount: Integer;
+begin
+  Result := Length(ThemesArray);
 end;
 
 //---------------------------------------------------------------------------
@@ -241,16 +231,35 @@ end;
 
 //---------------------------------------------------------------------------
 
-function TKhalaTheme.GetThemes(Index: Integer): TUITheme;
+procedure TKhalaTheme.SetTheme(ThemeID: Integer);
 begin
-  Result := ThemesArray[Index];
-end;
+  try
+    FThemeID := ThemeID;
+    FName := ThemesArray[ThemeID].Name;
+    FCaption := ThemesArray[ThemeID].Caption;
+    FGridGradientStartColor := ThemesArray[ThemeID].GridGradientStartColor;
+    FGridGradientEndColor := ThemesArray[ThemeID].GridGradientEndColor;
+    FPanelFilterColor := ThemesArray[ThemeID].PanelFilterColor;
+    FPanelButtonsColor := ThemesArray[ThemeID].PanelButtonsColor;
+    FSelectedRowColor := ThemesArray[ThemeID].SelectedRowColor;
+    FSelectedRowFontColor := ThemesArray[ThemeID].SelectedRowFontColor;
+    FFontColor := ThemesArray[ThemeID].FontColor;
+  except
+    ThemeID := 0;
+    FThemeID := ThemeID;
+    FName := 'N/A';
+    FCaption := 'N/A';
+    FGridGradientStartColor := clBtnFace;
+    FGridGradientEndColor := clBtnFace;
+    FPanelFilterColor := clBtnFace;
+    FPanelButtonsColor := clBtnFace;
+    FSelectedRowColor := clHighlight;
+    FSelectedRowFontColor := clHighlightText;
+    FFontColor := clWindowText;
+  end;
 
-//---------------------------------------------------------------------------
-
-function TKhalaTheme.GetThemesCount: Integer;
-begin
-  Result := Length(ThemesArray);
+  if frmMain <> nil then
+    PostMessage(frmMain.Handle, KH_RESET_THEME, 0, 0);
 end;
 
 end.

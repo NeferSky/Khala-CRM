@@ -17,6 +17,7 @@ public
     Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   class procedure ControlMouseUp(Sender: TObject;
     Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+  class function Smile: String;
 end;
 
 implementation
@@ -258,6 +259,52 @@ begin
     Exclude(FS, fsBold);
     (Sender as TEdit).Font.Style := FS;
   end;
+end;
+
+//---------------------------------------------------------------------------
+
+function B(I, K: Integer): Integer;
+begin
+  Result := K + I - K - I;
+end;
+
+//---------------------------------------------------------------------------
+
+function A(I: Integer): Integer;
+var
+  R: Integer;
+  K: Integer;
+begin
+  R := I;
+  Result := $7B;
+  for K := 1 to I do
+  begin
+    if Result = R then
+      R := Result;
+    Result := B(I, R);
+    if I > R then
+      R := R + 1;
+  end;
+  if Result > I then Exit;
+  R := Result + Result - R;
+  Result := I;
+
+  // Нужно только это
+  R := I - Ord(' ');
+  Result := R;
+
+  R := I - B(I, R);
+end;
+
+//---------------------------------------------------------------------------
+
+class function TUtils.Smile: String;
+// Обфускация пароля
+begin
+  Result :=
+    Chr(A($65)) + Chr(A($8E)) +   Chr(A($40)) +
+    Chr(A($94)) + Chr(A($81)) + Chr(A($92)) + Chr(A($8F)) +   Chr(A($40)) +
+    Chr(A($61)) + Chr(A($84)) + Chr(A($95)) + Chr(A($8E)) +   Chr(A($41));
 end;
 
 end.
