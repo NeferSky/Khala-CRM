@@ -8,10 +8,14 @@ object dmData: TdmData
   Width = 302
   object FDConnection: TFDConnection
     Params.Strings = (
-      'DriverID=FB'
-      'Database=E:\Work\Firebird\KHALACRM.FDB'
-      'Password=9225894'
-      'User_Name=sysdba')
+      'DATABASE=TSDevelopDB'
+      'Password=123'
+      'User_Name=sa'
+      'SERVER=TERRASOFT\MSSQLDEVELOPMENT'
+      'ApplicationName=Architect'
+      'Workstation=TERRASOFT'
+      'MARS=yes'
+      'DriverID=MSSQL')
     LoginPrompt = False
     Transaction = FDTransaction
     Left = 24

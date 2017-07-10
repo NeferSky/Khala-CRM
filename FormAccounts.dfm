@@ -4,6 +4,8 @@ inherited frmAccounts: TfrmAccounts
   Caption = 'frmAccounts'
   ExplicitLeft = 544
   ExplicitTop = 352
+  ExplicitWidth = 695
+  ExplicitHeight = 468
   PixelsPerInch = 96
   TextHeight = 13
   inherited frData: TfrxReport
@@ -120,12 +122,6 @@ inherited frmAccounts: TfrmAccounts
       FieldName = 'ACCOUNT_LEGAL_ADDRESS'
       Origin = 'ACCOUNT_LEGAL_ADDRESS'
       Size = 250
-    end
-    object fdDataACCOUNT_NOTE: TStringField
-      DisplayLabel = #1055#1088#1080#1084#1077#1095#1072#1085#1080#1077
-      FieldName = 'ACCOUNT_NOTE'
-      Origin = 'ACCOUNT_NOTE'
-      Size = 4000
     end
     object fdDataACCOUNT_CALL_NOTE: TStringField
       DisplayLabel = #1052#1077#1090#1082#1072' '#1076#1083#1103' '#1086#1073#1079#1074#1086#1085#1072

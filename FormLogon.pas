@@ -9,7 +9,7 @@ uses
   FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async,
   FireDAC.Phys, FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf,
   FireDAC.Comp.Client, Data.DB, FireDAC.Phys.FB, FireDAC.Phys.FBDef,
-  FireDAC.DApt, FireDAC.Comp.DataSet;
+  FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Phys.MSSQL, FireDAC.Phys.MSSQLDef;
 
 type
   TfrmLogon = class(TForm)
@@ -20,7 +20,7 @@ type
     pnlButtons: TPanel;
     btnOK: TButton;
     btnCancel: TButton;
-    spLogon: TFDStoredProc;
+    qryLogon: TFDQuery;
     procedure FormCreate(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
   private
@@ -39,7 +39,7 @@ function Logon: Boolean;
 implementation
 
 uses
-  UIThemes, Data, NsCipher, Kh_Utils;
+  UIThemes, Data, NsCipher, NsConvertUtils, Kh_Utils;
 
 {$R *.dfm}
 
@@ -68,16 +68,16 @@ begin
   try
     try
       connLogon.Open;
-      spLogon.Prepare;
-      spLogon.ParamByName('LOGIN').AsString := edtUserName.Text;
-      spLogon.ParamByName('PASS').AsString := edtPassword.Text;
-//      spLogon.ParamByName('PASS').AsString := TXEBICipher.Crypt(edtPassword.Text, Smile);
+      qryLogon.ParamByName('USER_NAME').AsString := edtUserName.Text;
+      qryLogon.ParamByName('PASS_WORD').AsString := edtPassword.Text;
+//      spLogon.ParamByName('PASS_WORD').AsString := TXEBICipher.Crypt(edtPassword.Text, Smile);
+      qryLogon.Prepare;
 
       if not trnLogon.Active then
         trnLogon.StartTransaction;
 
-      spLogon.ExecProc;
-      FSuccess := spLogon.ParamByName('SUCCESS').AsBoolean;
+      qryLogon.Open;
+      FSuccess := qryLogon.Fields[0].AsInteger = 1;
       trnLogon.Commit;
 
       if FSuccess then
@@ -92,7 +92,7 @@ begin
     end;
 
   finally
-    spLogon.Close;
+    qryLogon.Close;
 
     if trnLogon.Active then
       trnLogon.Commit;
@@ -106,7 +106,8 @@ end;
 procedure TfrmLogon.FormCreate(Sender: TObject);
 begin
   FSuccess := False;
-  connLogon.Params.Assign(dmData.FDConnection.Params);
+  connLogon.Params.Clear;
+  connLogon.Params.Text := dmData.FDConnection.Params.Text;
   connLogon.Params.UserName := 'login';
   connLogon.Params.Password := '2';
 end;

@@ -13,7 +13,7 @@ uses
   BaseForm, NsDBGrid, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.Client,
-  FireDAC.Comp.DataSet;
+  FireDAC.Comp.DataSet, System.Actions, Vcl.ActnList;
 
 type
   TfrmAccounts = class(TfrmBaseForm)
@@ -35,7 +35,6 @@ type
     fdDataREGION_NAME: TStringField;
     fdDataACCOUNT_POST_ADDRESS: TStringField;
     fdDataACCOUNT_LEGAL_ADDRESS: TStringField;
-    fdDataACCOUNT_NOTE: TStringField;
     fdDataACCOUNT_CALL_NOTE: TStringField;
     fdDataCLIENTS_VALUE_ID: TStringField;
     fdDataTIME_DIFFERENCE: TIntegerField;
@@ -48,7 +47,7 @@ type
   end;
 
 const
-  SQL_GET_ACCOUNTS = 'SELECT * FROM ACCOUNT_SEL ';
+  SQL_GET_ACCOUNTS = 'select * from dbo.Account_Select() ';
 
 implementation
 

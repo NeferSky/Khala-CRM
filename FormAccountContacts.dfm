@@ -1,9 +1,11 @@
 inherited frmAccountContacts: TfrmAccountContacts
-  Left = 1503
-  Top = 46
+  Left = 338
+  Top = 239
   Caption = 'frmAccountContacts'
-  ExplicitLeft = 1503
-  ExplicitTop = 46
+  ExplicitLeft = 338
+  ExplicitTop = 239
+  ExplicitWidth = 695
+  ExplicitHeight = 468
   PixelsPerInch = 96
   TextHeight = 13
   inherited frData: TfrxReport

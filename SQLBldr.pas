@@ -3,7 +3,7 @@ unit SQLBldr;
 interface
 
 uses
-  Classes, SysUtils, DB, FireDAC.Comp.Client, IBX.IBCustomDataSet, IBX.IBSQL;
+  Classes, SysUtils, DB, FireDAC.Comp.Client, FireDAC.Stan.Intf;
 
 type
   ERebuildQuery = class(Exception)
@@ -26,6 +26,11 @@ type
     FDataSet: PDataSet; // Датасет на фрейме-владельце. Надо бы через pointer с ним работать, наверное
     FqryRowCount: TFDQuery; // Местный датасет для получения кол-ва строк
     FRowCount: Integer; // Кол-во строк, возвращаемых запросом
+    FSQLRowCount: String; // Костыль для передачи в запрос подсчета строк
+    function BuildForFirebird: String;
+    function BuildForMSSQL: String;
+    function BuildForMySQL: String;
+    function BuildForPostgreSQL: String;
     procedure ExecuteQuery(QueryText: String);
     procedure CalcRowCount(QueryText: String);
     function GetDataSet: PDataSet;
@@ -68,53 +73,181 @@ uses
 //---------------------------------------------------------------------------
 { TSQLBuilder }
 
-// Собираем текст SQL-запроса, возвращаем его, а при необходимости - еще и
-// сразу запускаем
-function TSQLBuilder.BuildQuery(NeedExecute: Boolean = True): String;
+function TSQLBuilder.BuildForFirebird: String;
 var
-  WherePart, OrderPart, SortPart, OffsetPart: String;
+  AWherePart, AOrderPart, ASortPart, AOffsetPart: String;
 
 begin
   // Условие Where набирается из непосредственно where и быстрого фильтра
   if FWherePart <> '' then
   begin
-    WherePart := Format(' WHERE %s ', [FWherePart]);
+    AWherePart := Format(' WHERE %s ', [FWherePart]);
     if FFilterPart <> '' then
-      WherePart := WherePart + Format(' AND %s ', [FFilterPart]);
+      AWherePart := AWherePart + Format(' AND %s ', [FFilterPart]);
   end
   else
   begin
     if FFilterPart <> '' then
-      WherePart := Format(' WHERE %s ', [FFilterPart])
+      AWherePart := Format(' WHERE %s ', [FFilterPart])
     else
-      WherePart := '';
+      AWherePart := '';
   end;
 
   // Sort должен быть строго в присутствии OrderBy, поэтому включается в его состав.
   if (FSortPart = 'ASC') or (FSortPart = 'DESC') then
-    SortPart := FSortPart
+    ASortPart := FSortPart
   else
-    SortPart := '';
+    ASortPart := '';
 
   if FOrderPart <> '' then
-    OrderPart := Format(' ORDER BY %s %s ', [FOrderPart, SortPart])
+    AOrderPart := Format(' ORDER BY %s %s ', [FOrderPart, ASortPart])
   else
-    OrderPart := '';
+    AOrderPart := '';
 
   if FOffsetPart > 0 then
-    OffsetPart := Format(' ROWS %d TO %d ',
+    AOffsetPart := Format(' ROWS %d TO %d ',
       [((FOffsetPart - 1) * RECS_ON_PAGE) + 1, FOffsetPart * RECS_ON_PAGE])
   else
-    OffsetPart := Format(' ROWS %d TO %d ',
+    AOffsetPart := Format(' ROWS %d TO %d ',
       [1, RECS_ON_PAGE]);
 
-  Result := FSelectPart + WherePart + OrderPart + OffsetPart;
+  Result := FSelectPart + AWherePart + AOrderPart + AOffsetPart;
+  FSQLRowCount := FSelectPart + AWherePart;
+end;
+
+//---------------------------------------------------------------------------
+
+function TSQLBuilder.BuildForMSSQL: String;
+var
+  AWherePart, AOrderPart, ASortPart, AOffsetPart: String;
+
+begin
+  // Условие Where набирается из непосредственно where и быстрого фильтра
+  if FWherePart <> '' then
+  begin
+    AWherePart := Format(' WHERE %s ', [FWherePart]);
+    if FFilterPart <> '' then
+      AWherePart := AWherePart + Format(' AND %s ', [FFilterPart]);
+  end
+  else
+  begin
+    if FFilterPart <> '' then
+      AWherePart := Format(' WHERE %s ', [FFilterPart])
+    else
+      AWherePart := '';
+  end;
+
+  // Sort и Offset должны быть строго в присутствии OrderBy, поэтому включаются в его состав.
+  if (FSortPart = 'ASC') or (FSortPart = 'DESC') then
+    ASortPart := FSortPart
+  else
+    ASortPart := '';
+
+  AOffsetPart := Format(' OFFSET %d ROWS FETCH NEXT %d ROWS ONLY ',
+    [((FOffsetPart - 1) * RECS_ON_PAGE), RECS_ON_PAGE]);
+
+  if FOrderPart <> '' then
+    AOrderPart := Format(' ORDER BY %s %s %s ', [FOrderPart, ASortPart, AOffsetPart])
+  else
+    AOrderPart := '';
+
+  Result := FSelectPart + AWherePart + AOrderPart;
+  FSQLRowCount := FSelectPart + AWherePart;
+end;
+
+//---------------------------------------------------------------------------
+
+function TSQLBuilder.BuildForMySQL: String;
+var
+  AWherePart, AOrderPart, ASortPart, AOffsetPart: String;
+
+begin
+  // Условие Where набирается из непосредственно where и быстрого фильтра
+  if FWherePart <> '' then
+  begin
+    AWherePart := Format(' WHERE %s ', [FWherePart]);
+    if FFilterPart <> '' then
+      AWherePart := AWherePart + Format(' AND %s ', [FFilterPart]);
+  end
+  else
+  begin
+    if FFilterPart <> '' then
+      AWherePart := Format(' WHERE %s ', [FFilterPart])
+    else
+      AWherePart := '';
+  end;
+
+  // Sort должен быть строго в присутствии OrderBy, поэтому включается в его состав.
+  if (FSortPart = 'ASC') or (FSortPart = 'DESC') then
+    ASortPart := FSortPart
+  else
+    ASortPart := '';
+
+  if FOrderPart <> '' then
+    AOrderPart := Format(' ORDER BY %s %s ', [FOrderPart, ASortPart])
+  else
+    AOrderPart := '';
+
+  AOffsetPart := Format(' LIMIT %d, %d ',
+    [(FOffsetPart - 1) * RECS_ON_PAGE, RECS_ON_PAGE]);
+
+  Result := FSelectPart + AWherePart + AOrderPart + AOffsetPart;
+  FSQLRowCount := FSelectPart + AWherePart;
+end;
+
+//---------------------------------------------------------------------------
+
+function TSQLBuilder.BuildForPostgreSQL: String;
+var
+  AWherePart, AOrderPart, ASortPart, AOffsetPart: String;
+
+begin
+  // Условие Where набирается из непосредственно where и быстрого фильтра
+  if FWherePart <> '' then
+  begin
+    AWherePart := Format(' WHERE %s ', [FWherePart]);
+    if FFilterPart <> '' then
+      AWherePart := AWherePart + Format(' AND %s ', [FFilterPart]);
+  end
+  else
+  begin
+    if FFilterPart <> '' then
+      AWherePart := Format(' WHERE %s ', [FFilterPart])
+    else
+      AWherePart := '';
+  end;
+
+  // Sort должен быть строго в присутствии OrderBy, поэтому включается в его состав.
+  if (FSortPart = 'ASC') or (FSortPart = 'DESC') then
+    ASortPart := FSortPart
+  else
+    ASortPart := '';
+
+  if FOrderPart <> '' then
+    AOrderPart := Format(' ORDER BY %s %s ', [FOrderPart, ASortPart])
+  else
+    AOrderPart := '';
+
+  AOffsetPart := Format(' LIMIT %d OFFSET %d ',
+    [RECS_ON_PAGE, (FOffsetPart - 1) * RECS_ON_PAGE]);
+
+  Result := FSelectPart + AWherePart + AOrderPart + AOffsetPart;
+  FSQLRowCount := FSelectPart + AWherePart;
+end;
+
+//---------------------------------------------------------------------------
+
+function TSQLBuilder.BuildQuery(NeedExecute: Boolean = True): String;
+// Собираем текст SQL-запроса, возвращаем его, а при необходимости - еще и
+// сразу запускаем
+begin
+  Result := BuildForMSSQL;
 
   try
     if NeedExecute and (FDataSet <> nil) then
     begin
       ExecuteQuery(Result);
-      CalcRowCount(FSelectPart + WherePart);
+      CalcRowCount(FSQLRowCount);
     end;
   except
     on E: ERebuildQuery do
@@ -128,8 +261,8 @@ end;
 
 //---------------------------------------------------------------------------
 
-// Вычисление полного количества строк, возвращаемых запросом
 procedure TSQLBuilder.CalcRowCount(QueryText: String);
+// Вычисление полного количества строк, возвращаемых запросом
 begin
   FRowCount := 0;
 
@@ -140,7 +273,7 @@ begin
     FqryRowCount.Close;
 
   try
-    FqryRowCount.SQL.Text := Format('SELECT Count(*) FROM(%s)', [QueryText]);
+    FqryRowCount.SQL.Text := Format('SELECT Count(*) FROM(%s) cnt', [QueryText]);
     FqryRowCount.Open;
     FRowCount := FqryRowCount.Fields[0].AsInteger;
   finally
@@ -161,8 +294,9 @@ begin
     if FDataSet^.Params.Count > 0 then
     begin
       if FMasterID = '' then
-        FMasterID := '00000000-0000-0000-0000-000000000000';
-      FDataSet^.ParamByName('MASTER_ID').AsString  := FMasterID;
+        FMasterID := '{00000000-0000-0000-0000-000000000000}';
+      StringReplace(FDataSet^.SQL.Text, ':MASTER_ID', FMasterID, []);
+//      FDataSet^.Params.ParamValues['MASTER_ID'] := FMasterID;
     end;
 
     FDataSet^.Open;
@@ -172,8 +306,6 @@ begin
   end;
 end;
 
-//---------------------------------------------------------------------------
-// Конструктор, деструктор
 //---------------------------------------------------------------------------
 
 constructor TSQLBuilder.Create(AOwner: TComponent);
@@ -194,8 +326,6 @@ begin
   inherited;
 end;
 
-//---------------------------------------------------------------------------
-// Геттеры-сеттеры свойств
 //---------------------------------------------------------------------------
 
 function TSQLBuilder.GetDataSet: PDataSet;
@@ -327,9 +457,8 @@ begin
     FWherePart := Value;
 end;
 
-//---------------------------------------------------------------------------
-
 { ERebuildQuery }
+//---------------------------------------------------------------------------
 
 constructor ERebuildQuery.Create;
 begin

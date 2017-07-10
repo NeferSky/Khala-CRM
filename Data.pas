@@ -11,7 +11,8 @@ uses
   IBX.IBDatabase, IBX.IBDatabaseInfo,
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf,
   FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async,
-  FireDAC.Phys, FireDAC.Phys.FB, FireDAC.Phys.FBDef, FireDAC.Comp.Client;
+  FireDAC.Phys, FireDAC.Phys.FB, FireDAC.Phys.FBDef, FireDAC.Comp.Client,
+  FireDAC.Phys.MSSQL, FireDAC.Phys.MSSQLDef;
 
 type
   TdmData = class(TDataModule)

@@ -1,6 +1,6 @@
 object frmLogon: TfrmLogon
-  Left = 804
-  Top = 201
+  Left = 685
+  Top = 285
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = #1042#1093#1086#1076' '#1074' '#1089#1080#1089#1090#1077#1084#1091
@@ -48,7 +48,6 @@ object frmLogon: TfrmLogon
     Align = alBottom
     ParentBackground = False
     TabOrder = 2
-    ExplicitTop = 96
     object btnOK: TButton
       Left = 152
       Top = 6
@@ -71,10 +70,16 @@ object frmLogon: TfrmLogon
   object connLogon: TFDConnection
     Params.Strings = (
       'User_Name=login'
-      'DriverID=FB'
-      'CharacterSet=WIN1251'
-      'Database=E:\Work\Firebird\KHALACRM.FDB'
-      'Password=2')
+      'DATABASE=TSDevelopDB'
+      'Password=2'
+      'SERVER=TERRASOFT\MSSQLDEVELOPMENT'
+      'ApplicationName=Architect'
+      'Workstation=TERRASOFT'
+      'MARS=yes'
+      'DriverID=MSSQL')
+    TxOptions.ReadOnly = True
+    TxOptions.AutoStart = False
+    TxOptions.AutoStop = False
     Connected = True
     LoginPrompt = False
     Transaction = trnLogon
@@ -89,32 +94,20 @@ object frmLogon: TfrmLogon
     Left = 152
     Top = 8
   end
-  object spLogon: TFDStoredProc
+  object qryLogon: TFDQuery
     Connection = connLogon
-    Transaction = trnLogon
-    StoredProcName = 'LOGON'
+    SQL.Strings = (
+      'select dbo.Logon(:User_Name, :Pass_Word)')
     Left = 216
     Top = 8
     ParamData = <
       item
-        Position = 1
-        Name = 'LOGIN'
-        DataType = ftString
+        Name = 'USER_NAME'
         ParamType = ptInput
-        Size = 250
       end
       item
-        Position = 2
-        Name = 'PASS'
-        DataType = ftString
+        Name = 'PASS_WORD'
         ParamType = ptInput
-        Size = 250
-      end
-      item
-        Position = 3
-        Name = 'SUCCESS'
-        DataType = ftBoolean
-        ParamType = ptOutput
       end>
   end
 end
