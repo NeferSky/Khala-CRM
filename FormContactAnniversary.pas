@@ -23,7 +23,8 @@ type
   end;
 
 const
-  SQL_GET_CONTACT_ANNIVERSARY = 'SELECT * FROM dbo.CONTACT_ANNIVERSARY_SEL ';
+  SQL_GET_CONTACT_ANNIVERSARY = 'select * from dbo.App_SelectContactAnniversary ';
+  FORM_ID = '{B6F5F259-D843-463A-8799-1CE3AFC8FEA2}';
 
 var
   frmContactAnniversary: TfrmContactAnniversary;
@@ -31,12 +32,14 @@ var
 implementation
 
 {$R *.dfm}
+
 { TfrmContactAnniversary }
 
 class function TfrmContactAnniversary.CreateForm(AOwner: TComponent;
   AParent: TWinControl; IsMaster: Boolean): TfrmBaseForm;
 begin
   Result := TfrmContactAnniversary.ACreate(AOwner, AParent, IsMaster);
+  Result.FormID_AsString := FORM_ID;
   Result.SQLText := SQL_GET_CONTACT_ANNIVERSARY;
   Result.RebuildQuery;
 end;

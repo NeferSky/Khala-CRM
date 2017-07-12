@@ -23,7 +23,9 @@ uses
   FormContacts in 'FormContacts.pas' {frmContacts},
   FormContactCommunication in 'FormContactCommunication.pas' {frmContactCommunication},
   FormContactAnniversary in 'FormContactAnniversary.pas' {frmContactAnniversary},
-  FormContactTasks in 'FormContactTasks.pas' {frmContactTasks};
+  FormContactTasks in 'FormContactTasks.pas' {frmContactTasks},
+  BaseEditForm in 'BaseEditForm.pas' {frmBaseEditForm},
+  FormAccountEdit in 'FormAccountEdit.pas' {frmAccountEdit};
 
 {$R *.res}
 

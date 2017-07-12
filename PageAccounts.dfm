@@ -27,4 +27,9 @@ inherited frmPageAccounts: TfrmPageAccounts
       end
     end
   end
+  inherited frReport: TfrxReport
+    Datasets = <>
+    Variables = <>
+    Style = <>
+  end
 end

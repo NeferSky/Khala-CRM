@@ -1,6 +1,6 @@
 object frmBasePage: TfrmBasePage
-  Left = 2015
-  Top = 218
+  Left = 187
+  Top = 250
   Align = alClient
   BorderStyle = bsNone
   Caption = 'frmBasePage'
@@ -56,9 +56,6 @@ object frmBasePage: TfrmBasePage
       Color = clActiveCaption
       ParentBackground = False
       TabOrder = 0
-      ExplicitLeft = 1
-      ExplicitTop = 343
-      ExplicitWidth = 159
     end
     object pnlActions: TPanel
       Left = 0
@@ -68,9 +65,6 @@ object frmBasePage: TfrmBasePage
       Align = alTop
       ParentColor = True
       TabOrder = 1
-      ExplicitLeft = 1
-      ExplicitTop = 1
-      ExplicitWidth = 159
       object lblActions: TLabel
         Left = 8
         Top = 8
@@ -85,6 +79,7 @@ object frmBasePage: TfrmBasePage
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        OnClick = lblActionsClick
       end
       object lblReports: TLabel
         Left = 80
@@ -100,6 +95,8 @@ object frmBasePage: TfrmBasePage
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        PopupMenu = pmnuReports
+        OnClick = lblReportsClick
       end
     end
   end
@@ -140,5 +137,43 @@ object frmBasePage: TfrmBasePage
       Align = alClient
       TabOrder = 1
     end
+  end
+  object qryReports: TFDQuery
+    Connection = dmData.FDConnection
+    Left = 96
+    Top = 48
+  end
+  object alActions: TActionList
+    Left = 32
+    Top = 48
+  end
+  object pmnuActions: TPopupMenu
+    Left = 32
+    Top = 104
+  end
+  object pmnuReports: TPopupMenu
+    Left = 96
+    Top = 104
+  end
+  object frReport: TfrxReport
+    Version = '5.4.6'
+    DotMatrixReport = False
+    IniFile = '\Software\Fast Reports'
+    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
+    PreviewOptions.Zoom = 1.000000000000000000
+    PrintOptions.Printer = #1055#1086' '#1091#1084#1086#1083#1095#1072#1085#1080#1102
+    PrintOptions.PrintOnSheet = 0
+    ReportOptions.CreateDate = 42927.469326736120000000
+    ReportOptions.LastChange = 42927.469326736120000000
+    ScriptLanguage = 'PascalScript'
+    ScriptText.Strings = (
+      'begin'
+      ''
+      'end.')
+    Left = 96
+    Top = 160
+    Datasets = <>
+    Variables = <>
+    Style = <>
   end
 end

@@ -23,7 +23,8 @@ type
   end;
 
 const
-  SQL_GET_CONTACTS = 'SELECT * FROM dbo.CONTACT_SEL ';
+  SQL_GET_CONTACTS = 'select * from dbo.App_SelectContacts ';
+  FORM_ID = '{036E1011-A524-4C2A-B08F-AF4291257A0C}';
 
 var
   frmContacts: TfrmContacts;
@@ -38,6 +39,7 @@ class function TfrmContacts.CreateForm(AOwner: TComponent; AParent: TWinControl;
   IsMaster: Boolean): TfrmBaseForm;
 begin
   Result := TfrmContacts.ACreate(AOwner, AParent, IsMaster);
+  Result.FormID_AsString := FORM_ID;
   Result.SQLText := SQL_GET_CONTACTS;
   Result.RebuildQuery;
 end;

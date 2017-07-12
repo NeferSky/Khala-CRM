@@ -24,6 +24,7 @@ type
     procedure chbValueClick(Sender: TObject);
     procedure cmbColumnsChange(Sender: TObject);
     procedure cmbColumnsKeyPress(Sender: TObject; var Key: Char);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     FDataSet: PDataSet; // Датасет, на данные которого накладывается фильтр
@@ -33,9 +34,11 @@ type
     function GetFieldName: String;
     procedure SetFieldName(const Value: String);
     procedure SwitchInputControls(AFieldName: String);
+    function GetColumnName: String;
   public
     { Public declarations }
     property FieldName: String read GetFieldName write SetFieldName;
+    property ColumnName: String read GetColumnName;
     property ColumnValue: String read GetColumnValue;
   end;
 
@@ -50,7 +53,7 @@ implementation
 {$R *.dfm}
 
 uses
-  NsConvertUtils;
+  UIThemes, NsConvertUtils;
 
 //---------------------------------------------------------------------------
 
@@ -104,7 +107,7 @@ begin
   for I := 1 to FDataSet^.FieldCount - 2 do
     if FDataSet^.Fields.Fields[I].DisplayName = cmbColumns.Text then
     begin
-      FCurFieldName := FDataSet^.Fields.Fields[I].FieldName;
+      FCurFieldName := FDataSet^.Fields[I].FieldName;
       Break;
     end;
 
@@ -116,6 +119,21 @@ end;
 procedure TfrmFastFilter.cmbColumnsKeyPress(Sender: TObject; var Key: Char);
 begin
   Key := #0;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmFastFilter.FormShow(Sender: TObject);
+// Применение цветов темы
+begin
+  Self.Color := KhalaTheme.PanelFilterColor;
+end;
+
+//---------------------------------------------------------------------------
+
+function TfrmFastFilter.GetColumnName: String;
+begin
+  Result := cmbColumns.Text;
 end;
 
 //---------------------------------------------------------------------------

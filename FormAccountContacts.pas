@@ -18,21 +18,20 @@ uses
 type
   TfrmAccountContacts = class(TfrmBaseForm)
     fdDataID: TStringField;
-    fdDataCONTACT_NAME: TStringField;
-    fdDataJOB_TITLE: TStringField;
-    fdDataJOB_NAME: TStringField;
-    fdDataCOMM_TYPE1: TStringField;
-    fdDataCOMM1: TStringField;
-    fdDataCOMM_TYPE2: TStringField;
-    fdDataCOMM2: TStringField;
-    fdDataCOMM_TYPE3: TStringField;
-    fdDataCOMM3: TStringField;
-    fdDataCOMM_TYPE4: TStringField;
-    fdDataCOMM4: TStringField;
-    fdDataCOMM_TYPE5: TStringField;
-    fdDataCOMM5: TStringField;
-    fdDataCOMM_TYPE6: TStringField;
-    fdDataCOMM6: TStringField;
+    fdDataContactName: TStringField;
+    fdDataJobName: TStringField;
+    fdDataCommType1: TStringField;
+    fdDataComm1: TStringField;
+    fdDataCommType2: TStringField;
+    fdDataComm2: TStringField;
+    fdDataCommType3: TStringField;
+    fdDataComm3: TStringField;
+    fdDataCommType4: TStringField;
+    fdDataComm4: TStringField;
+    fdDataCommType5: TStringField;
+    fdDataComm5: TStringField;
+    fdDataCommType6: TStringField;
+    fdDataComm6: TStringField;
   private
     { Private declarations }
   public
@@ -42,7 +41,8 @@ type
   end;
 
 const
-  SQL_GET_ACCOUNT_CONTACTS = 'SELECT * FROM dbo.ACCOUNT_CONTACT_SELECT(:MASTER_ID) ';
+  SQL_GET_ACCOUNT_CONTACTS = 'select * from dbo.App_SelectAccountContact(:MasterID) ';
+  FORM_ID = '{7A07B6B5-5763-4003-AA78-BF2EF691AD95}';
 
 implementation
 
@@ -54,6 +54,7 @@ class function TfrmAccountContacts.CreateForm(AOwner: TComponent;
   AParent: TWinControl; IsMaster: Boolean): TfrmBaseForm;
 begin
   Result := TfrmAccountContacts.ACreate(AOwner, AParent, IsMaster);
+  Result.FormID_AsString := FORM_ID;
   Result.SQLText := SQL_GET_ACCOUNT_CONTACTS;
   Result.RebuildQuery;
 end;

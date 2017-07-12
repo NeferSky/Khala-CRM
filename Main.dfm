@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 1322
-  Top = 244
+  Left = 1354
+  Top = 202
   Caption = 'CRM Khala'
   ClientHeight = 586
   ClientWidth = 844
@@ -77,7 +77,7 @@ object frmMain: TfrmMain
       ImageIndex = 9
     end
   end
-  object sbStatus: TStatusBar
+  object sbStatusBar: TStatusBar
     Left = 0
     Top = 567
     Width = 844
@@ -113,14 +113,14 @@ object frmMain: TfrmMain
         Text = #1042#1088#1077#1084#1103':'
         Width = 120
       end>
-    OnDrawPanel = sbStatusDrawPanel
-    OnResize = sbStatusResize
+    OnDrawPanel = sbStatusBarDrawPanel
+    OnResize = sbStatusBarResize
   end
   object ilRibbon: TImageList
     Left = 16
     Top = 56
     Bitmap = {
-      494C01010D001800880010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010D001800940010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

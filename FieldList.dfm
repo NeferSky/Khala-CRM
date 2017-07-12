@@ -22,12 +22,11 @@ object frmColumnsList: TfrmColumnsList
     Width = 185
     Height = 164
     Align = alClient
-    DragMode = dmAutomatic
     Indent = 19
     TabOrder = 0
     OnDragDrop = tvColumnsListDragDrop
     OnDragOver = tvColumnsListDragOver
-    OnStartDrag = tvColumnsListStartDrag
+    OnMouseDown = tvColumnsListMouseDown
     ExplicitWidth = 193
     ExplicitHeight = 169
   end

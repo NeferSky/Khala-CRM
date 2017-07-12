@@ -23,7 +23,7 @@ type
     TabSheet4: TTabSheet;
     TabSheet5: TTabSheet;
     TabSheet6: TTabSheet;
-    sbStatus: TStatusBar;
+    sbStatusBar: TStatusBar;
     //--
     tmrTimer: TTimer;
     ilRibbon: TImageList;
@@ -38,9 +38,9 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure pcRibbonChange(Sender: TObject);
-    procedure sbStatusDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel;
+    procedure sbStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel;
       const Rect: TRect);
-    procedure sbStatusResize(Sender: TObject);
+    procedure sbStatusBarResize(Sender: TObject);
     procedure tmrTimerTimer(Sender: TObject);
   private
     { Private declarations }
@@ -71,7 +71,6 @@ uses
 {$R *.dfm}
 
 { TfrmMain }
-
 //---------------------------------------------------------------------------
 
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -80,6 +79,7 @@ begin
   PrepareThemesMenu;
   ReadIni;
 
+  // Подсветка контролов при наведении курсора
   pcRibbon.OnMouseEnter := TUtils.ControlMouseEnter;
   pcRibbon.OnMouseLeave := TUtils.ControlMouseLeave;
 
@@ -175,7 +175,7 @@ end;
 
 //---------------------------------------------------------------------------
 
-procedure TfrmMain.sbStatusDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel;
+procedure TfrmMain.sbStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel;
   const Rect: TRect);
 // Применение цветов темы
 var
@@ -189,13 +189,14 @@ end;
 
 //---------------------------------------------------------------------------
 
-procedure TfrmMain.sbStatusResize(Sender: TObject);
+procedure TfrmMain.sbStatusBarResize(Sender: TObject);
 var
   NewWidth: Integer;
 begin
-  NewWidth := (sbStatus.Width - sbStatus.Panels[0].Width - sbStatus.Panels[3].Width - sbStatus.Panels[4].Width) div 2;
-  sbStatus.Panels[1].Width := NewWidth;
-  sbStatus.Panels[2].Width := NewWidth;
+  NewWidth := (sbStatusBar.Width - sbStatusBar.Panels[0].Width -
+    sbStatusBar.Panels[3].Width - sbStatusBar.Panels[4].Width) div 2;
+  sbStatusBar.Panels[1].Width := NewWidth;
+  sbStatusBar.Panels[2].Width := NewWidth;
 end;
 
 //---------------------------------------------------------------------------
@@ -203,10 +204,10 @@ end;
 procedure TfrmMain.ShowStatusbarInfo;
 // Постоянная информация в статусбаре
 begin
-  sbStatus.Panels[1].Text := 'Пользователь: ' + FUserName;
-  sbStatus.Panels[2].Text := 'Тут еще какая-нибудь фигня';
-  sbStatus.Panels[3].Text := 'Дата: ' + DateToStr(Date);
-  sbStatus.Panels[4].Text := 'Время: ' + FormatDateTime('t', Time);
+  sbStatusBar.Panels[1].Text := 'Пользователь: ' + FUserName;
+  sbStatusBar.Panels[2].Text := 'Тут еще какая-нибудь фигня';
+  sbStatusBar.Panels[3].Text := 'Дата: ' + DateToStr(Date);
+  sbStatusBar.Panels[4].Text := 'Время: ' + FormatDateTime('t', Time);
 end;
 
 //---------------------------------------------------------------------------
@@ -223,7 +224,7 @@ end;
 procedure TfrmMain.tmrTimerTimer(Sender: TObject);
 // Время в статусбаре
 begin
-  sbStatus.Panels[4].Text := 'Время: ' + FormatDateTime('t', Time);
+  sbStatusBar.Panels[4].Text := 'Время: ' + FormatDateTime('t', Time);
 end;
 
 //---------------------------------------------------------------------------

@@ -4,8 +4,6 @@ inherited frmContactCommunication: TfrmContactCommunication
   Caption = 'frmContactCommunication'
   ExplicitLeft = 453
   ExplicitTop = 295
-  ExplicitWidth = 695
-  ExplicitHeight = 468
   PixelsPerInch = 96
   TextHeight = 13
   inherited frData: TfrxReport

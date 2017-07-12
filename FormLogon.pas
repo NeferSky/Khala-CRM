@@ -47,7 +47,6 @@ uses
 
 function Logon: Boolean;
 begin
-  Result := False;
   try
     frmLogon := TfrmLogon.Create(Application);
     frmLogon.pnlButtons.Color := KhalaTheme.PanelButtonsColor;

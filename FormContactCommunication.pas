@@ -23,7 +23,8 @@ type
   end;
 
 const
-  SQL_GET_CONTACT_COMMUNICATIONS = 'SELECT * FROM dbo.CONTACT_COMMUNICATIONS_SEL ';
+  SQL_GET_CONTACT_COMMUNICATIONS = 'select * from dbo.App_SelectContactCommunications ';
+  FORM_ID = '{44B4DD95-F28F-4E2D-AB06-86BDF242844B}';
 
 var
   frmContactCommunication: TfrmContactCommunication;
@@ -31,12 +32,14 @@ var
 implementation
 
 {$R *.dfm}
+
 { TfrmContactCommunication }
 
 class function TfrmContactCommunication.CreateForm(AOwner: TComponent;
   AParent: TWinControl; IsMaster: Boolean): TfrmBaseForm;
 begin
   Result := TfrmContactCommunication.ACreate(AOwner, AParent, IsMaster);
+  Result.FormID_AsString := FORM_ID;
   Result.SQLText := SQL_GET_CONTACT_COMMUNICATIONS;
   Result.RebuildQuery;
 end;

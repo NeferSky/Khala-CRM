@@ -15,6 +15,8 @@ type
       State: TDragState; var Accept: Boolean);
     procedure tvColumnsListStartDrag(Sender: TObject;
       var DragObject: TDragObject);
+    procedure tvColumnsListMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     { Private declarations }
     FAssociate: TControl; // —сылка на грид
@@ -75,11 +77,23 @@ end;
 
 //---------------------------------------------------------------------------
 
-procedure TfrmColumnsList.tvColumnsListStartDrag(Sender: TObject;
-  var DragObject: TDragObject);
+procedure TfrmColumnsList.tvColumnsListMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 // »нициируем драггинг
 begin
-  FDraggedColumn := TTreeView(Sender).Selected;
+  if Button = mbRight then
+  begin
+    (Sender as TControl).BeginDrag(False, 5);
+    FDraggedColumn := TTreeView(Sender).GetNodeAt(X, Y);
+  end;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmColumnsList.tvColumnsListStartDrag(Sender: TObject;
+  var DragObject: TDragObject);
+begin
+
 end;
 
 //---------------------------------------------------------------------------

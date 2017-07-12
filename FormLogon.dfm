@@ -54,6 +54,7 @@ object frmLogon: TfrmLogon
       Width = 75
       Height = 25
       Caption = 'OK'
+      Default = True
       TabOrder = 0
       OnClick = btnOKClick
     end
@@ -62,6 +63,7 @@ object frmLogon: TfrmLogon
       Top = 6
       Width = 75
       Height = 25
+      Cancel = True
       Caption = #1054#1090#1084#1077#1085#1072
       ModalResult = 8
       TabOrder = 1
@@ -97,7 +99,7 @@ object frmLogon: TfrmLogon
   object qryLogon: TFDQuery
     Connection = connLogon
     SQL.Strings = (
-      'select dbo.Logon(:User_Name, :Pass_Word)')
+      'select dbo.App_Logon(:User_Name, :Pass_Word)')
     Left = 216
     Top = 8
     ParamData = <

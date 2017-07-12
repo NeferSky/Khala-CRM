@@ -4,8 +4,6 @@ inherited frmContactAnniversary: TfrmContactAnniversary
   Caption = 'frmContactAnniversary'
   ExplicitLeft = 511
   ExplicitTop = 291
-  ExplicitWidth = 695
-  ExplicitHeight = 468
   PixelsPerInch = 96
   TextHeight = 13
   inherited frData: TfrxReport

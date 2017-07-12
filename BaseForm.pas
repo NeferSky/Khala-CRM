@@ -41,8 +41,7 @@ type
     btnExport: TSpeedButton;
     btnPrint: TSpeedButton;
     btnPlus: TSpeedButton;
-    //--
-    aclActions: TActionList;
+    alActions: TActionList;
     fdData: TFDQuery;
     srcData: TDataSource;
     qryGetReport: TFDQuery;
@@ -58,12 +57,13 @@ type
     mnuDel: TMenuItem;
     mnuSeparator: TMenuItem;
     mnuCreateTicket: TMenuItem;
+    actAdd: TAction;
+    actCopy: TAction;
+    actEdit: TAction;
+    actDelete: TAction;
+    spUserActions: TFDStoredProc;
     //--
-    procedure btnAddClick(Sender: TObject);
     procedure btnCloseFastFilterClick(Sender: TObject);
-    procedure btnCopyClick(Sender: TObject);
-    procedure btnDelClick(Sender: TObject);
-    procedure btnEditClick(Sender: TObject);
     procedure btnExportClick(Sender: TObject);
     procedure btnFirstPageClick(Sender: TObject);
     procedure btnNextPageClick(Sender: TObject);
@@ -92,14 +92,16 @@ type
     procedure lblFastFilterClick(Sender: TObject);
     procedure lblPageClick(Sender: TObject);
     procedure mnuCreateTicketClick(Sender: TObject);
+    procedure grdDataDblClick(Sender: TObject);
   private
     { Private declarations }
+    FFormID: TGuid; // Идентификатор формы
     SQLBuilder: TSQLBuilder; // Повелитель запросов
     FSelectedColumn: String; // Последняя щелкнутая колонка
     FSelectedField: String; // Поле датасета последней щелкнутой колонки
     FCurrentPage: Integer; // Страница датасета
     FRowCount: Integer; // Кол-во записей, возвращаемых запросом (НЕ постранично)
-    FFirstOpen: Boolean; // Набирать колонки грида по списку из настроек
+    FFirstOpen: Boolean; // Набирать колонки грида из настроек или грид уже создан и набран
     FOrderByCol: String; // Последний щелкнутый заголовок колонки
     FSortType: String; // По возрастанию/по убыванию
     FDraggedColumn: TColumn; // Передвигаемая колонка грида для drag-drop
@@ -107,7 +109,7 @@ type
     FSQLText: String; // Запрос, результат которого выводится в грид
     FFastFiltered: Boolean; // Признак применения быстрого фильтра
     FIsMaster: Boolean; // Форма является "главной" для другой формы
-    FMouseWheelScrolling: Boolean; // Выполняется скроллинг мышей, флаг "не обновлять зависимые датасеты"
+    FMouseWheelScrolling: Boolean; // Выполняется скроллинг мЫшей, флаг "не обновлять зависимые датасеты"
     //--
     procedure CreateFieldList(AOwner: TControl);
     procedure CreateNewGridColumn(FieldName: String);
@@ -132,6 +134,10 @@ type
     procedure ShowColumnsManager(Sender: TObject);
     procedure ShowFieldList;
     procedure ShowPageEdit(DoShow: Boolean);
+    function GetFormID: TGuid;
+    procedure SetFormID(const Value: TGuid);
+    function GetFormID_AsString: String;
+    procedure SetFormID_AsString(const Value: String);
   protected
     { Protected declarations }
     class function CreateForm(AOwner: TComponent; AParent: TWinControl;
@@ -148,10 +154,9 @@ type
     //--
     property MasterID: String read GetMasterID write SetMasterID;
     property SQLText: String read GetSQLText write SetSQLText;
+    property FormID: TGuid read GetFormID write SetFormID;
+    property FormID_AsString: String read GetFormID_AsString write SetFormID_AsString;
   end;
-
-var
-  frmBaseForm: TfrmBaseForm;
 
 implementation
 
@@ -174,13 +179,6 @@ end;
 
 //---------------------------------------------------------------------------
 
-procedure TfrmBaseForm.btnAddClick(Sender: TObject);
-begin
-
-end;
-
-//---------------------------------------------------------------------------
-
 procedure TfrmBaseForm.btnCloseFastFilterClick(Sender: TObject);
 // Непосредственно снятие быстрого фильтра
 begin
@@ -191,27 +189,6 @@ begin
   btnCloseFastFilter.Visible := False;
   lblFastFilter.Left := btnCloseFastFilter.Left;
   FFastFiltered := False;
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.btnCopyClick(Sender: TObject);
-begin
-
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.btnDelClick(Sender: TObject);
-begin
-
-end;
-
-//---------------------------------------------------------------------------
-
-procedure TfrmBaseForm.btnEditClick(Sender: TObject);
-begin
-
 end;
 
 //---------------------------------------------------------------------------
@@ -324,9 +301,6 @@ begin
     ftTime:
       Column.Field.DisplayWidth := 2;
   end;
-
-  if FieldName = 'Color' then
-    Column.Visible := False;
 end;
 
 //---------------------------------------------------------------------------
@@ -387,16 +361,29 @@ end;
 
 procedure TfrmBaseForm.fdDataAfterOpen(DataSet: TDataSet);
 // Обновление всего в окне после открытия датасета
+var
+  I: Integer;
+
 begin
   lblPage.Caption := 'Стр. № ' + IntToStr(FCurrentPage);
 
   if FFirstOpen then
   begin
     FFirstOpen := False;
-    if FileExists('Config\' + Self.ClassName) then
-      grdData.Columns.LoadFromFile('Config\' + Self.ClassName)
+    // Загрузка состояния колонок
+    if FileExists('Config\' + Self.Name) then
+      grdData.Columns.LoadFromFile('Config\' + Self.Name)
     else
       SetGridColumns;
+
+    // Проверка, нужно ли раскрашивать шрифт
+    for I := 0 to fdData.FieldCount - 1 do
+      if UpperCase(fdData.Fields[I].FieldName) = 'COLOR' then
+      begin
+        grdData.Colorized := True;
+        Break;
+      end;
+
     Self.Resize;
   end;
 
@@ -407,6 +394,7 @@ end;
 
 procedure TfrmBaseForm.fdDataAfterScroll(DataSet: TDataSet);
 begin
+  // Если форма - мастер, и не скроллим, то вызываем MasterProc()
   if FIsMaster and (not FMouseWheelScrolling) then
     (Owner as TfrmBasePage).MasterProc(fdData.FieldByName('ID').AsString);
 
@@ -417,19 +405,17 @@ end;
 //---------------------------------------------------------------------------
 
 procedure TfrmBaseForm.FormCreate(Sender: TObject);
-const
-  S_SQL_GET_REPORT = 'SELECT * FROM Get_Form_Report(:FORM_NAME)';
-  S_SQL_SET_PROGRAMMIST_TASK = 'EXECUTE PROCEDURE Set_New_Ticket ' +
-    '(:CREATED_BY_ID, :OWNER_ID, :TABLE_NAME, :RECORD_ID)';
-
 begin
-  qryGetReport.SQL.Text := S_SQL_GET_REPORT;
-
   frExportXLS.FileName := Self.Caption;
   btnCloseFastFilter.Visible := False;
   lblFastFilter.Caption := '';
-  // Ооо, дааа, используем другого нследника TCustomGrid для изменения ширины разделяющих линий
+
+  // Круто, используем других наследников TCustomGrid для изменения
+  // свойств колонок:
+  // ширина разделительных линий
   //TStringGrid(grdData).GridLineWidth := 2;
+  // Запрет перетаскивания колонок
+  TDrawGrid(grdData).Options := TDrawGrid(grdData).Options - [goColMoving];
 
   // Создание и инициализация построителя запросов
   FCurrentPage := 1;
@@ -478,7 +464,7 @@ begin
   if not DirectoryExists('Config') then
     CreateDirectory('Config', nil);
 
-  grdData.Columns.SaveToFile('Config\' + Sender.ClassName);
+  grdData.Columns.SaveToFile('Config\' + (Sender as TfrmBaseForm).Name);
 end;
 
 //---------------------------------------------------------------------------
@@ -486,7 +472,7 @@ end;
 procedure TfrmBaseForm.FormResize(Sender: TObject);
 // Подбор ширины колонок грида
 const
-  DX = 70; // Подобрано методом тыка
+  DX = 50; // Подобрано методом тыка. Вроде как, ширина скролл-бара грида + некоторый отступ
 
 var
   AllWeights: Integer;
@@ -631,6 +617,20 @@ end;
 
 //---------------------------------------------------------------------------
 
+function TfrmBaseForm.GetFormID: TGuid;
+begin
+  Result := FFormID;
+end;
+
+//---------------------------------------------------------------------------
+
+function TfrmBaseForm.GetFormID_AsString: String;
+begin
+  Result := GUIDToString(FFormID);
+end;
+
+//---------------------------------------------------------------------------
+
 function TfrmBaseForm.GetMasterID: String;
 begin
   Result := SQLBuilder.MasterID;
@@ -655,6 +655,7 @@ begin
       FSelectedColumn := Column.Title.Caption;
       FSelectedField := Column.FieldName;
     end;
+
   except
     // Такое бывает, если ткнуть
     // в пустое место между последней колонкой и вертикальным скролл-баром или
@@ -666,10 +667,16 @@ end;
 
 //---------------------------------------------------------------------------
 
+procedure TfrmBaseForm.grdDataDblClick(Sender: TObject);
+begin
+  actEdit.Execute;
+end;
+
+//---------------------------------------------------------------------------
+
 procedure TfrmBaseForm.grdDataDragDrop(Sender, Source: TObject; X, Y: Integer);
 // Перемещение колонок грида или получение нового поля из списка доступных полей
 // Часть 2 - дроп
-
 var
   ColumnName: String;
   ColumnNum: Integer;
@@ -728,9 +735,9 @@ procedure TfrmBaseForm.grdDataDragOver(Sender, Source: TObject; X, Y: Integer;
 // Перемещение колонок грида или получение нового поля из списка доступных полей
 // Часть 1 - драг
 
+  function IsNewFieldMoving: Boolean;
   // Если нечто перемещают из листа колонок,
   // и лист колонок - подвластный (а как это еще называть?) данной форме
-  function IsNewFieldMoving: Boolean;
   begin
     if FfrmColumnsList <> nil then
       Result := ((Source as TControl).Name = FfrmColumnsList.tvColumnsList.Name)
@@ -739,8 +746,8 @@ procedure TfrmBaseForm.grdDataDragOver(Sender, Source: TObject; X, Y: Integer;
       Result := False;
   end;
 
-  // Перемещение из грида в тот же грид - перемещение колонок
   function IsGridColumnMoving: Boolean;
+  // Перемещение из грида в тот же грид - перемещение колонок
   begin
     Result := Sender = Source;
   end;
@@ -756,25 +763,26 @@ procedure TfrmBaseForm.grdDataDrawColumnCell(Sender: TObject; const Rect: TRect;
 // Отрисовка грида
 var
   R: TRect;
+
 begin
-  // Отрисовка оранжевого выделения строки
-  with TNsCustomDBGrid(Sender) do
+  with (Sender as TNsCustomDBGrid) do
   begin
+    // Отрисовка оранжевого выделения строки
     if DataLink.ActiveRecord = Row - 1 then
-    begin
-      Canvas.Brush.Color := KhalaTheme.SelectedRowColor;
-      Canvas.Font.Color := KhalaTheme.SelectedRowFontColor;
-    end
+      Canvas.Brush.Color := KhalaTheme.SelectedRowColor
     else
-    begin
       Canvas.Brush.Color := clWhite;
+
+    // Цвет шрифта, если есть поле цвета
+    if Colorized then
+      Canvas.Font.Color := fdData.FieldByName('Color').AsInteger
+    else
       Canvas.Font.Color := clBlack;
-    end;
   end;
 
   // Отступы справа-слева внутри ячейки
   // Сначала закрашивается вся ячейка фоновым цветом...
-  TNsCustomDBGrid(Sender).Canvas.FillRect(Rect);
+  (Sender as TNsCustomDBGrid).Canvas.FillRect(Rect);
   // ...потом уменьшается размер области отрисовки.
   // Через новую переменную, ибо здесь Rect - константа
   R := Rect;
@@ -782,7 +790,7 @@ begin
   R.Right := Rect.Right - 4;
 
   // Вызов стандартного обработчика с новыми параметрами
-  TNsCustomDBGrid(Sender).DefaultDrawColumnCell(R, DataCol, Column, State);
+  (Sender as TNsCustomDBGrid).DefaultDrawColumnCell(R, DataCol, Column, State);
 end;
 
 //---------------------------------------------------------------------------
@@ -813,7 +821,7 @@ var
   ColumnNum: Integer;
 
 begin
-  // Левой кнопкой работает штатный драг колонок,
+  // Левой кнопкой срабатывает штатный драг колонок,
   // но он вызывает сортировку, для которой событие и закодировано
   if Button = mbRight then
   begin
@@ -867,16 +875,21 @@ procedure TfrmBaseForm.lblFastFilterClick(Sender: TObject);
 const
   DX = 8;
 
+var
+  frmFastFilter: TfrmFastFilter;
+
 begin
-  with GetFastFilter(TDataSet(fdData)) do // жёстокое и беспощадное приведение типа
+  frmFastFilter := GetFastFilter(TDataSet(fdData)); // жёстокое и беспощадное приведение типа
+  frmFastFilter.FieldName := FSelectedField;
+
+  if frmFastFilter.ShowModal = mrOk then
   begin
-    FieldName := FSelectedField;
-
-    if ShowModal = mrOk then
-      SetFastFilter(FSelectedColumn, FSelectedField, ColumnValue);
-
-    DestroyFastFilter;
+    FSelectedField := frmFastFilter.FieldName;
+    FSelectedColumn := frmFastFilter.ColumnName;
+    SetFastFilter(FSelectedColumn, FSelectedField, frmFastFilter.ColumnValue);
   end;
+
+  DestroyFastFilter;
 end;
 
 //---------------------------------------------------------------------------
@@ -968,20 +981,37 @@ end;
 
 procedure TfrmBaseForm.PrepareReport;
 // Запрос из базы отчета-таблицы данного грида
-var
-  RepStream: TStream;
-begin
-  RepStream := TStream.Create;
-  try
-    qryGetReport.ParamByName('FORM_NAME').Value := Self.Name;
-    qryGetReport.Open;
-    TBlobField(qryGetReport.FieldByName('ReportFile')).SaveToStream(RepStream);
-    qryGetReport.Close;
+const
+  SQL_GET_REPORT = 'select * from App_GetFormReport(:FormID)';
 
-    frData.LoadFromStream(RepStream);
-    frData.PrepareReport;
-  except
-    ShowMessage('Ошибка при подготовке отчета');
+var
+  ReportStream: TStream;
+
+begin
+  try
+    if qryGetReport.Active then
+      qryGetReport.Close;
+
+    try
+      qryGetReport.SQL.Text := SQL_GET_REPORT;
+      qryGetReport.ParamByName('FormID').AsGuid := Self.FormID;
+      qryGetReport.Prepare;
+      qryGetReport.Open;
+
+      ReportStream := TStream.Create;
+      try
+        (qryGetReport.FieldByName('ReportData') as TBlobField).SaveToStream(ReportStream);
+        frData.LoadFromStream(ReportStream);
+      finally
+        ReportStream.Free;
+      end;
+
+    except
+      raise EPrepareReportError.Create;
+    end;
+
+  finally
+    qryGetReport.Close;
   end;
 end;
 
@@ -1043,33 +1073,49 @@ end;
 
 //---------------------------------------------------------------------------
 
+procedure TfrmBaseForm.SetFormID(const Value: TGuid);
+begin
+  if FFormID <> Value then
+    FFormID := Value;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmBaseForm.SetFormID_AsString(const Value: String);
+begin
+  if GuidToString(FFormID) <> Value then
+    FFormID := StringToGuid(Value);
+end;
+
+//---------------------------------------------------------------------------
+
 procedure TfrmBaseForm.SetGridColumns;
 // Создание колонок грида - не более 10 с подходящими типами
 var
-  I, K: Integer;
+  ColCount, I: Integer;
 
 begin
+  ColCount := 0;
   I := 0;
-  K := 0;
 
   // 10 первых подходящих или все
-  while (I < 10) and (K < fdData.Fields.Count) do
+  while (ColCount < 10) and (I < fdData.Fields.Count) do
   begin
     // определенного типа
-    case fdData.Fields.Fields[K].DataType of
+    case fdData.Fields.Fields[I].DataType of
       ftString, ftSmallint, ftInteger, ftWord, ftBoolean, ftFloat, ftCurrency,
       ftDate, ftTime, ftDateTime, ftWideString, ftLargeint, ftTimeStamp,
       ftLongWord, ftShortint, ftByte, ftExtended:
       begin
         // только видимые
-        if fdData.Fields.Fields[K].Visible then
+        if fdData.Fields.Fields[I].Visible then
         begin
-          CreateNewGridColumn(fdData.Fields.Fields[K].FieldName);
-          Inc(I);
+          CreateNewGridColumn(fdData.Fields.Fields[I].FieldName);
+          Inc(ColCount);
         end;
       end;
     end;
-  Inc(K);
+    Inc(I);
   end;
 end;
 

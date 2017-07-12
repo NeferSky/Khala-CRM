@@ -18,10 +18,10 @@ uses
 type
   TfrmAccountGroups = class(TfrmBaseForm)
     fdDataID: TStringField;
-    fdDataGROUP_NAME: TStringField;
-    fdDataDESCRIPTION: TStringField;
-    fdDataBIND_DATE: TSQLTimeStampField;
-    fdDataBINDER: TStringField;
+    fdDataGroupName: TStringField;
+    fdDataDescription: TStringField;
+    fdDataBindDate: TSQLTimeStampField;
+    fdDataBinderName: TStringField;
   private
     { Private declarations }
   public
@@ -31,7 +31,8 @@ type
   end;
 
 const
-  SQL_GET_ACCOUNT_GROUPS = 'SELECT * FROM dbo.ACCOUNT_GROUPS_SEL(:MASTER_ID) ';
+  SQL_GET_ACCOUNT_GROUPS = 'select * from dbo.App_SelectAccountGroups(:MasterID) ';
+  FORM_ID = '{C275EF5B-73FA-4045-A0C8-2FF420BE086F}';
 
 implementation
 
@@ -43,6 +44,7 @@ class function TfrmAccountGroups.CreateForm(AOwner: TComponent; AParent: TWinCon
   IsMaster: Boolean): TfrmBaseForm;
 begin
   Result := TfrmAccountGroups.ACreate(AOwner, AParent, IsMaster);
+  Result.FormID_AsString := FORM_ID;
   Result.SQLText := SQL_GET_ACCOUNT_GROUPS;
   Result.RebuildQuery;
 end;

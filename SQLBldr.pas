@@ -6,11 +6,6 @@ uses
   Classes, SysUtils, DB, FireDAC.Comp.Client, FireDAC.Stan.Intf;
 
 type
-  ERebuildQuery = class(Exception)
-    constructor Create;
-  end;
-
-type
   PDataSet = ^TFDQuery;
 
 type
@@ -249,8 +244,9 @@ begin
       ExecuteQuery(Result);
       CalcRowCount(FSQLRowCount);
     end;
+
   except
-    on E: ERebuildQuery do
+    on E: ERebuildQueryError do
       if NeedExecute and (FDataSet <> nil) then
       begin
         ExecuteQuery(FSelectPart);
@@ -273,7 +269,21 @@ begin
     FqryRowCount.Close;
 
   try
-    FqryRowCount.SQL.Text := Format('SELECT Count(*) FROM(%s) cnt', [QueryText]);
+    FqryRowCount.SQL.Text := Format('select Count(*) from(%s) a ', [QueryText]);
+
+    if FqryRowCount.Params.Count > 0 then
+    begin
+      if FMasterID = '' then
+        FMasterID := '{00000000-0000-0000-0000-000000000000}';
+
+      // —мотрите все, это - костыль!
+      // Ќепон€тно почему, здесь жалуетс€, что
+      // Parameter[MasterID] data type is unknown. ѕобедить не удалось.
+      // ”далось пон€ть лишь то, что дело в самом FqryRowCount.
+      // FDataSet^.ParamByName('MasterID').AsGUID := StringToGuid(FMasterID);
+      FqryRowCount.SQL.Text := StringReplace(FqryRowCount.SQL.Text, ':MasterID', ''''+FMasterID+'''', []);
+    end;
+
     FqryRowCount.Open;
     FRowCount := FqryRowCount.Fields[0].AsInteger;
   finally
@@ -293,16 +303,19 @@ begin
 
     if FDataSet^.Params.Count > 0 then
     begin
+      // ≈сли нет параметра от мастер-датасета, то либо этот датасет - мастер,
+      // или форма в стадии создани€. ¬ обоих случа€х в параметр можно пихать
+      // все, что угодно.
       if FMasterID = '' then
         FMasterID := '{00000000-0000-0000-0000-000000000000}';
-      StringReplace(FDataSet^.SQL.Text, ':MASTER_ID', FMasterID, []);
-//      FDataSet^.Params.ParamValues['MASTER_ID'] := FMasterID;
+
+      FDataSet^.ParamByName('MasterID').AsGUID := StringToGuid(FMasterID);
     end;
 
     FDataSet^.Open;
     FDataSet^.FetchAll;
   except
-    raise ERebuildQuery.Create;
+    raise ERebuildQueryError.Create;
   end;
 end;
 
@@ -455,14 +468,6 @@ procedure TSQLBuilder.SetWherePart(const Value: String);
 begin
   if FWherePart <> Value then
     FWherePart := Value;
-end;
-
-{ ERebuildQuery }
-//---------------------------------------------------------------------------
-
-constructor ERebuildQuery.Create;
-begin
-  inherited Create('Rebuild query problem');
 end;
 
 end.

@@ -1,11 +1,9 @@
 inherited frmAccountContacts: TfrmAccountContacts
-  Left = 338
-  Top = 239
+  Left = 457
+  Top = 313
   Caption = 'frmAccountContacts'
-  ExplicitLeft = 338
-  ExplicitTop = 239
-  ExplicitWidth = 695
-  ExplicitHeight = 468
+  ExplicitLeft = 457
+  ExplicitTop = 313
   PixelsPerInch = 96
   TextHeight = 13
   inherited frData: TfrxReport
@@ -30,94 +28,88 @@ inherited frmAccountContacts: TfrmAccountContacts
       FixedChar = True
       Size = 36
     end
-    object fdDataCONTACT_NAME: TStringField
+    object fdDataContactName: TStringField
       DisplayLabel = #1048#1084#1103
-      FieldName = 'CONTACT_NAME'
-      Origin = 'CONTACT_NAME'
+      FieldName = 'ContactName'
+      Origin = 'ContactName'
       Size = 250
     end
-    object fdDataJOB_TITLE: TStringField
+    object fdDataJobName: TStringField
       DisplayLabel = #1044#1086#1083#1078#1085#1086#1089#1090#1100
-      FieldName = 'JOB_TITLE'
-      Origin = 'JOB_TITLE'
+      FieldName = 'JobName'
+      Origin = 'JobName'
       Size = 250
     end
-    object fdDataJOB_NAME: TStringField
-      DisplayLabel = #1044#1086#1083#1078#1085#1086#1089#1090#1100' 2'
-      FieldName = 'JOB_NAME'
-      Origin = 'JOB_NAME'
-      Size = 250
-    end
-    object fdDataCOMM_TYPE1: TStringField
+    object fdDataCommType1: TStringField
       DisplayLabel = #1042#1080#1076' '#1089#1074#1103#1079#1080' 1'
-      FieldName = 'COMM_TYPE1'
-      Origin = 'COMM_TYPE1'
+      FieldName = 'CommType1'
+      Origin = 'CommType1'
       Size = 250
     end
-    object fdDataCOMM1: TStringField
+    object fdDataComm1: TStringField
       DisplayLabel = #1057#1088#1077#1076#1089#1090#1074#1086' '#1089#1074#1103#1079#1080' 1'
-      FieldName = 'COMM1'
-      Origin = 'COMM1'
+      FieldName = 'Comm1'
+      Origin = 'Comm1'
       Size = 250
     end
-    object fdDataCOMM_TYPE2: TStringField
+    object fdDataCommType2: TStringField
       DisplayLabel = #1042#1080#1076' '#1089#1074#1103#1079#1080' 2'
-      FieldName = 'COMM_TYPE2'
-      Origin = 'COMM_TYPE2'
+      FieldName = 'CommType2'
+      Origin = 'CommType2'
       Size = 250
     end
-    object fdDataCOMM2: TStringField
+    object fdDataComm2: TStringField
       DisplayLabel = #1057#1088#1077#1076#1089#1090#1074#1086' '#1089#1074#1103#1079#1080' 2'
-      FieldName = 'COMM2'
-      Origin = 'COMM2'
+      FieldName = 'Comm2'
+      Origin = 'Comm2'
       Size = 250
     end
-    object fdDataCOMM_TYPE3: TStringField
+    object fdDataCommType3: TStringField
       DisplayLabel = #1042#1080#1076' '#1089#1074#1103#1079#1080' 3'
-      FieldName = 'COMM_TYPE3'
-      Origin = 'COMM_TYPE3'
+      FieldName = 'CommType3'
+      Origin = 'CommType3'
       Size = 250
     end
-    object fdDataCOMM3: TStringField
+    object fdDataComm3: TStringField
       DisplayLabel = #1057#1088#1077#1076#1089#1090#1074#1086' '#1089#1074#1103#1079#1080' 3'
-      FieldName = 'COMM3'
-      Origin = 'COMM3'
+      FieldName = 'Comm3'
+      Origin = 'Comm3'
       Size = 250
     end
-    object fdDataCOMM_TYPE4: TStringField
+    object fdDataCommType4: TStringField
       DisplayLabel = #1042#1080#1076' '#1089#1074#1103#1079#1080' 4'
-      FieldName = 'COMM_TYPE4'
-      Origin = 'COMM_TYPE4'
+      FieldName = 'CommType4'
+      Origin = 'CommType4'
       Size = 250
     end
-    object fdDataCOMM4: TStringField
+    object fdDataComm4: TStringField
       DisplayLabel = #1057#1088#1077#1076#1089#1090#1074#1086' '#1089#1074#1103#1079#1080' 4'
-      FieldName = 'COMM4'
-      Origin = 'COMM4'
+      FieldName = 'Comm4'
+      Origin = 'Comm4'
       Size = 250
     end
-    object fdDataCOMM_TYPE5: TStringField
+    object fdDataCommType5: TStringField
       DisplayLabel = #1042#1080#1076' '#1089#1074#1103#1079#1080' 5'
-      FieldName = 'COMM_TYPE5'
-      Origin = 'COMM_TYPE5'
+      FieldName = 'CommType5'
+      Origin = 'CommType5'
       Size = 250
     end
-    object fdDataCOMM5: TStringField
+    object fdDataComm5: TStringField
       DisplayLabel = #1057#1088#1077#1076#1089#1090#1074#1086' '#1089#1074#1103#1079#1080' 5'
-      FieldName = 'COMM5'
-      Origin = 'COMM5'
+      FieldName = 'Comm5'
+      Origin = 'Comm5'
       Size = 250
     end
-    object fdDataCOMM_TYPE6: TStringField
+    object fdDataCommType6: TStringField
       DisplayLabel = #1042#1080#1076' '#1089#1074#1103#1079#1080' 6'
-      FieldName = 'COMM_TYPE6'
-      Origin = 'COMM_TYPE6'
+      FieldName = 'CommType6'
+      Origin = 'CommType6'
       Size = 250
     end
-    object fdDataCOMM6: TStringField
+    object fdDataComm6: TStringField
       DisplayLabel = #1057#1088#1077#1076#1089#1090#1074#1086' '#1089#1074#1103#1079#1080' 6'
-      FieldName = 'COMM6'
-      Origin = 'COMM6'
+      FieldName = 'Comm6'
+      Origin = 'Comm6'
       Size = 250
     end
   end

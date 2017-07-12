@@ -23,7 +23,8 @@ type
   end;
 
 const
-  SQL_GET_CONTACT_TASKS = 'SELECT * FROM dbo.CONTACT_TASKS_SEL ';
+  SQL_GET_CONTACT_TASKS = 'select * from dbo.App_SelectContactTasks ';
+  FORM_ID = '{0078FCD5-5975-4FC7-B6F1-C7151D3DF295}';
 
 var
   frmContactTasks: TfrmContactTasks;
@@ -31,12 +32,14 @@ var
 implementation
 
 {$R *.dfm}
+
 { TfrmContactTasks }
 
 class function TfrmContactTasks.CreateForm(AOwner: TComponent;
   AParent: TWinControl; IsMaster: Boolean): TfrmBaseForm;
 begin
   Result := TfrmContactTasks.ACreate(AOwner, AParent, IsMaster);
+  Result.FormID_AsString := FORM_ID;
   Result.SQLText := SQL_GET_CONTACT_TASKS;
   Result.RebuildQuery;
 end;

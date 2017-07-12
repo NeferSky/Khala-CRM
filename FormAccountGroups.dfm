@@ -4,8 +4,6 @@ inherited frmAccountGroups: TfrmAccountGroups
   Caption = 'frmAccountGroups'
   ExplicitLeft = 370
   ExplicitTop = 259
-  ExplicitWidth = 695
-  ExplicitHeight = 468
   PixelsPerInch = 96
   TextHeight = 13
   inherited frData: TfrxReport
@@ -30,27 +28,27 @@ inherited frmAccountGroups: TfrmAccountGroups
       FixedChar = True
       Size = 36
     end
-    object fdDataGROUP_NAME: TStringField
+    object fdDataGroupName: TStringField
       DisplayLabel = #1043#1088#1091#1087#1087#1072
-      FieldName = 'GROUP_NAME'
-      Origin = 'GROUP_NAME'
+      FieldName = 'GroupName'
+      Origin = 'GroupName'
       Size = 250
     end
-    object fdDataDESCRIPTION: TStringField
+    object fdDataDescription: TStringField
       DisplayLabel = #1054#1087#1080#1089#1072#1085#1080#1077
-      FieldName = 'DESCRIPTION'
-      Origin = 'DESCRIPTION'
+      FieldName = 'Description'
+      Origin = 'Description'
       Size = 250
     end
-    object fdDataBIND_DATE: TSQLTimeStampField
+    object fdDataBindDate: TSQLTimeStampField
       DisplayLabel = #1044#1072#1090#1072' '#1087#1088#1080#1074#1103#1079#1082#1080
-      FieldName = 'BIND_DATE'
-      Origin = 'BIND_DATE'
+      FieldName = 'BindDate'
+      Origin = 'BindDate'
     end
-    object fdDataBINDER: TStringField
+    object fdDataBinderName: TStringField
       DisplayLabel = #1055#1088#1080#1074#1103#1079#1072#1083
-      FieldName = 'BINDER'
-      Origin = 'BINDER'
+      FieldName = 'BinderName'
+      Origin = 'BinderName'
       Size = 250
     end
   end

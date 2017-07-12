@@ -18,28 +18,31 @@ uses
 type
   TfrmAccounts = class(TfrmBaseForm)
     fdDataID: TStringField;
-    fdDataACCOUNT_NAME: TStringField;
-    fdDataACCOUNT_TYPE_NAME: TStringField;
-    fdDataCONTACT_NAME: TStringField;
-    fdDataOWNER_NAME: TStringField;
-    fdDataCREATOR_NAME: TStringField;
-    fdDataCREATED_DATE: TSQLTimeStampField;
-    fdDataMODIFIER_NAME: TStringField;
-    fdDataMODIFIED_DATE: TSQLTimeStampField;
-    fdDataOFFICIAL_ACCOUNT_NAME: TStringField;
-    fdDataCITY_NAME: TStringField;
-    fdDataPOST_AUTONOM: TStringField;
-    fdDataACCOUNT_INN: TStringField;
-    fdDataACCOUNT_KPP: TStringField;
-    fdDataACCOUNT_CATEGORY_NAME: TStringField;
-    fdDataREGION_NAME: TStringField;
-    fdDataACCOUNT_POST_ADDRESS: TStringField;
-    fdDataACCOUNT_LEGAL_ADDRESS: TStringField;
-    fdDataACCOUNT_CALL_NOTE: TStringField;
-    fdDataCLIENTS_VALUE_ID: TStringField;
-    fdDataTIME_DIFFERENCE: TIntegerField;
+    fdDataAccountName: TStringField;
+    fdDataAccountTypeName: TStringField;
+    fdDataContactName: TStringField;
+    fdDataOwnerName: TStringField;
+    fdDataCreatorName: TStringField;
+    fdDataCreatedDate: TSQLTimeStampField;
+    fdDataModifierName: TStringField;
+    fdDataModifiedDate: TSQLTimeStampField;
+    fdDataOfficialAccountName: TStringField;
+    fdDataCityName: TStringField;
+    fdDataPostAutonom: TStringField;
+    fdDataAccountINN: TStringField;
+    fdDataAccountKPP: TStringField;
+    fdDataAccountCategoryName: TStringField;
+    fdDataRegionName: TStringField;
+    fdDataAccountPostAddress: TStringField;
+    fdDataAccountLegalAddress: TStringField;
+    fdDataAccountCallNote: TStringField;
+    fdDataTimeDifference: TIntegerField;
+    fdDataClientsValue: TStringField;
+    procedure actDeleteExecute(Sender: TObject);
+    procedure actEditExecute(Sender: TObject);
   private
     { Private declarations }
+    procedure DisableAccount(AccountID: TGuid);
   public
     { Public declarations }
     class function CreateForm(AOwner: TComponent; AParent: TWinControl;
@@ -47,20 +50,52 @@ type
   end;
 
 const
-  SQL_GET_ACCOUNTS = 'select * from dbo.Account_Select() ';
+  SQL_GET_ACCOUNTS = 'select * from dbo.App_SelectAccounts() ';
+  FORM_ID = '{1B530A50-18F7-4322-9D38-1C5D7CF4AB42}';
 
 implementation
+
+uses
+  FormAccountEdit;
 
 {$R *.dfm}
 
 { TfrmAccounts }
+//---------------------------------------------------------------------------
+
+procedure TfrmAccounts.actDeleteExecute(Sender: TObject);
+begin
+  inherited;
+
+  if MessageDlg('Удалить контрагента?', mtConfirmation, mbOKCancel, 0) = mrOk then
+    DisableAccount(StringToGuid(fdData.FieldByName('ID').AsString));
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmAccounts.actEditExecute(Sender: TObject);
+begin
+  inherited;
+  TfrmAccountEdit.CreateEditForm(Self, StringToGuid(fdData.FieldByName('ID').AsString));
+end;
+
+//---------------------------------------------------------------------------
 
 class function TfrmAccounts.CreateForm(AOwner: TComponent; AParent: TWinControl;
   IsMaster: Boolean): TfrmBaseForm;
 begin
   Result := TfrmAccounts.ACreate(AOwner, AParent, IsMaster);
+  Result.FormID_AsString := FORM_ID;
   Result.SQLText := SQL_GET_ACCOUNTS;
   Result.RebuildQuery;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmAccounts.DisableAccount(AccountID: TGuid);
+begin
+  spUserActions.StoredProcName := 'dbo.App_DisableAccount';
+  spUserActions.ParamByName('AccountID').AsGUID  := AccountID;
 end;
 
 end.

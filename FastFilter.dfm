@@ -14,6 +14,7 @@ object frmFastFilter: TfrmFastFilter
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object lblFields: TLabel
@@ -60,7 +61,13 @@ object frmFastFilter: TfrmFastFilter
     Height = 25
     Caption = #1054#1050
     Default = True
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
     ModalResult = 1
+    ParentFont = False
     TabOrder = 1
   end
   object btnCancel: TButton
@@ -70,7 +77,13 @@ object frmFastFilter: TfrmFastFilter
     Height = 25
     Cancel = True
     Caption = #1054#1090#1084#1077#1085#1072
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
     ModalResult = 2
+    ParentFont = False
     TabOrder = 2
   end
   object udValue: TUpDown

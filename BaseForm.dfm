@@ -1,6 +1,6 @@
 object frmBaseForm: TfrmBaseForm
-  Left = 32
-  Top = 346
+  Left = 1357
+  Top = 167
   Align = alClient
   BorderStyle = bsNone
   Caption = 'frmBaseForm'
@@ -18,10 +18,6 @@ object frmBaseForm: TfrmBaseForm
   OnDestroy = FormDestroy
   OnResize = FormResize
   OnShow = FormShow
-  ExplicitLeft = 1312
-  ExplicitTop = 290
-  ExplicitWidth = 320
-  ExplicitHeight = 240
   PixelsPerInch = 96
   TextHeight = 13
   object pnlFastFilter: TPanel
@@ -346,6 +342,7 @@ object frmBaseForm: TfrmBaseForm
         C9AEFFF2C58CEDB166F2C58CC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFF7DCBAF2C5
         8CC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9
         AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFFC9AEFF}
+      OnClick = btnFirstPageClick
       ExplicitLeft = 244
     end
     object edtPage: TEdit
@@ -388,6 +385,7 @@ object frmBaseForm: TfrmBaseForm
       Top = 6
       Width = 75
       Height = 25
+      Action = actAdd
       Caption = #1044#1086#1073#1072#1074#1080#1090#1100
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -396,13 +394,13 @@ object frmBaseForm: TfrmBaseForm
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 0
-      OnClick = btnAddClick
     end
     object btnCopy: TBitBtn
       Left = 97
       Top = 6
       Width = 75
       Height = 25
+      Action = actCopy
       Caption = #1050#1086#1087#1080#1088#1086#1074#1072#1090#1100
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -411,13 +409,13 @@ object frmBaseForm: TfrmBaseForm
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 1
-      OnClick = btnCopyClick
     end
     object btnEdit: TBitBtn
       Left = 178
       Top = 6
       Width = 75
       Height = 25
+      Action = actEdit
       Caption = #1048#1079#1084#1077#1085#1080#1090#1100
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -426,13 +424,13 @@ object frmBaseForm: TfrmBaseForm
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 2
-      OnClick = btnEditClick
     end
     object btnDel: TBitBtn
       Left = 259
       Top = 6
       Width = 75
       Height = 25
+      Action = actDelete
       Caption = #1059#1076#1072#1083#1080#1090#1100
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -441,7 +439,6 @@ object frmBaseForm: TfrmBaseForm
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 3
-      OnClick = btnDelClick
     end
   end
   object grdData: TNsCustomDBGrid
@@ -454,7 +451,7 @@ object frmBaseForm: TfrmBaseForm
     DrawingStyle = gdsGradient
     GradientEndColor = clGradientActiveCaption
     GradientStartColor = clGradientInactiveCaption
-    Options = [dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgConfirmDelete, dgCancelOnExit, dgMultiSelect, dgTitleClick, dgTitleHotTrack]
     PopupMenu = pmnuData
     ReadOnly = True
     TabOrder = 2
@@ -465,6 +462,7 @@ object frmBaseForm: TfrmBaseForm
     TitleFont.Style = []
     OnCellClick = grdDataCellClick
     OnDrawColumnCell = grdDataDrawColumnCell
+    OnDblClick = grdDataDblClick
     OnDragDrop = grdDataDragDrop
     OnDragOver = grdDataDragOver
     OnKeyDown = grdDataKeyDown
@@ -530,19 +528,15 @@ object frmBaseForm: TfrmBaseForm
     Top = 80
     object mnuAdd: TMenuItem
       Caption = #1044#1086#1073#1072#1074#1080#1090#1100
-      OnClick = btnAddClick
     end
     object mnuCopy: TMenuItem
       Caption = #1050#1086#1087#1080#1088#1086#1074#1072#1090#1100
-      OnClick = btnCopyClick
     end
     object mnuEdit: TMenuItem
       Caption = #1048#1079#1084#1077#1085#1080#1090#1100
-      OnClick = btnEditClick
     end
     object mnuDel: TMenuItem
       Caption = #1059#1076#1072#1083#1080#1090#1100
-      OnClick = btnDelClick
     end
     object mnuSeparator: TMenuItem
       Caption = '-'
@@ -569,8 +563,25 @@ object frmBaseForm: TfrmBaseForm
     Left = 24
     Top = 80
   end
-  object aclActions: TActionList
+  object alActions: TActionList
     Left = 120
+    Top = 136
+    object actAdd: TAction
+      Caption = #1044#1086#1073#1072#1074#1080#1090#1100
+    end
+    object actCopy: TAction
+      Caption = #1050#1086#1087#1080#1088#1086#1074#1072#1090#1100
+    end
+    object actEdit: TAction
+      Caption = #1048#1079#1084#1077#1085#1080#1090#1100
+    end
+    object actDelete: TAction
+      Caption = #1059#1076#1072#1083#1080#1090#1100
+    end
+  end
+  object spUserActions: TFDStoredProc
+    Connection = dmData.FDConnection
+    Left = 24
     Top = 136
   end
 end
