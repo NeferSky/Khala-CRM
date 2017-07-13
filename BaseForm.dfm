@@ -1,6 +1,6 @@
 object frmBaseForm: TfrmBaseForm
-  Left = 1357
-  Top = 167
+  Left = 1409
+  Top = 70
   Align = alClient
   BorderStyle = bsNone
   Caption = 'frmBaseForm'
@@ -468,6 +468,8 @@ object frmBaseForm: TfrmBaseForm
     OnKeyDown = grdDataKeyDown
     OnMouseDown = grdDataMouseDown
     OnMouseWheel = grdDataMouseWheel
+    OnMouseWheelDown = grdDataMouseWheelDown
+    OnMouseWheelUp = grdDataMouseWheelUp
     OnTitleClick = grdDataTitleClick
   end
   object srcData: TDataSource

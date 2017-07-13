@@ -39,7 +39,6 @@ type
     alActions: TActionList;
     pmnuActions: TPopupMenu;
     pmnuReports: TPopupMenu;
-    frReport: TfrxReport;
     //--
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -245,6 +244,7 @@ const
 
 var
   ReportStream: TStream;
+  ReportExists: Boolean;
 
 begin
   try
@@ -257,12 +257,16 @@ begin
       qryReports.Prepare;
       qryReports.Open;
 
-      ReportStream := TStream.Create;
-      try
-        (qryReports.FieldByName('ReportData') as TBlobField).SaveToStream(ReportStream);
-        frReport.LoadFromStream(ReportStream);
-      finally
-        ReportStream.Free;
+      ReportExists := qryReports.RecordCount > 0;
+      if ReportExists then
+      begin
+        ReportStream := TStream.Create;
+        try
+          (qryReports.FieldByName('ReportData') as TBlobField).SaveToStream(ReportStream);
+          //frReport.LoadFromStream(ReportStream);
+        finally
+          ReportStream.Free;
+        end;
       end;
 
     except
@@ -296,7 +300,7 @@ end;
 procedure TfrmBasePage.ReadReportsList;
 // Чтение и присваивание списка отчетов
 const
-  SQL_GET_REPORT_LIST = 'select * from dbo.App_GetReportList(:FormName)';
+  SQL_GET_REPORT_LIST = 'select * from dbo.App_GetReportList(:FormID)';
 
 var
   Item: TReportMenuItem;
@@ -307,7 +311,7 @@ begin
 
   try
     qryReports.SQL.Text := SQL_GET_REPORT_LIST;
-    qryReports.ParamByName('FormName').AsString := Self.Name;
+    qryReports.ParamByName('FormID').AsGUID := (Self as TfrmBasePage).PageID;
     qryReports.Prepare;
     qryReports.Open;
 

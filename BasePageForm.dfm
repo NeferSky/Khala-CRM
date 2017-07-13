@@ -1,6 +1,6 @@
 object frmBasePage: TfrmBasePage
-  Left = 187
-  Top = 250
+  Left = 1440
+  Top = 243
   Align = alClient
   BorderStyle = bsNone
   Caption = 'frmBasePage'
@@ -154,26 +154,5 @@ object frmBasePage: TfrmBasePage
   object pmnuReports: TPopupMenu
     Left = 96
     Top = 104
-  end
-  object frReport: TfrxReport
-    Version = '5.4.6'
-    DotMatrixReport = False
-    IniFile = '\Software\Fast Reports'
-    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
-    PreviewOptions.Zoom = 1.000000000000000000
-    PrintOptions.Printer = #1055#1086' '#1091#1084#1086#1083#1095#1072#1085#1080#1102
-    PrintOptions.PrintOnSheet = 0
-    ReportOptions.CreateDate = 42927.469326736120000000
-    ReportOptions.LastChange = 42927.469326736120000000
-    ScriptLanguage = 'PascalScript'
-    ScriptText.Strings = (
-      'begin'
-      ''
-      'end.')
-    Left = 96
-    Top = 160
-    Datasets = <>
-    Variables = <>
-    Style = <>
   end
 end

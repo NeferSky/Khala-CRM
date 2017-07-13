@@ -1,6 +1,6 @@
 *~*
 *.dcu
+*.exe
 __history/*
 bin/config/*
 bin/DBParams.cfg
-bin/Khala.exe

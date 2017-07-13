@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{9A144FF0-A4BB-472A-8061-E771369B182A}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Khala.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="FireDAC_fd\fd_fd.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="Khala">
+        <MSBuild Projects="Khala.dproj"/>
+    </Target>
+    <Target Name="Khala:Clean">
+        <MSBuild Projects="Khala.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Khala:Make">
+        <MSBuild Projects="Khala.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="fd_fd">
+        <MSBuild Projects="FireDAC_fd\fd_fd.dproj"/>
+    </Target>
+    <Target Name="fd_fd:Clean">
+        <MSBuild Projects="FireDAC_fd\fd_fd.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="fd_fd:Make">
+        <MSBuild Projects="FireDAC_fd\fd_fd.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="Khala;fd_fd"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="Khala:Clean;fd_fd:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="Khala:Make;fd_fd:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

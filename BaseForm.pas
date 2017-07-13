@@ -93,6 +93,10 @@ type
     procedure lblPageClick(Sender: TObject);
     procedure mnuCreateTicketClick(Sender: TObject);
     procedure grdDataDblClick(Sender: TObject);
+    procedure grdDataMouseWheelDown(Sender: TObject; Shift: TShiftState;
+      MousePos: TPoint; var Handled: Boolean);
+    procedure grdDataMouseWheelUp(Sender: TObject; Shift: TShiftState;
+      MousePos: TPoint; var Handled: Boolean);
   private
     { Private declarations }
     FFormID: TGuid; // Идентификатор формы
@@ -123,7 +127,7 @@ type
     procedure MoveNextPage;
     procedure MovePrevPage;
     procedure MoveToPage(PageNum: Integer);
-    procedure PrepareReport;
+    function PrepareReport: Boolean;
     procedure PrintReport;
     procedure ResetTheme(var Msg: TMessage); message KH_RESET_THEME;
     procedure SetColumnsList(const AvailableColumns: TStringList);
@@ -353,8 +357,8 @@ end;
 
 procedure TfrmBaseForm.ExportReport;
 begin
-  PrepareReport;
-  frData.Export(frExportXLS);
+  if PrepareReport then
+    frData.Export(frExportXLS);
 end;
 
 //---------------------------------------------------------------------------
@@ -836,8 +840,36 @@ end;
 procedure TfrmBaseForm.grdDataMouseWheel(Sender: TObject; Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 // Скроллинг мышей не должен вызывать передергивание датасета, как было в Delphi 7
+// Для этого выставляется флаг, проверяемый в событии датасета AfterScroll
+  // Без этих двух проверок возникает такой эффект: после Bof+ScrollUp или
+  // после Eof+ScrollDown первый следующий щелчок не вызывает обновление
+  // зависимых датасетов, т.к. AfterScroll датасета не вызывается и флаг не
+  // сбрасывается
+  function BofAndScrollUp: Boolean;
+  begin
+    Result := fdData.Bof and (WheelDelta > 0);
+  end;
+  function EofAndScrollDown: Boolean;
+  begin
+    Result := fdData.Eof and (WheelDelta < 0);
+  end;
 begin
-  FMouseWheelScrolling := True;
+  FMouseWheelScrolling := not(BofAndScrollUp or EofAndScrollDown);
+end;
+
+//---------------------------------------------------------------------------
+
+// Эксперимент
+procedure TfrmBaseForm.grdDataMouseWheelDown(Sender: TObject;
+  Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+//  SendMessage(grdData.Handle, WM_VSCROLL, SB_PAGEDOWN, 0);
+end;
+
+procedure TfrmBaseForm.grdDataMouseWheelUp(Sender: TObject; Shift: TShiftState;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+//  SendMessage(grdData.Handle, WM_VSCROLL, SB_PAGEUP, 0);
 end;
 
 //---------------------------------------------------------------------------
@@ -979,15 +1011,17 @@ end;
 
 //---------------------------------------------------------------------------
 
-procedure TfrmBaseForm.PrepareReport;
+function TfrmBaseForm.PrepareReport: Boolean;
 // Запрос из базы отчета-таблицы данного грида
 const
   SQL_GET_REPORT = 'select * from App_GetFormReport(:FormID)';
 
 var
   ReportStream: TStream;
+  ReportExists: Boolean;
 
 begin
+  Result := False;
   try
     if qryGetReport.Active then
       qryGetReport.Close;
@@ -998,12 +1032,17 @@ begin
       qryGetReport.Prepare;
       qryGetReport.Open;
 
-      ReportStream := TStream.Create;
-      try
-        (qryGetReport.FieldByName('ReportData') as TBlobField).SaveToStream(ReportStream);
-        frData.LoadFromStream(ReportStream);
-      finally
-        ReportStream.Free;
+      ReportExists := qryGetReport.RecordCount > 0;
+      if ReportExists then
+      begin
+        ReportStream := TStream.Create;
+        try
+          (qryGetReport.FieldByName('ReportData') as TBlobField).SaveToStream(ReportStream);
+          frData.LoadFromStream(ReportStream);
+          Result := True;
+        finally
+          ReportStream.Free;
+        end;
       end;
 
     except
@@ -1019,8 +1058,8 @@ end;
 
 procedure TfrmBaseForm.PrintReport;
 begin
-  PrepareReport;
-  frData.ShowPreparedReport;
+  if PrepareReport then
+    frData.ShowPreparedReport;
 end;
 
 //---------------------------------------------------------------------------

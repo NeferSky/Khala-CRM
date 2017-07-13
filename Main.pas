@@ -10,7 +10,7 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
   Vcl.ExtCtrls, Vcl.ImgList, Vcl.ComCtrls, Vcl.Menus,
   Registry,
-  Data, UIThemes, Kh_Consts, BasePageForm, FormLogon;
+  Data, UIThemes, Kh_Consts, BasePageForm, FormLogon, frxClass;
 
 type
   TfrmMain = class(TForm)
