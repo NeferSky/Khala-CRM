@@ -6,7 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Grids, Vcl.ValEdit, Vcl.ComCtrls,
   Vcl.ToolWin, Vcl.Menus, System.Actions, Vcl.ActnList, System.ImageList,
-  Vcl.ImgList, Edit, frxClass, System.UITypes;
+  Vcl.ImgList, Edit, frxClass, System.UITypes, Vcl.StdCtrls, frxDesgn, frxDBSet,
+  frxFDComponents;
 
 type
   TfrmMain = class(TForm)
@@ -28,13 +29,15 @@ type
     actDelete: TAction;
     actDesign: TAction;
     actExit: TAction;
-    N1: TMenuItem;
-    N2: TMenuItem;
-    N3: TMenuItem;
-    N4: TMenuItem;
-    N5: TMenuItem;
-    N6: TMenuItem;
+    mnuAdd: TMenuItem;
+    mnuEdit: TMenuItem;
+    mnuDelete: TMenuItem;
+    mnuSeparator: TMenuItem;
+    mnuExit: TMenuItem;
+    mnuDesign: TMenuItem;
     frReport: TfrxReport;
+    frFireDACSupport: TfrxFDComponents;
+    frDesigner: TfrxDesigner;
     //--
     procedure actAddExecute(Sender: TObject);
     procedure actEditExecute(Sender: TObject);
@@ -45,6 +48,11 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure lvDatabasesDblClick(Sender: TObject);
+    procedure lvDatabasesChange(Sender: TObject; Item: TListItem;
+      Change: TItemChange);
+    procedure lvDatabasesDeletion(Sender: TObject; Item: TListItem);
+    procedure lvDatabasesEdited(Sender: TObject; Item: TListItem;
+      var S: string);
   private
     { Private declarations }
     FDatabaseEdit: TfrmDatabase;
@@ -53,13 +61,13 @@ type
     procedure UpdateControls;
     function GetNewRegKey: String;
     // ListView operations
-    procedure AddDatabase(ServerName, DatabaseName, UserName, Password,
-      ServerType, RegKey: String);
+    procedure AddDatabase(AServerName, ADatabaseName, AUserName, APassword,
+      ADriverID, ARegKey: String);
     procedure EditDatabase(ItemIndex: Integer);
     procedure DeleteDatabase(ItemIndex: Integer);
     // Registry operations
-    procedure WriteDatabase(ServerName, DatabaseName, UserName, Password,
-      ServerType, RegKey: String);
+    procedure WriteDatabase(AServerName, ADatabaseName, AUserName, APassword,
+      ADriverID, ARegKey: String);
     procedure ReWriteDatabase(ItemIndex: Integer);
     procedure EraseDatabase(ItemIndex: Integer);
   public
@@ -93,10 +101,10 @@ begin
   begin
     NewKey := GetNewRegKey;
     AddDatabase(FDatabaseEdit.ServerName, FDatabaseEdit.DatabaseName,
-      FDatabaseEdit.UserName, FDatabaseEdit.Password, FDatabaseEdit.ServerType,
+      FDatabaseEdit.UserName, FDatabaseEdit.Password, FDatabaseEdit.DriverID,
       NewKey);
     WriteDatabase(FDatabaseEdit.ServerName, FDatabaseEdit.DatabaseName,
-      FDatabaseEdit.UserName, FDatabaseEdit.Password, FDatabaseEdit.ServerType,
+      FDatabaseEdit.UserName, FDatabaseEdit.Password, FDatabaseEdit.DriverID,
       NewKey);
   end;
 end;
@@ -137,7 +145,7 @@ begin
   FDatabaseEdit.DatabaseName := lvDatabases.Selected.SubItems[0];
   FDatabaseEdit.UserName := lvDatabases.Selected.SubItems[1];
   FDatabaseEdit.Password := lvDatabases.Selected.SubItems[2];
-  FDatabaseEdit.ServerType := lvDatabases.Selected.SubItems[3];
+  FDatabaseEdit.DriverID := lvDatabases.Selected.SubItems[3];
 
   if FDatabaseEdit.Edit then
   begin
@@ -155,24 +163,26 @@ end;
 
 //---------------------------------------------------------------------------
 
-procedure TfrmMain.AddDatabase(ServerName, DatabaseName, UserName,
-  Password, ServerType, RegKey: String);
+procedure TfrmMain.AddDatabase(AServerName, ADatabaseName, AUserName,
+  APassword, ADriverID, ARegKey: String);
+// Add database into ListView
 var
   ListItem: TListItem;
 
 begin
   ListItem := lvDatabases.Items.Add;
-  ListItem.Caption := ServerName;
-  ListItem.SubItems.Add(DatabaseName);
-  ListItem.SubItems.Add(UserName);
-  ListItem.SubItems.Add(Password);
-  ListItem.SubItems.Add(ServerType);
-  ListItem.SubItems.Add(RegKey);
+  ListItem.Caption := AServerName;
+  ListItem.SubItems.Add(ADatabaseName);
+  ListItem.SubItems.Add(AUserName);
+  ListItem.SubItems.Add(APassword);
+  ListItem.SubItems.Add(ADriverID);
+  ListItem.SubItems.Add(ARegKey);
 end;
 
 //---------------------------------------------------------------------------
 
 procedure TfrmMain.DeleteDatabase(ItemIndex: Integer);
+// Remove database from ListView
 begin
   lvDatabases.Items[ItemIndex].Delete;
 end;
@@ -180,23 +190,25 @@ end;
 //---------------------------------------------------------------------------
 
 procedure TfrmMain.EditDatabase(ItemIndex: Integer);
+// Update database in ListView by values from EditForm properties
 begin
   lvDatabases.Items[ItemIndex].Caption := FDatabaseEdit.ServerName;
   lvDatabases.Items[ItemIndex].SubItems[0] := FDatabaseEdit.DatabaseName;
   lvDatabases.Items[ItemIndex].SubItems[1] := FDatabaseEdit.UserName;
   lvDatabases.Items[ItemIndex].SubItems[2] := FDatabaseEdit.Password;
-  lvDatabases.Items[ItemIndex].SubItems[3] := FDatabaseEdit.ServerType;
+  lvDatabases.Items[ItemIndex].SubItems[3] := FDatabaseEdit.DriverID;
 end;
 
 //---------------------------------------------------------------------------
 
 procedure TfrmMain.EraseDatabase(ItemIndex: Integer);
+// Remove database from Registry
 begin
   with TRegistry.Create do
   begin
     RootKey := HKEY_CURRENT_USER;
-    if KeyExists(REG_FREE_DESIGNER_DATABASES + '\' + lvDatabases.Items[ItemIndex].SubItems[4]) then
-      DeleteKey(REG_FREE_DESIGNER_DATABASES + '\' + lvDatabases.Items[ItemIndex].SubItems[4]);
+    if KeyExists(lvDatabases.Items[ItemIndex].SubItems[4]) then
+      DeleteKey(lvDatabases.Items[ItemIndex].SubItems[4]);
     Free;
   end;
 end;
@@ -220,23 +232,36 @@ end;
 //---------------------------------------------------------------------------
 
 function TfrmMain.GetNewRegKey: String;
+// Find and return new registry key name for new database
 var
   R: TRegistry;
   KeysList: TStringList;
   I: Integer;
+
 begin
   R := TRegistry.Create;
   R.RootKey := HKEY_CURRENT_USER;
   KeysList := TStringList.Create;
   R.OpenKeyReadOnly(REG_FREE_DESIGNER_DATABASES);
   R.GetKeyNames(KeysList);
-  for I := 0 to KeysList.Count - 1 do
+  KeysList.Sort;
+
+  for I := 0 to KeysList.Count do
   begin
-    if UpperCase(KeysList[I]) <> 'DATABASE' + IntToStr(I+1) then
-      Result := 'Database' + IntToStr(I+1);
+    if KeysList.IndexOf('Database' + IntToStr(I+1)) = -1 then
+      Result := REG_FREE_DESIGNER_DATABASES + '\Database' + IntToStr(I+1);
   end;
+
   R.CloseKey;
   R.Free;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmMain.lvDatabasesChange(Sender: TObject; Item: TListItem;
+  Change: TItemChange);
+begin
+  UpdateControls;
 end;
 
 //---------------------------------------------------------------------------
@@ -249,6 +274,7 @@ end;
 //---------------------------------------------------------------------------
 
 procedure TfrmMain.lvDatabasesDblClick(Sender: TObject);
+// Do design
 begin
   if lvDatabases.SelCount > 0 then
     actDesign.Execute;
@@ -256,12 +282,29 @@ end;
 
 //---------------------------------------------------------------------------
 
+procedure TfrmMain.lvDatabasesDeletion(Sender: TObject; Item: TListItem);
+begin
+  UpdateControls;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmMain.lvDatabasesEdited(Sender: TObject; Item: TListItem;
+  var S: string);
+begin
+  UpdateControls;
+end;
+
+//---------------------------------------------------------------------------
+
 procedure TfrmMain.ReadDatabases;
+// Read databases list from registry. If at least one database property is not
+// exists - database is skiped as invalid.
 var
   DatabasesList: TStringList;
   R: TRegistry;
   I: Integer;
-  ServerName, DatabaseName, UserName, Password, ServerType: String;
+  ServerName, DatabaseName, UserName, Password, DriverID: String;
 
 begin
   DatabasesList := TStringList.Create;
@@ -269,8 +312,7 @@ begin
   R := TRegistry.Create;
   R.RootKey := HKEY_CURRENT_USER;
   R.OpenKeyReadOnly(REG_FREE_DESIGNER_DATABASES);
-  if R.KeyExists(REG_FREE_DESIGNER_DATABASES) then
-    R.GetKeyNames(DatabasesList);
+  R.GetKeyNames(DatabasesList);
 
   for I := 0 to DatabasesList.Count - 1 do
   begin
@@ -297,12 +339,12 @@ begin
     else
       Continue;
 
-    if R.ValueExists('ServerType') then
-      Password := R.ReadString('ServerType')
+    if R.ValueExists('DriverID') then
+      DriverID := R.ReadString('DriverID')
     else
       Continue;
 
-    AddDatabase(ServerName, DatabaseName, UserName, Password, ServerType,
+    AddDatabase(ServerName, DatabaseName, UserName, Password, DriverID,
       REG_FREE_DESIGNER_DATABASES + '\' + DatabasesList[I]);
   end;
 
@@ -313,16 +355,17 @@ end;
 //---------------------------------------------------------------------------
 
 procedure TfrmMain.ReWriteDatabase(ItemIndex: Integer);
+// Update database in registry
 begin
   with TRegistry.Create do
   begin
     RootKey := HKEY_CURRENT_USER;
-    OpenKey(REG_FREE_DESIGNER_DATABASES + '\' + lvDatabases.Items[ItemIndex].SubItems[4], True);
+    OpenKey(lvDatabases.Items[ItemIndex].SubItems[4], True);
     WriteString('ServerName', FDatabaseEdit.ServerName);
     WriteString('DatabaseName', FDatabaseEdit.DatabaseName);
     WriteString('UserName', FDatabaseEdit.UserName);
     WriteString('Password', FDatabaseEdit.Password);
-    WriteString('ServerType', FDatabaseEdit.ServerType);
+    WriteString('DriverID', FDatabaseEdit.DriverID);
     CloseKey;
     Free;
   end;
@@ -331,6 +374,7 @@ end;
 //---------------------------------------------------------------------------
 
 procedure TfrmMain.UpdateControls;
+// Switch on/off available actions
 var
   Active: Boolean;
 
@@ -344,20 +388,21 @@ end;
 
 //---------------------------------------------------------------------------
 
-procedure TfrmMain.WriteDatabase(ServerName, DatabaseName, UserName,
-  Password, ServerType, RegKey: String);
+procedure TfrmMain.WriteDatabase(AServerName, ADatabaseName, AUserName,
+  APassword, ADriverID, ARegKey: String);
+// Write new database into registry
 var
   R: TRegistry;
 
 begin
   R := TRegistry.Create;
   R.RootKey := HKEY_CURRENT_USER;
-  R.OpenKey(REG_FREE_DESIGNER_DATABASES + '\' + RegKey, True);
-  R.WriteString('ServerName', ServerName);
-  R.WriteString('DatabaseName', DatabaseName);
-  R.WriteString('UserName', UserName);
-  R.WriteString('Password', Password);
-  R.WriteString('ServerType', ServerType);
+  R.OpenKey(ARegKey, True);
+  R.WriteString('ServerName', AServerName);
+  R.WriteString('DatabaseName', ADatabaseName);
+  R.WriteString('UserName', AUserName);
+  R.WriteString('Password', APassword);
+  R.WriteString('DriverID', ADriverID);
   R.CloseKey;
   R.Free;
 end;

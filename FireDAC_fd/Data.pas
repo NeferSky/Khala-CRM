@@ -3,10 +3,14 @@ unit Data;
 interface
 
 uses
-  System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
-  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
-  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Comp.Client,
-  Data.DB;
+  System.SysUtils, System.Classes, Data.DB,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf,
+  FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async,
+  FireDAC.Phys, FireDAC.Comp.Client, FireDAC.Phys.Infx, FireDAC.Phys.InfxDef,
+  FireDAC.Phys.FB, FireDAC.Phys.FBDef, FireDAC.Phys.IB, FireDAC.Phys.IBDef,
+  FireDAC.Phys.IBLiteDef, FireDAC.Phys.MSSQL, FireDAC.Phys.MSSQLDef,
+  FireDAC.Phys.MySQL, FireDAC.Phys.MySQLDef, FireDAC.Phys.PG, FireDAC.Phys.PGDef,
+  FireDAC.Phys.SQLite, FireDAC.Phys.SQLiteDef, FireDAC.Stan.ExprFuncs;
 
 type
   TdmData = class(TDataModule)
@@ -19,13 +23,68 @@ type
     function Connect: Boolean;
     procedure Disconnect;
     procedure SetParams(ServerName, DatabaseName, UserName, Password,
-      ServerType: String);
+      DriverID: String);
   end;
+
+const
+  FB_STRING =
+    'User_Name=%s' + #13#10 +
+    'Password=%s' + #13#10 +
+    'Database=%s' + #13#10 +
+    'Server=%s' + #13#10 +
+    'Protocol=TCPIP' + #13#10 +
+    'Port=3050' + #13#10 +
+    'CharacterSet=WIN1251' + #13#10 +
+    'DriverID=%s';
+  IB_STRING =
+    'Database=%s' + #13#10 +
+    'User_Name=%s' + #13#10 +
+    'Password=%s' + #13#10 +
+    'Protocol=TCPIP' + #13#10 +
+    'Server=%s' + #13#10 +
+    'Port=3050' + #13#10 +
+    'CharacterSet=WIN1251' + #13#10 +
+    'DriverID=%s';
+  IBLITE_STRING =
+    'Database=%s:%s' + #13#10 +
+    'User_Name=%s' + #13#10 +
+    'Password=%s' + #13#10 +
+    'CharacterSet=WIN1251' + #13#10 +
+    'DriverID=%s';
+  MSSQL_STRING =
+    'SERVER=%s' + #13#10 +
+    'User_Name=%s' + #13#10 +
+    'Password=%s' + #13#10 +
+    'MARS=yes' + #13#10 +
+    'DATABASE=%s' + #13#10 +
+    'DriverID=%s';
+  MYSQL_STRING =
+    'Database=%s' + #13#10 +
+    'User_Name=%s' + #13#10 +
+    'Password=%s' + #13#10 +
+    'Server=%s' + #13#10 +
+    'CharacterSet=cp1251' + #13#10 +
+    'DriverID=%s';
+  PG_STRING =
+    'Database=%s' + #13#10 +
+    'User_Name=%s' + #13#10 +
+    'Password=%s' + #13#10 +
+    'Server=%s' + #13#10 +
+    'CharacterSet=WIN1251' + #13#10 +
+    'DriverID=%s';
+  SQLITE_STRING =
+    'Database=%s' + #13#10 +
+    'User_Name=%s' + #13#10 +
+    'Password=%s' + #13#10 +
+    'DriverID=%s';
 
 var
   dmData: TdmData;
 
 implementation
+
+uses
+  fd_Const;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
@@ -55,9 +114,33 @@ end;
 //---------------------------------------------------------------------------
 
 procedure TdmData.SetParams(ServerName, DatabaseName, UserName, Password,
-  ServerType: String);
+  DriverID: String);
+var
+  DriverIndex: Integer;
+
 begin
-//                                                                        // тута
+{
+  First assign FDConnection.DriverName property, later FDConnection.Params.Text,
+  which contains DriverID. Ex.:
+    FDConnection.DriverName := DriverID;
+    FDConnection.Params.Text := Format(MSSQL_STRING, [ServerName, UserName, Password, DatabaseName, DriverID]);
+  Только так, и это FireDAC(c)
+}
+  connData.DriverName := DriverID;
+
+  DriverIndex := DriverList.IndexOf(DriverID);
+
+  case DriverIndex of
+  0: connData.Params.Text := Format(FB_STRING, [UserName, Password, DatabaseName, ServerName, DriverID]);
+  1: connData.Params.Text := Format(IB_STRING, [DatabaseName, UserName, Password, ServerName, DriverID]);
+  2: connData.Params.Text := Format(IBLITE_STRING, [ServerName, DatabaseName, UserName, Password, DriverID]);
+  3: connData.Params.Text := Format(MSSQL_STRING, [ServerName, UserName, Password, DatabaseName, DriverID]);
+  4: connData.Params.Text := Format(MYSQL_STRING, [DatabaseName, UserName, Password, ServerName, DriverID]);
+  5: connData.Params.Text := Format(PG_STRING, [DatabaseName, UserName, Password, ServerName, DriverID]);
+  6: connData.Params.Text := Format(SQLITE_STRING, [ServerName, DatabaseName, UserName, Password, DriverID]);
+  else
+    connData.Params.Text := Format(MSSQL_STRING, [ServerName, UserName, Password, DatabaseName, DriverID]);
+  end;
 end;
 
 end.

@@ -20,22 +20,25 @@ type
     lblDatabaseName: TLabel;
     lblUserName: TLabel;
     lblPassword: TLabel;
+    cmbDriverID: TComboBox;
+    lblDriverID: TLabel;
     //--
     procedure btnOkClick(Sender: TObject);
     procedure btnCheckConnectClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
     FServerName: String;
     FDatabaseName: String;
     FUserName: String;
     FPassword: String;
-    FServerType: String;
+    FDriverID: String;
     //--
     procedure SetDatabaseName(const Value: String);
     procedure SetPassword(const Value: String);
     procedure SetServerName(const Value: String);
     procedure SetUserName(const Value: String);
-    procedure SetServerType(const Value: String);
+    procedure SetDriverID(const Value: String);
   public
     { Public declarations }
     procedure Clear;
@@ -45,13 +48,13 @@ type
     property DatabaseName: String read FDatabaseName write SetDatabaseName;
     property UserName: String read FUserName write SetUserName;
     property Password: String read FPassword write SetPassword;
-    property ServerType: String read FServerType write SetServerType;
+    property DriverID: String read FDriverID write SetDriverID;
   end;
 
 implementation
 
 uses
-  Data;
+  Data, fd_Const;
 
 {$R *.dfm}
 
@@ -59,11 +62,13 @@ uses
 //---------------------------------------------------------------------------
 
 procedure TfrmDatabase.btnCheckConnectClick(Sender: TObject);
+// Test for connection to database
 begin
+  dmData.SetParams(edtServerName.Text, edtDatabaseName.Text, edtUserName.Text,
+    edtPassword.Text, cmbDriverID.Text);
+
   if dmData.Connect then
   begin
-    dmData.SetParams(edtServerName.Text, edtDatabaseName.Text,
-      edtUserName.Text, edtPassword.Text, '');                        // тута
     dmData.Disconnect;
     ShowMessage('Подключение выполнено успешно');
   end;
@@ -72,35 +77,47 @@ end;
 //---------------------------------------------------------------------------
 
 procedure TfrmDatabase.btnOkClick(Sender: TObject);
+// Set local values to properties
 begin
   FServerName := edtServerName.Text;
   FDatabaseName := edtDatabaseName.Text;
   FUserName := edtUserName.Text;
   FPassword := edtPassword.Text;
-  FServerType := '';                                                    // тута
+  FDriverID := cmbDriverID.Text;
 end;
 
 //---------------------------------------------------------------------------
 
 procedure TfrmDatabase.Clear;
+// Clear ;-)
 begin
   FServerName := '';
   FDatabaseName := '';
   FUserName := '';
   FPassword := '';
-  FServerType := '';
+  FDriverID := '';
 
   edtServerName.Clear;
   edtDatabaseName.Clear;
   edtUserName.Clear;
-  edtPassword.Clear;                                                       // тута
+  edtPassword.Clear;
+  cmbDriverID.ItemIndex := -1;
 end;
 
 //---------------------------------------------------------------------------
 
 function TfrmDatabase.Edit: Boolean;
+// Show form and returns result - mrOk if updates needs to apply
 begin
   Result := Self.ShowModal = mrOk;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmDatabase.FormCreate(Sender: TObject);
+// Fill combobox
+begin
+  cmbDriverID.Items.Assign(DriverList);
 end;
 
 //---------------------------------------------------------------------------
@@ -138,10 +155,13 @@ end;
 
 //---------------------------------------------------------------------------
 
-procedure TfrmDatabase.SetServerType(const Value: String);
+procedure TfrmDatabase.SetDriverID(const Value: String);
 begin
-  if FServerType <> Value then
-    FServerType := Value;
+  if FDriverID <> Value then
+  begin
+    FDriverID := Value;
+    cmbDriverID.ItemIndex := cmbDriverID.Items.IndexOf(Value);
+  end;
 end;
 
 //---------------------------------------------------------------------------

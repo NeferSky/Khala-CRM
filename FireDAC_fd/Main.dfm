@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 501
-  Top = 300
+  Left = 1421
+  Top = 376
   Caption = 'Free Designer'
   ClientHeight = 494
   ClientWidth = 661
@@ -87,44 +87,46 @@ object frmMain: TfrmMain
     ShowWorkAreas = True
     TabOrder = 2
     ViewStyle = vsReport
+    OnChange = lvDatabasesChange
     OnClick = lvDatabasesClick
     OnDblClick = lvDatabasesDblClick
-    ExplicitTop = 28
+    OnDeletion = lvDatabasesDeletion
+    OnEdited = lvDatabasesEdited
   end
   object mmnuMain: TMainMenu
     Images = ilImages
-    Left = 32
-    Top = 88
+    Left = 40
+    Top = 104
     object mnuDatabase: TMenuItem
       Caption = #1041#1072#1079#1072' '#1076#1072#1085#1085#1099#1093
-      object N1: TMenuItem
+      object mnuAdd: TMenuItem
         Action = actAdd
       end
-      object N2: TMenuItem
+      object mnuEdit: TMenuItem
         Action = actEdit
       end
-      object N3: TMenuItem
+      object mnuDelete: TMenuItem
         Action = actDelete
       end
-      object N4: TMenuItem
+      object mnuSeparator: TMenuItem
         Caption = '-'
       end
-      object N5: TMenuItem
+      object mnuExit: TMenuItem
         Action = actExit
       end
     end
     object mnuReport: TMenuItem
       Caption = #1054#1090#1095#1077#1090
-      object N6: TMenuItem
+      object mnuDesign: TMenuItem
         Action = actDesign
       end
     end
   end
   object ilImages: TImageList
-    Left = 112
-    Top = 88
+    Left = 40
+    Top = 152
     Bitmap = {
-      494C0101050008002C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010105000800380010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       00000000000000000000000000000000000000000000333C720075799D00DBDC
       E500000000000000000000000000000000000000000000000000000000000000
@@ -397,8 +399,8 @@ object frmMain: TfrmMain
   end
   object alActions: TActionList
     Images = ilImages
-    Left = 200
-    Top = 88
+    Left = 40
+    Top = 56
     object actAdd: TAction
       Caption = #1044#1086#1073#1072#1074#1080#1090#1100'...'
       ImageIndex = 0
@@ -433,17 +435,44 @@ object frmMain: TfrmMain
     PreviewOptions.Zoom = 1.000000000000000000
     PrintOptions.Printer = #1055#1086' '#1091#1084#1086#1083#1095#1072#1085#1080#1102
     PrintOptions.PrintOnSheet = 0
-    ReportOptions.CreateDate = 42929.595303576390000000
-    ReportOptions.LastChange = 42929.595303576390000000
+    ReportOptions.CreateDate = 42930.619196145830000000
+    ReportOptions.LastChange = 42930.619196145830000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
       'begin'
       ''
       'end.')
-    Left = 272
-    Top = 88
+    Left = 40
+    Top = 200
     Datasets = <>
     Variables = <>
     Style = <>
+  end
+  object frFireDACSupport: TfrxFDComponents
+    DefaultDatabase = dmData.connData
+    Left = 40
+    Top = 296
+  end
+  object frDesigner: TfrxDesigner
+    DefaultScriptLanguage = 'PascalScript'
+    DefaultFont.Charset = DEFAULT_CHARSET
+    DefaultFont.Color = clWindowText
+    DefaultFont.Height = -13
+    DefaultFont.Name = 'Arial'
+    DefaultFont.Style = []
+    DefaultLeftMargin = 10.000000000000000000
+    DefaultRightMargin = 10.000000000000000000
+    DefaultTopMargin = 10.000000000000000000
+    DefaultBottomMargin = 10.000000000000000000
+    DefaultPaperSize = 9
+    DefaultOrientation = poPortrait
+    GradientEnd = 11982554
+    GradientStart = clWindow
+    TemplatesExt = 'fr3'
+    Restrictions = []
+    RTLLanguage = False
+    MemoParentFont = False
+    Left = 40
+    Top = 248
   end
 end

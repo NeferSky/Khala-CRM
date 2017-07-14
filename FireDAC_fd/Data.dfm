@@ -1,11 +1,14 @@
 object dmData: TdmData
   OldCreateOrder = False
-  Left = 504
-  Top = 269
-  Height = 124
-  Width = 149
+  Left = 1849
+  Top = 115
+  Height = 213
+  Width = 241
   object connData: TFDConnection
+    Params.Strings = (
+      'DriverID=MSSQL')
     LoginPrompt = False
+    Transaction = trnData
     Left = 24
     Top = 24
   end

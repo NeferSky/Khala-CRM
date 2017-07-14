@@ -4,7 +4,8 @@ uses
   Vcl.Forms,
   Main in 'Main.pas' {frmMain},
   Edit in 'Edit.pas' {frmDatabase},
-  Data in 'Data.pas' {dmData: TDataModule};
+  Data in 'Data.pas' {dmData: TDataModule},
+  fd_Const in 'fd_Const.pas';
 
 {$R *.res}
 
