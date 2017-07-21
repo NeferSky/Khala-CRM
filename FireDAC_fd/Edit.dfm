@@ -1,6 +1,6 @@
 object frmDatabase: TfrmDatabase
-  Left = 1351
-  Top = 143
+  Left = 679
+  Top = 198
   BorderStyle = bsDialog
   Caption = #1041#1072#1079#1072' '#1076#1072#1085#1085#1099#1093
   ClientHeight = 183

@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 1421
-  Top = 376
+  Left = 423
+  Top = 294
   Caption = 'Free Designer'
   ClientHeight = 494
   ClientWidth = 661
@@ -30,7 +30,7 @@ object frmMain: TfrmMain
     Width = 661
     Height = 22
     AutoSize = True
-    ButtonWidth = 97
+    ButtonWidth = 101
     Caption = 'tbButtons'
     Images = ilImages
     List = True
@@ -42,17 +42,17 @@ object frmMain: TfrmMain
       Action = actAdd
     end
     object btnEdit: TToolButton
-      Left = 97
+      Left = 101
       Top = 0
       Action = actEdit
     end
     object btnDelete: TToolButton
-      Left = 194
+      Left = 202
       Top = 0
       Action = actDelete
     end
     object sprSeparator: TToolButton
-      Left = 291
+      Left = 303
       Top = 0
       Width = 8
       Caption = 'sprSeparator'
@@ -60,9 +60,14 @@ object frmMain: TfrmMain
       Style = tbsSeparator
     end
     object btnDesign: TToolButton
-      Left = 299
+      Left = 311
       Top = 0
       Action = actDesign
+    end
+    object ToolButton1: TToolButton
+      Left = 412
+      Top = 0
+      Action = actUpload
     end
   end
   object lvDatabases: TListView
@@ -126,7 +131,7 @@ object frmMain: TfrmMain
     Left = 40
     Top = 152
     Bitmap = {
-      494C010105000800380010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010105000800500010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       00000000000000000000000000000000000000000000333C720075799D00DBDC
       E500000000000000000000000000000000000000000000000000000000000000
@@ -426,9 +431,15 @@ object frmMain: TfrmMain
       ImageIndex = 4
       OnExecute = actExitExecute
     end
+    object actUpload: TAction
+      Caption = #1054#1090#1095#1077#1090' - '#1074' '#1073#1072#1079#1091
+      OnExecute = actUploadExecute
+    end
   end
   object frReport: TfrxReport
     Version = '5.4.6'
+    DataSet = frdsData
+    DataSetName = 'sa'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -449,7 +460,6 @@ object frmMain: TfrmMain
     Style = <>
   end
   object frFireDACSupport: TfrxFDComponents
-    DefaultDatabase = dmData.connData
     Left = 40
     Top = 296
   end
@@ -474,5 +484,18 @@ object frmMain: TfrmMain
     MemoParentFont = False
     Left = 40
     Top = 248
+  end
+  object dlgReport: TOpenDialog
+    Filter = 'Fast Report|*.fr3|All Files|*.*'
+    Left = 40
+    Top = 344
+  end
+  object frdsData: TfrxDBDataset
+    UserName = 'sa'
+    CloseDataSource = False
+    DataSet = dmData.FDQuery1
+    BCDToCurrency = False
+    Left = 184
+    Top = 176
   end
 end

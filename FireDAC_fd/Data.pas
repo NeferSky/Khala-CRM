@@ -10,12 +10,18 @@ uses
   FireDAC.Phys.FB, FireDAC.Phys.FBDef, FireDAC.Phys.IB, FireDAC.Phys.IBDef,
   FireDAC.Phys.IBLiteDef, FireDAC.Phys.MSSQL, FireDAC.Phys.MSSQLDef,
   FireDAC.Phys.MySQL, FireDAC.Phys.MySQLDef, FireDAC.Phys.PG, FireDAC.Phys.PGDef,
-  FireDAC.Phys.SQLite, FireDAC.Phys.SQLiteDef, FireDAC.Stan.ExprFuncs;
+  FireDAC.Phys.SQLite, FireDAC.Phys.SQLiteDef, FireDAC.Stan.ExprFuncs,
+  FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf, FireDAC.DApt,
+  FireDAC.Comp.DataSet, FireDAC.VCLUI.Wait, FireDAC.Comp.UI;
 
 type
   TdmData = class(TDataModule)
     connData: TFDConnection;
     trnData: TFDTransaction;
+    qryReport: TFDQuery;
+    FDGUIxWaitCursor1: TFDGUIxWaitCursor;
+    FDQuery1: TFDQuery;
+    FDConnection1: TFDConnection;
   private
     { Private declarations }
   public
@@ -24,6 +30,7 @@ type
     procedure Disconnect;
     procedure SetParams(ServerName, DatabaseName, UserName, Password,
       DriverID: String);
+    procedure Upload(ReportID: String; ReportStream: TMemoryStream);
   end;
 
 const
@@ -99,6 +106,7 @@ begin
   try
     connData.Open;
     Result := connData.Connected;
+    FDQuery1.Open;
   except
     raise Exception.Create('Подключение не выполнено');
   end;
@@ -140,6 +148,31 @@ begin
   6: connData.Params.Text := Format(SQLITE_STRING, [ServerName, DatabaseName, UserName, Password, DriverID]);
   else
     connData.Params.Text := Format(MSSQL_STRING, [ServerName, UserName, Password, DatabaseName, DriverID]);
+  end;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TdmData.Upload(ReportID: String; ReportStream: TMemoryStream);
+begin
+  try
+    qryReport.ParamByName('ReportID').AsGUID := StringToGUID(ReportID);
+    qryReport.Open;
+
+    if qryReport.RecordCount > 0 then
+      qryReport.Edit
+    else
+    begin
+      qryReport.Insert;
+      qryReport.FieldByName('ID').AsString := ReportID;
+    end;
+
+    ReportStream.Position := 0;
+    TBlobField(qryReport.FieldByName('ReportData')).LoadFromStream(ReportStream);
+    qryReport.Post;
+
+  finally
+    qryReport.Close;
   end;
 end;
 

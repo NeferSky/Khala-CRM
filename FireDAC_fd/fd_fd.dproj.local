@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.112,=C:\Users\Распутин\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.707,=C:\Users\Распутин\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.375,=C:\Users\Распутин\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.875,=C:\Users\Распутин\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.856,C:\Users\Распутин\Documents\Embarcadero\Studio\Projects\Unit1.dfm=E:\Work\Delphi\Khala\FireDAC_fd\Main.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.927,C:\Users\Распутин\Documents\Embarcadero\Studio\Projects\Project1.dproj=E:\Work\Delphi\Khala\FireDAC_fd\fd_fd.dproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.856,C:\Users\Распутин\Documents\Embarcadero\Studio\Projects\Unit1.pas=E:\Work\Delphi\Khala\FireDAC_fd\Main.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.797,=E:\Work\Delphi\Khala\FireDAC_fd\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.433,E:\Work\Delphi\Khala\FireDAC_fd\fd_Const.pas=E:\Work\Delphi\Khala\FireDAC_fd\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.685,E:\Work\Delphi\Khala\FireDAC_fd\Unit1.dfm=E:\Work\Delphi\Khala\FireDAC_fd\Data.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.130,E:\Work\Delphi\Khala\FireDAC_fd\Unit1.dfm=E:\Work\Delphi\Khala\FireDAC_fd\Edit.dfm</Transaction>
     <Transaction>1899.12.30 00:00:00.000.302,=E:\Work\Delphi\Khala\FireDAC_fd\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.685,E:\Work\Delphi\Khala\FireDAC_fd\Unit1.pas=E:\Work\Delphi\Khala\FireDAC_fd\Data.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.838,=E:\Work\Delphi\Khala\FireDAC_fd\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.129,E:\Work\Delphi\Khala\FireDAC_fd\Unit1.pas=E:\Work\Delphi\Khala\FireDAC_fd\Edit.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.707,=C:\Users\Распутин\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.129,E:\Work\Delphi\Khala\FireDAC_fd\Edit.pas=E:\Work\Delphi\Khala\FireDAC_fd\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.112,=C:\Users\Распутин\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.875,=C:\Users\Распутин\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.433,E:\Work\Delphi\Khala\FireDAC_fd\Unit1.pas=E:\Work\Delphi\Khala\FireDAC_fd\fd_Const.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.130,E:\Work\Delphi\Khala\FireDAC_fd\Edit.dfm=E:\Work\Delphi\Khala\FireDAC_fd\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.927,E:\Work\Delphi\Khala\FireDAC_fd\fd_fd.dproj=C:\Users\Распутин\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.685,E:\Work\Delphi\Khala\FireDAC_fd\Data.pas=E:\Work\Delphi\Khala\FireDAC_fd\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.856,E:\Work\Delphi\Khala\FireDAC_fd\Main.pas=C:\Users\Распутин\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.797,=E:\Work\Delphi\Khala\FireDAC_fd\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.685,E:\Work\Delphi\Khala\FireDAC_fd\Data.dfm=E:\Work\Delphi\Khala\FireDAC_fd\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.856,E:\Work\Delphi\Khala\FireDAC_fd\Main.dfm=C:\Users\Распутин\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
   </Transactions>
 </BorlandProject>

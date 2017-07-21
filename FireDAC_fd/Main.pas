@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Grids, Vcl.ValEdit, Vcl.ComCtrls,
   Vcl.ToolWin, Vcl.Menus, System.Actions, Vcl.ActnList, System.ImageList,
   Vcl.ImgList, Edit, frxClass, System.UITypes, Vcl.StdCtrls, frxDesgn, frxDBSet,
-  frxFDComponents;
+  frxFDComponents, Data;
 
 type
   TfrmMain = class(TForm)
@@ -38,6 +38,10 @@ type
     frReport: TfrxReport;
     frFireDACSupport: TfrxFDComponents;
     frDesigner: TfrxDesigner;
+    actUpload: TAction;
+    dlgReport: TOpenDialog;
+    ToolButton1: TToolButton;
+    frdsData: TfrxDBDataset;
     //--
     procedure actAddExecute(Sender: TObject);
     procedure actEditExecute(Sender: TObject);
@@ -53,6 +57,7 @@ type
     procedure lvDatabasesDeletion(Sender: TObject; Item: TListItem);
     procedure lvDatabasesEdited(Sender: TObject; Item: TListItem;
       var S: string);
+    procedure actUploadExecute(Sender: TObject);
   private
     { Private declarations }
     FDatabaseEdit: TfrmDatabase;
@@ -83,7 +88,7 @@ var
 implementation
 
 uses
-  Data, Registry;
+  Registry;
 
 {$R *.dfm}
 
@@ -159,6 +164,29 @@ end;
 procedure TfrmMain.actExitExecute(Sender: TObject);
 begin
   Close;
+end;
+
+//---------------------------------------------------------------------------
+
+procedure TfrmMain.actUploadExecute(Sender: TObject);
+var
+  ReportStream: TMemoryStream;
+  ReportName: String;
+  ReportID: String;
+
+begin
+  if dlgReport.Execute then
+  begin
+    ReportStream := TMemoryStream.Create;
+    try
+      ReportStream.LoadFromFile(dlgReport.FileName);
+      ReportName := ExtractFileName(dlgReport.FileName);
+      ReportID := Copy(ReportName, 1, Length(ReportName) - Length(ExtractFileExt(ReportName)));
+      dmData.Upload(ReportID, ReportStream);
+    finally
+      ReportStream.Free;
+    end;
+  end;
 end;
 
 //---------------------------------------------------------------------------
