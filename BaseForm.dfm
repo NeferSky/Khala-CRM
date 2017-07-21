@@ -1,6 +1,6 @@
 object frmBaseForm: TfrmBaseForm
-  Left = 1409
-  Top = 70
+  Left = 448
+  Top = 238
   Align = alClient
   BorderStyle = bsNone
   Caption = 'frmBaseForm'
@@ -477,7 +477,7 @@ object frmBaseForm: TfrmBaseForm
     Left = 72
     Top = 24
   end
-  object frdsData: TfrxDBDataset
+  object frdsData11: TfrxDBDataset
     UserName = 'sa'
     CloseDataSource = False
     DataSet = fdData
@@ -485,26 +485,9 @@ object frmBaseForm: TfrmBaseForm
     Left = 120
     Top = 24
   end
-  object frExportXLS: TfrxXLSExport
-    ShowDialog = False
-    UseFileCache = True
-    ShowProgress = True
-    OverwritePrompt = False
-    DataOnly = False
-    ExportEMF = True
-    OpenExcelAfterExport = True
-    AsText = False
-    Background = True
-    FastExport = True
-    PageBreaks = True
-    EmptyLines = True
-    SuppressPageHeadersFooters = False
-    Left = 216
-    Top = 24
-  end
-  object frData: TfrxReport
+  object frData11: TfrxReport
     Version = '5.4.6'
-    DataSet = frdsData
+    DataSet = frdsData11
     DataSetName = 'sa'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
@@ -585,5 +568,19 @@ object frmBaseForm: TfrmBaseForm
     Connection = dmData.FDConnection
     Left = 24
     Top = 136
+  end
+  object frBIFFExport11: TfrxBIFFExport
+    UseFileCache = True
+    ShowProgress = True
+    OverwritePrompt = False
+    DataOnly = False
+    RowHeightScale = 1.000000000000000000
+    ChunkSize = 0
+    Inaccuracy = 10.000000000000000000
+    FitPages = False
+    Pictures = True
+    ParallelPages = 0
+    Left = 216
+    Top = 24
   end
 end

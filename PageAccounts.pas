@@ -10,7 +10,7 @@ uses
   BasePageForm, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, Vcl.Menus, System.Actions, Vcl.ActnList,
-  Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, frxClass;
+  Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
 
 type
   TfrmPageAccounts = class(TfrmBasePage)
@@ -28,7 +28,9 @@ type
   end;
 
 const
-  FORM_ID = '{A1DF9C82-C33D-44F4-8BD5-85DE2135C868}';
+  // A1DF9C82-C33D-44F4-8BD5-85DE2135C868
+  FORM_ID: TGuid =
+    (D1: $A1DF9C82; D2: $C33D; D3: $44F4; D4: ($8B, $D5, $85, $DE, $21, $35, $C8, $68));
 
 var
   frmPageAccounts: TfrmPageAccounts;
@@ -47,10 +49,9 @@ class function TfrmPageAccounts.GetPage(AOwner: TComponent;
   AParent: TWinControl): TfrmBasePage;
 begin
   if frmPageAccounts = nil then
-    frmPageAccounts := TfrmPageAccounts.ACreate(AOwner, AParent);
+    frmPageAccounts := TfrmPageAccounts.ACreate(AOwner, AParent, FORM_ID);
 
   Result := frmPageAccounts;
-  Result.PageID_AsString := FORM_ID;
 end;
 
 //---------------------------------------------------------------------------

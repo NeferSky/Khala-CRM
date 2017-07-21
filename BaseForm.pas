@@ -9,12 +9,13 @@ uses
   Vcl.StdCtrls, Vcl.Buttons, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Menus,
   Vcl.ActnList,
   Data.DB,
-  frxClass, frxDBSet, frxExportXLS,
+  frxClass, frxDBSet, frxExportXLS, frxExportBIFF,
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.Client, FireDAC.Comp.DataSet,
   FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Comp.UI,
-  NsDBGrid, SQLBldr, FieldList, FastFilter, Data, Kh_Consts;
+  NsDBGrid, SQLBldr, FieldList, FastFilter, Data, Kh_Consts,
+  ReportGen;
 
 type
   TMasterProc = procedure(ID: String);
@@ -46,9 +47,8 @@ type
     srcData: TDataSource;
     qryGetReport: TFDQuery;
     comInsertServiceDesk: TFDCommand;
-    frdsData: TfrxDBDataset;
-    frData: TfrxReport;
-    frExportXLS: TfrxXLSExport;
+    frdsData11: TfrxDBDataset;
+    frData11: TfrxReport;
     //--
     pmnuData: TPopupMenu;
     mnuAdd: TMenuItem;
@@ -62,6 +62,7 @@ type
     actEdit: TAction;
     actDelete: TAction;
     spUserActions: TFDStoredProc;
+    frBIFFExport11: TfrxBIFFExport;
     //--
     procedure btnCloseFastFilterClick(Sender: TObject);
     procedure btnExportClick(Sender: TObject);
@@ -120,7 +121,7 @@ type
     procedure EnableButtons;
     procedure ExportReport;
     function GetDraggedToGridColumn: String;
-    function GetMasterID: String;
+    function GetMasterID: TGuid;
     function GetSQLText: String;
     procedure MoveFieldList(P: TPoint);
     procedure MoveFirstPage;
@@ -133,7 +134,7 @@ type
     procedure SetColumnsList(const AvailableColumns: TStringList);
     procedure SetFastFilter(ColumnName, FieldName, ColumnValue: String);
     procedure SetGridColumns;
-    procedure SetMasterID(const Value: String);
+    procedure SetMasterID(const Value: TGuid);
     procedure SetSQLText(const Value: String);
     procedure ShowColumnsManager(Sender: TObject);
     procedure ShowFieldList;
@@ -156,7 +157,7 @@ type
     procedure MoveFirst;
     procedure RebuildQuery;
     //--
-    property MasterID: String read GetMasterID write SetMasterID;
+    property MasterID: TGuid read GetMasterID write SetMasterID;
     property SQLText: String read GetSQLText write SetSQLText;
     property FormID: TGuid read GetFormID write SetFormID;
     property FormID_AsString: String read GetFormID_AsString write SetFormID_AsString;
@@ -199,7 +200,9 @@ end;
 
 procedure TfrmBaseForm.btnExportClick(Sender: TObject);
 begin
+  fdData.DisableControls;
   ExportReport;
+  fdData.EnableControls;
 end;
 
 //---------------------------------------------------------------------------
@@ -358,7 +361,7 @@ end;
 procedure TfrmBaseForm.ExportReport;
 begin
   if PrepareReport then
-    frData.Export(frExportXLS);
+    dmReportGenerator.Run(StringToGUID('{099E6D41-005D-40E3-8B8B-03DC17BFFE4A}'), fdData);
 end;
 
 //---------------------------------------------------------------------------
@@ -397,10 +400,21 @@ end;
 //---------------------------------------------------------------------------
 
 procedure TfrmBaseForm.fdDataAfterScroll(DataSet: TDataSet);
+var
+  MasterID: TGuid;
+
 begin
   // Если форма - мастер, и не скроллим, то вызываем MasterProc()
   if FIsMaster and (not FMouseWheelScrolling) then
-    (Owner as TfrmBasePage).MasterProc(fdData.FieldByName('ID').AsString);
+  begin
+    // Проверка на пустое значение
+    if fdData.FieldByName('ID').AsString = '' then
+      MasterID := TGUID.Empty
+    else
+      MasterID := StringToGUID(fdData.FieldByName('ID').AsString);
+
+    (Owner as TfrmBasePage).MasterProc(MasterID);
+  end;
 
   // Сбрасывается флаг скроллинга, неважно, был он или не был
   FMouseWheelScrolling := False;
@@ -410,15 +424,14 @@ end;
 
 procedure TfrmBaseForm.FormCreate(Sender: TObject);
 begin
-  frExportXLS.FileName := Self.Caption;
+  //frBIFFExport.FileName := Self.Caption;
   btnCloseFastFilter.Visible := False;
   lblFastFilter.Caption := '';
 
-  // Круто, используем других наследников TCustomGrid для изменения
-  // свойств колонок:
-  // ширина разделительных линий
+  // Круто, используем других наследников TCustomGrid для изменения свойств колонок:
+  // - Ширина разделительных линий
   //TStringGrid(grdData).GridLineWidth := 2;
-  // Запрет перетаскивания колонок
+  // - Запрет перетаскивания колонок штатным способом
   TDrawGrid(grdData).Options := TDrawGrid(grdData).Options - [goColMoving];
 
   // Создание и инициализация построителя запросов
@@ -463,12 +476,14 @@ end;
 //---------------------------------------------------------------------------
 
 procedure TfrmBaseForm.FormDestroy(Sender: TObject);
-// Сохранение настроек колонок грида. Скорее всего, ну его нафиг.
 begin
+  // Сохранение настроек колонок грида. Скорее всего, ну его нафиг.
   if not DirectoryExists('Config') then
     CreateDirectory('Config', nil);
 
   grdData.Columns.SaveToFile('Config\' + (Sender as TfrmBaseForm).Name);
+
+  SQLBuilder.Destroy;
 end;
 
 //---------------------------------------------------------------------------
@@ -635,7 +650,7 @@ end;
 
 //---------------------------------------------------------------------------
 
-function TfrmBaseForm.GetMasterID: String;
+function TfrmBaseForm.GetMasterID: TGuid;
 begin
   Result := SQLBuilder.MasterID;
 end;
@@ -707,7 +722,7 @@ begin
   // При перемещении колонки в пределах грида - просто присвоение нового порядкового номера
   if IsGridColumnMoving then
   begin
-    ColumnNum := grdData.MouseCoord(X, Y).X;
+    ColumnNum := grdData.MouseCoord(X, Y).X - 1;
     FDraggedColumn.Index := ColumnNum;
     Exit;
   end;
@@ -830,7 +845,7 @@ begin
   if Button = mbRight then
   begin
     (Sender as TControl).BeginDrag(False, 5);
-    ColumnNum := grdData.MouseCoord(X, Y).X;
+    ColumnNum := grdData.MouseCoord(X, Y).X - 1;
     FDraggedColumn := grdData.Columns[ColumnNum];
   end;
 end;
@@ -1038,7 +1053,7 @@ begin
         ReportStream := TStream.Create;
         try
           (qryGetReport.FieldByName('ReportData') as TBlobField).SaveToStream(ReportStream);
-          frData.LoadFromStream(ReportStream);
+          //frData.LoadFromStream(ReportStream);
           Result := True;
         finally
           ReportStream.Free;
@@ -1058,8 +1073,8 @@ end;
 
 procedure TfrmBaseForm.PrintReport;
 begin
-  if PrepareReport then
-    frData.ShowPreparedReport;
+  //if PrepareReport then
+    //frData.ShowPreparedReport;
 end;
 
 //---------------------------------------------------------------------------
@@ -1160,7 +1175,7 @@ end;
 
 //---------------------------------------------------------------------------
 
-procedure TfrmBaseForm.SetMasterID(const Value: String);
+procedure TfrmBaseForm.SetMasterID(const Value: TGuid);
 begin
   SQLBuilder.MasterID := Value;
 end;

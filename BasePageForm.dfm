@@ -1,6 +1,6 @@
 object frmBasePage: TfrmBasePage
-  Left = 1440
-  Top = 243
+  Left = 428
+  Top = 152
   Align = alClient
   BorderStyle = bsNone
   Caption = 'frmBasePage'
@@ -140,8 +140,15 @@ object frmBasePage: TfrmBasePage
   end
   object qryReports: TFDQuery
     Connection = dmData.FDConnection
+    SQL.Strings = (
+      'select * from dbo.App_GetReportList(:FORMID)')
     Left = 96
     Top = 48
+    ParamData = <
+      item
+        Name = 'FORMID'
+        ParamType = ptInput
+      end>
   end
   object alActions: TActionList
     Left = 32

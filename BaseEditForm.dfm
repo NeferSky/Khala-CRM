@@ -30,9 +30,6 @@ object frmBaseEditForm: TfrmBaseEditForm
       end>
     PopupMenu = pmnuStatusBar
     OnDrawPanel = sbStatusBarDrawPanel
-    ExplicitLeft = 432
-    ExplicitTop = 312
-    ExplicitWidth = 0
   end
   object pnlButtons: TPanel
     Left = 0
@@ -49,7 +46,6 @@ object frmBaseEditForm: TfrmBaseEditForm
     ParentBackground = False
     ParentFont = False
     TabOrder = 1
-    ExplicitTop = 539
     DesignSize = (
       800
       37)

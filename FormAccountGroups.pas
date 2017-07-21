@@ -13,7 +13,7 @@ uses
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.Client, FireDAC.Comp.DataSet,
   FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Comp.UI,
-  BaseForm, NsDBGrid, System.Actions, Vcl.ActnList;
+  BaseForm, NsDBGrid, System.Actions, Vcl.ActnList, frxExportBIFF;
 
 type
   TfrmAccountGroups = class(TfrmBaseForm)
@@ -32,7 +32,9 @@ type
 
 const
   SQL_GET_ACCOUNT_GROUPS = 'select * from dbo.App_SelectAccountGroups(:MasterID) ';
-  FORM_ID = '{C275EF5B-73FA-4045-A0C8-2FF420BE086F}';
+  // C275EF5B-73FA-4045-A0C8-2FF420BE086F
+  FORM_ID: TGuid =
+    (D1: $C275EF5B; D2: $73FA; D3: $4045; D4: ($A0, $C8, $2F, $F4, $20, $BE, $08, $6F));
 
 implementation
 
@@ -44,7 +46,7 @@ class function TfrmAccountGroups.CreateForm(AOwner: TComponent; AParent: TWinCon
   IsMaster: Boolean): TfrmBaseForm;
 begin
   Result := TfrmAccountGroups.ACreate(AOwner, AParent, IsMaster);
-  Result.FormID_AsString := FORM_ID;
+  Result.FormID := FORM_ID;
   Result.SQLText := SQL_GET_ACCOUNT_GROUPS;
   Result.RebuildQuery;
 end;

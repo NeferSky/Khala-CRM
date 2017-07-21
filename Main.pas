@@ -10,7 +10,7 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
   Vcl.ExtCtrls, Vcl.ImgList, Vcl.ComCtrls, Vcl.Menus,
   Registry,
-  Data, UIThemes, Kh_Consts, BasePageForm, FormLogon, frxClass;
+  Data, UIThemes, Kh_Consts, BasePageForm, FormLogon;
 
 type
   TfrmMain = class(TForm)
@@ -46,7 +46,7 @@ type
     { Private declarations }
     FUserID: String;
     FUserName: String;
-    PagesArr: Array of TfrmBasePage; // ћассив, содержащий созданные страницы
+    FPagesArr: Array of TfrmBasePage; // ћассив, содержащий созданные страницы
     //--
     procedure PrepareThemesMenu;
     procedure ReadIni;
@@ -75,7 +75,7 @@ uses
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
-  SetLength(PagesArr, pcRibbon.PageCount);
+  SetLength(FPagesArr, pcRibbon.PageCount);
   PrepareThemesMenu;
   ReadIni;
 
@@ -112,7 +112,7 @@ begin
   case pcRibbon.ActivePageIndex of
   2:
   begin
-    PagesArr[pcRibbon.ActivePageIndex] := TfrmPageAccounts.GetPage(Self, pcRibbon.Pages[pcRibbon.ActivePageIndex]);
+    FPagesArr[pcRibbon.ActivePageIndex] := TfrmPageAccounts.GetPage(Self, pcRibbon.Pages[pcRibbon.ActivePageIndex]);
   end;
   end;
 end;
@@ -169,8 +169,8 @@ begin
   Self.Color := KhalaTheme.PanelFilterColor;
 
   for I := 0 to pcRibbon.PageCount - 1 do
-    if PagesArr[I] <> nil then
-      PostMessage(PagesArr[I].Handle, KH_RESET_THEME, 0, 0);
+    if FPagesArr[I] <> nil then
+      PostMessage(FPagesArr[I].Handle, KH_RESET_THEME, 0, 0);
 end;
 
 //---------------------------------------------------------------------------

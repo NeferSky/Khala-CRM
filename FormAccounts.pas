@@ -13,7 +13,7 @@ uses
   BaseForm, NsDBGrid, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.Client,
-  FireDAC.Comp.DataSet, System.Actions, Vcl.ActnList;
+  FireDAC.Comp.DataSet, System.Actions, Vcl.ActnList, frxExportBIFF;
 
 type
   TfrmAccounts = class(TfrmBaseForm)
@@ -51,7 +51,9 @@ type
 
 const
   SQL_GET_ACCOUNTS = 'select * from dbo.App_SelectAccounts() ';
-  FORM_ID = '{1B530A50-18F7-4322-9D38-1C5D7CF4AB42}';
+  // 1B530A50-18F7-4322-9D38-1C5D7CF4AB42
+  FORM_ID: TGuid =
+    (D1: $1B530A50; D2: $18F7; D3: $4322; D4: ($9D, $38, $1C, $5D, $7C, $F4, $AB, $42));
 
 implementation
 
@@ -85,7 +87,7 @@ class function TfrmAccounts.CreateForm(AOwner: TComponent; AParent: TWinControl;
   IsMaster: Boolean): TfrmBaseForm;
 begin
   Result := TfrmAccounts.ACreate(AOwner, AParent, IsMaster);
-  Result.FormID_AsString := FORM_ID;
+  Result.FormID := FORM_ID;
   Result.SQLText := SQL_GET_ACCOUNTS;
   Result.RebuildQuery;
 end;

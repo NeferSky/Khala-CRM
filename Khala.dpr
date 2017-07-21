@@ -25,7 +25,8 @@ uses
   FormContactAnniversary in 'FormContactAnniversary.pas' {frmContactAnniversary},
   FormContactTasks in 'FormContactTasks.pas' {frmContactTasks},
   BaseEditForm in 'BaseEditForm.pas' {frmBaseEditForm},
-  FormAccountEdit in 'FormAccountEdit.pas' {frmAccountEdit};
+  FormAccountEdit in 'FormAccountEdit.pas' {frmAccountEdit},
+  ReportGen in 'ReportGen.pas' {dmReportGenerator: TDataModule};
 
 {$R *.res}
 
@@ -35,6 +36,7 @@ begin
   Application.Title := 'Khala CRM';
   InitThemesManager;
   Application.CreateForm(TdmData, dmData);
+  Application.CreateForm(TdmReportGenerator, dmReportGenerator);
   if Logon then
   begin
     Application.CreateForm(TfrmMain, frmMain);
@@ -42,5 +44,4 @@ begin
   end
   else
     dmData.Free;
-
 end.

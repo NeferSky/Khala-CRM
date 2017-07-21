@@ -12,14 +12,16 @@ uses
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, System.Actions,
   Vcl.ActnList, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.Menus,
-  frxClass;
+  frxClass, frxDesgn, frxDBSet, frxFDComponents, frxExportXLS, frxExportXLSX,
+  frxExportXML, frxExportCSV, Vcl.OleServer, ExcelXP, frxExportBIFF,
+  Vcl.Graphics;
 
 type
   TReportMenuItem = class(TMenuItem)
   private
-    FReportID: String;
+    FReportID: TGuid;
   public
-    property ReportID: String read FReportID write FReportID;
+    property ReportID: TGuid read FReportID write FReportID;
   end;
 
 type
@@ -47,6 +49,7 @@ type
     procedure pmnuReportsItemClick(Sender: TObject);
     procedure lblActionsClick(Sender: TObject);
     procedure lblReportsClick(Sender: TObject);
+    procedure frReportGetValue(const VarName: string; var Value: Variant);
   private
     { Private declarations }
     FPageID: TGuid; // Идентификатор формы
@@ -61,13 +64,14 @@ type
   protected
     MasterForm: TfrmBaseForm; // Мастер-форма с мастер-датасетом
     DetailsList: TList<TfrmBaseForm>; // Лист детализующих форм
+    FMasterID: TGuid; // ID из мастер-датасета
     //--
     class function GetPage(AOwner: TComponent;
       AParent: TWinControl): TfrmBasePage; virtual;
   public
     { Public declarations }
-    constructor ACreate(AOwner: TComponent; AParent: TWinControl);
-    procedure MasterProc(ID: String);
+    constructor ACreate(AOwner: TComponent; AParent: TWinControl; FormID: TGuid);
+    procedure MasterProc(ID: TGuid);
     //--
     property Parent;
     property PageID: TGuid read GetPageID write SetPageID;
@@ -77,16 +81,18 @@ type
 implementation
 
 uses
-  Vcl.Dialogs, Kh_Utils, UIThemes, Data;
+  Vcl.Dialogs, NsWinUtils, Kh_Utils, UIThemes, Data, ReportGen;
 
 {$R *.dfm}
 
 { TfrmBasePage }
 //---------------------------------------------------------------------------
 
-constructor TfrmBasePage.ACreate(AOwner: TComponent; AParent: TWinControl);
+constructor TfrmBasePage.ACreate(AOwner: TComponent; AParent: TWinControl;
+  FormID: TGuid);
 begin
   inherited Create(AOwner);
+  FPageID := FormID;
   DetailsList := TList<TfrmBaseForm>.Create;
   Parent := AParent;
 end;
@@ -119,6 +125,10 @@ begin
       DetailsList[I].Free;
 
   DetailsList.Free;
+
+  for I := pmnuReports.Items.Count - 1 downto 0 do
+    if pmnuReports.Items[I] <> nil then
+      pmnuReports.Items[I].Free;
 end;
 
 //---------------------------------------------------------------------------
@@ -129,6 +139,12 @@ var
   Dummy: TMessage;
 begin
   ResetTheme(Dummy);
+end;
+
+procedure TfrmBasePage.frReportGetValue(const VarName: string;
+  var Value: Variant);
+begin
+  if VarName = 'AccountID' then Value := GuidToString(FMasterID);
 end;
 
 //---------------------------------------------------------------------------
@@ -185,7 +201,7 @@ end;
 
 //---------------------------------------------------------------------------
 
-procedure TfrmBasePage.MasterProc(ID: String);
+procedure TfrmBasePage.MasterProc(ID: TGuid);
 // Вызывается мастер-датасетом страницы при передвижении по записям
 var
   I: Integer;
@@ -195,7 +211,7 @@ var
 begin
   NeedUpdate := False;
 
-  if ID = '' then
+  if ID = TGuid.Empty then
   begin
     for I := 0 to DetailsList.Count - 1 do
       DetailsList[I].Disconnect;
@@ -211,8 +227,9 @@ begin
       NeedUpdate := DetailsList[pcDetails.ActivePageIndex].MasterID <> ID;
 
     // Новый параметр - всем
+    FMasterID := ID;
     for I := 0 to DetailsList.Count - 1 do
-      DetailsList[I].MasterID := ID;
+      DetailsList[I].MasterID := FMasterID;
 
     // Передергивание датасета на активной вкладке, если нужно
     if SlaveExistsVoobscheOrNot and NeedUpdate then
@@ -239,43 +256,8 @@ end;
 
 procedure TfrmBasePage.pmnuReportsItemClick(Sender: TObject);
 // Запуск отчета из меню отчетов
-const
-  SQL_GET_REPORT = 'select * from dbo.App_GetReport(:ReportID)';
-
-var
-  ReportStream: TStream;
-  ReportExists: Boolean;
-
 begin
-  try
-    if qryReports.Active then
-      qryReports.Close;
-
-    try
-      qryReports.SQL.Text := SQL_GET_REPORT;
-      qryReports.ParamByName('ReportID').AsString := (Sender as TReportMenuItem).ReportID;
-      qryReports.Prepare;
-      qryReports.Open;
-
-      ReportExists := qryReports.RecordCount > 0;
-      if ReportExists then
-      begin
-        ReportStream := TStream.Create;
-        try
-          (qryReports.FieldByName('ReportData') as TBlobField).SaveToStream(ReportStream);
-          //frReport.LoadFromStream(ReportStream);
-        finally
-          ReportStream.Free;
-        end;
-      end;
-
-    except
-      raise EPrepareReportError.Create;
-    end;
-
-  finally
-    qryReports.Close;
-  end;
+  dmReportGenerator.Run((Sender as TReportMenuItem).ReportID);
 end;
 
 //---------------------------------------------------------------------------
@@ -291,7 +273,7 @@ begin
   begin
     Item := TReportMenuItem.Create(Self);
     Item.Action := alActions.Actions[I];
-    pmnuReports.Items.Add(Item);
+    pmnuActions.Items.Add(Item);
   end;
 end;
 
@@ -319,9 +301,10 @@ begin
     begin
       Item := TReportMenuItem.Create(Self);
       Item.Caption := qryReports.FieldByName('Name').AsString;
-      Item.ReportID := qryReports.FieldByName('ID').AsString;
+      Item.ReportID := StringToGuid(qryReports.FieldByName('ID').AsString);
       Item.OnClick := pmnuReportsItemClick;
       pmnuReports.Items.Add(Item);
+      qryReports.Next;
     end;
 
   finally

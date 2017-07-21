@@ -6,7 +6,7 @@ inherited frmContactTasks: TfrmContactTasks
   ExplicitTop = 289
   PixelsPerInch = 96
   TextHeight = 13
-  inherited frData: TfrxReport
+  inherited frData11: TfrxReport
     Datasets = <>
     Variables = <>
     Style = <>

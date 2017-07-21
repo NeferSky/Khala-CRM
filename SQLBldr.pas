@@ -17,7 +17,7 @@ type
     FOrderPart: String; // order by ...
     FSortPart: String; // asc/desc
     FOffsetPart: Integer; // rows ... to ...
-    FMasterID: String; // ID из мастер-датасета
+    FMasterID: TGuid; // ID из мастер-датасета
     FDataSet: PDataSet; // Датасет на фрейме-владельце. Надо бы через pointer с ним работать, наверное
     FqryRowCount: TFDQuery; // Местный датасет для получения кол-ва строк
     FRowCount: Integer; // Кол-во строк, возвращаемых запросом
@@ -42,14 +42,14 @@ type
     procedure SetOffsetPart(const Value: Integer);
     function GetFilterPart: String;
     procedure SetFilterPart(const Value: String);
-    function GetMasterID: String;
-    procedure SetMasterID(const Value: String);
+    function GetMasterID: TGuid;
+    procedure SetMasterID(const Value: TGuid);
   public
     constructor Create(AOwner: TComponent);
     destructor Destroy; override;
     function BuildQuery(NeedExecute: Boolean = True): String;
     function GetSQLQuery: String;
-    property MasterID: String read GetMasterID write SetMasterID;
+    property MasterID: TGuid read GetMasterID write SetMasterID;
     property DataSet: PDataSet read GetDataSet write SetDataSet;
     property SelectPart: String read GetSelectPart write SetSelectPart;
     property WherePart: String read GetWherePart write SetWherePart;
@@ -273,15 +273,12 @@ begin
 
     if FqryRowCount.Params.Count > 0 then
     begin
-      if FMasterID = '' then
-        FMasterID := '{00000000-0000-0000-0000-000000000000}';
-
       // Смотрите все, это - костыль!
       // Непонятно почему, здесь жалуется, что
       // Parameter[MasterID] data type is unknown. Победить не удалось.
       // Удалось понять лишь то, что дело в самом FqryRowCount.
       // FDataSet^.ParamByName('MasterID').AsGUID := StringToGuid(FMasterID);
-      FqryRowCount.SQL.Text := StringReplace(FqryRowCount.SQL.Text, ':MasterID', ''''+FMasterID+'''', []);
+      FqryRowCount.SQL.Text := StringReplace(FqryRowCount.SQL.Text, ':MasterID', ''''+GuidToString(FMasterID)+'''', []);
     end;
 
     FqryRowCount.Open;
@@ -302,15 +299,7 @@ begin
     FDataSet^.SQL.Text := QueryText;
 
     if FDataSet^.Params.Count > 0 then
-    begin
-      // Если нет параметра от мастер-датасета, то либо этот датасет - мастер,
-      // или форма в стадии создания. В обоих случаях в параметр можно пихать
-      // все, что угодно.
-      if FMasterID = '' then
-        FMasterID := '{00000000-0000-0000-0000-000000000000}';
-
-      FDataSet^.ParamByName('MasterID').AsGUID := StringToGuid(FMasterID);
-    end;
+      FDataSet^.ParamByName('MasterID').AsGUID := FMasterID;
 
     FDataSet^.Open;
     FDataSet^.FetchAll;
@@ -355,7 +344,7 @@ end;
 
 //---------------------------------------------------------------------------
 
-function TSQLBuilder.GetMasterID: String;
+function TSQLBuilder.GetMasterID: TGuid;
 begin
   Result := FMasterID;
 end;
@@ -424,7 +413,7 @@ end;
 
 //---------------------------------------------------------------------------
 
-procedure TSQLBuilder.SetMasterID(const Value: String);
+procedure TSQLBuilder.SetMasterID(const Value: TGuid);
 begin
   if FMasterID <> Value then
     FMasterID := Value;

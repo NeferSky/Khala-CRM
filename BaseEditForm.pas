@@ -72,6 +72,7 @@ uses
 constructor TfrmBaseEditForm.ACreate(AOwner: TComponent; RecordID: TGuid);
 begin
   inherited Create(AOwner);
+  FModified := False;
   Self.RecordID := RecordID;
 end;
 
@@ -80,6 +81,7 @@ end;
 constructor TfrmBaseEditForm.ACreate(AOwner: TComponent; RecordID: String);
 begin
   inherited Create(AOwner);
+  FModified := False;
   Self.RecordID_AsString := RecordID;
 end;
 
@@ -115,6 +117,7 @@ begin
       spEdit.ExecProc;
       trnEdit.Commit;
       qryGetRecord.Close;
+      ShowMessage('done');
 
     except
       ShowMessage('edit error');

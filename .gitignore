@@ -4,3 +4,4 @@
 __history/*
 bin/config/*
 bin/DBParams.cfg
+bin/Report/*

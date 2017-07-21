@@ -68,8 +68,7 @@ begin
     try
       connLogon.Open;
       qryLogon.ParamByName('USER_NAME').AsString := edtUserName.Text;
-      qryLogon.ParamByName('PASS_WORD').AsString := edtPassword.Text;
-//      spLogon.ParamByName('PASS_WORD').AsString := TXEBICipher.Crypt(edtPassword.Text, Smile);
+      qryLogon.ParamByName('PASS_WORD').AsString := TXEBICipher.Crypt(edtPassword.Text, TUtils.Smile);
       qryLogon.Prepare;
 
       if not trnLogon.Active then

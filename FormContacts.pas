@@ -10,7 +10,7 @@ uses
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
   System.Actions, Vcl.ActnList, FireDAC.Comp.Client, FireDAC.Comp.DataSet,
   Vcl.Menus, frxClass, frxExportXLS, frxDBSet, Vcl.Grids, Vcl.DBGrids, NsDBGrid,
-  Vcl.StdCtrls, Vcl.Buttons, Vcl.ComCtrls, Vcl.ExtCtrls;
+  Vcl.StdCtrls, Vcl.Buttons, Vcl.ComCtrls, Vcl.ExtCtrls, frxExportBIFF;
 
 type
   TfrmContacts = class(TfrmBaseForm)
@@ -24,7 +24,9 @@ type
 
 const
   SQL_GET_CONTACTS = 'select * from dbo.App_SelectContacts ';
-  FORM_ID = '{036E1011-A524-4C2A-B08F-AF4291257A0C}';
+  // 036E1011-A524-4C2A-B08F-AF4291257A0C
+  FORM_ID: TGuid =
+    (D1: $036E1011; D2: $A524; D3: $4C2A; D4: ($B0, $8F, $AF, $42, $91, $25, $7A, $0C));
 
 var
   frmContacts: TfrmContacts;
@@ -39,7 +41,7 @@ class function TfrmContacts.CreateForm(AOwner: TComponent; AParent: TWinControl;
   IsMaster: Boolean): TfrmBaseForm;
 begin
   Result := TfrmContacts.ACreate(AOwner, AParent, IsMaster);
-  Result.FormID_AsString := FORM_ID;
+  Result.FormID := FORM_ID;
   Result.SQLText := SQL_GET_CONTACTS;
   Result.RebuildQuery;
 end;

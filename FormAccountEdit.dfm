@@ -13,19 +13,18 @@ inherited frmAccountEdit: TfrmAccountEdit
   inherited sbStatusBar: TStatusBar
     Top = 609
     Width = 793
-    ExplicitLeft = 0
-    ExplicitTop = 582
-    ExplicitWidth = 800
   end
   inherited pnlButtons: TPanel
     Top = 572
     Width = 793
-    ExplicitTop = 545
+    ExplicitWidth = 793
     inherited btnOk: TBitBtn
       Left = 621
+      ExplicitLeft = 621
     end
     inherited btnCancel: TBitBtn
       Left = 702
+      ExplicitLeft = 702
     end
   end
   object gbxPostAddress: TGroupBox [2]
@@ -42,7 +41,6 @@ inherited frmAccountEdit: TfrmAccountEdit
     Font.Style = [fsBold]
     ParentFont = False
     TabOrder = 2
-    ExplicitTop = 257
     object lblIndex: TLabel
       Left = 81
       Top = 47
@@ -382,10 +380,6 @@ inherited frmAccountEdit: TfrmAccountEdit
     Font.Style = [fsBold]
     ParentFont = False
     TabOrder = 3
-    ExplicitLeft = 32
-    ExplicitTop = 484
-    ExplicitWidth = 185
-    ExplicitHeight = 105
     object lblCallNote: TLabel
       Left = 20
       Top = 90
